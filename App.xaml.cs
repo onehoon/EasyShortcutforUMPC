@@ -43,20 +43,26 @@ namespace Easy_Shortcut_for_UMPC
         {
             if (args is XboxGameBarWidgetActivatedEventArgs widgetArgs)
             {
-                if (widgetArgs.IsLaunchActivation)
+                if (Window.Current.Content is not Frame rootFrame)
                 {
-                    var rootFrame = new Frame();
+                    rootFrame = new Frame();
                     rootFrame.NavigationFailed += OnNavigationFailed;
-
                     Window.Current.Content = rootFrame;
-
-                    _gameBarWidget = new XboxGameBarWidget(widgetArgs, Window.Current.CoreWindow, rootFrame);
-                    rootFrame.Navigate(typeof(MainPage), _gameBarWidget);
-
-                    Window.Current.Closed += GameBarWindow_Closed;
-                    Window.Current.Activate();
                 }
 
+                if (_gameBarWidget == null)
+                {
+                    _gameBarWidget = new XboxGameBarWidget(widgetArgs, Window.Current.CoreWindow, rootFrame);
+                }
+
+                if (rootFrame.Content == null || widgetArgs.IsLaunchActivation)
+                {
+                    rootFrame.Navigate(typeof(MainPage), _gameBarWidget);
+                }
+
+                Window.Current.Closed -= GameBarWindow_Closed;
+                Window.Current.Closed += GameBarWindow_Closed;
+                Window.Current.Activate();
                 return;
             }
 
