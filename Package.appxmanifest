@@ -8,11 +8,11 @@
   IgnorableNamespaces="uap uap3 mp">
 
   <Identity
-    Name="ad5d3589-3ac0-4af1-bdd3-9e449335f695"
+    Name="EasyShortcut.for.UMPC.Legacy"
     Publisher="CN=onehoon"
-    Version="1.0.0.1" />
+    Version="1.0.0.2" />
 
-  <mp:PhoneIdentity PhoneProductId="ad5d3589-3ac0-4af1-bdd3-9e449335f695" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="b93c2ec8-1d7f-4b9f-b843-0dbb67cf8f1a" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>Easy_Shortcut_for_UMPC</DisplayName>
