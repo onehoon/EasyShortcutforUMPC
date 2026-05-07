@@ -1,0 +1,36 @@
+# Visual Studio / .NET
+.vs/
+**/bin/
+**/obj/
+*.user
+*.suo
+*.cache
+*.pdb
+
+# NuGet / packages
+packages/
+*.nupkg
+
+# UWP / MSIX packaging outputs
+**/AppPackages/
+**/BundleArtifacts/
+*.appx
+*.appxbundle
+*.appxupload
+*.appxsym
+*.msix
+*.msixbundle
+*.msixupload
+
+# Signing keys / certificates (do not commit)
+*.pfx
+*.cer
+*TemporaryKey*
+**/ShortcutHelper/*.exe
+
+# Logs / temp
+*.log
+*.tmp
+*.bak
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "Easy_Shortcut_for_UMPC": {
+      "commandName": "MsixPackage"
+    }
+  }
+}
