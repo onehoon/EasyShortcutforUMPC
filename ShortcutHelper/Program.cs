@@ -37,6 +37,9 @@ internal static class Program
     [DllImport("user32.dll", SetLastError = true)]
     private static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
 
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+
     [DllImport("user32.dll")]
     private static extern IntPtr GetForegroundWindow();
 
@@ -67,7 +70,14 @@ internal static class Program
             }
 
             Thread.Sleep(120);
-            var action = args[0].ToLowerInvariant();
+            var action = ResolveAction(args);
+            Log($"resolved action={action}");
+            if (string.IsNullOrEmpty(action))
+            {
+                Log("no supported action resolved; exit");
+                return;
+            }
+            CloseGameBarAndWaitForFocusReturn();
             var ok = action switch
             {
                 "insert" => PressKey(0x2D, isExtended: true),
@@ -87,37 +97,116 @@ internal static class Program
         }
     }
 
+    private static string ResolveAction(string[] args)
+    {
+        foreach (var raw in args)
+        {
+            var arg = (raw ?? string.Empty).Trim().ToLowerInvariant();
+            switch (arg)
+            {
+                case "insert":
+                case "home":
+                case "end":
+                case "capture":
+                case "quit":
+                    return arg;
+            }
+        }
+
+        return string.Empty;
+    }
+
+    private static void CloseGameBarAndWaitForFocusReturn()
+    {
+        Log("close gamebar requested");
+        PressCombo(new (ushort vk, bool ext)[] { (0x5B, false), (0x47, false) });
+
+        for (var attempt = 1; attempt <= 8; attempt++)
+        {
+            Thread.Sleep(attempt == 1 ? 220 : 120);
+            var procName = GetForegroundProcessName();
+            Log($"focus poll attempt={attempt} proc={procName}");
+            if (!IsGameBarProcess(procName))
+            {
+                Log($"focus returned to proc={procName}");
+                return;
+            }
+        }
+
+        LogForeground("after-close-timeout");
+    }
+
+    private static bool IsGameBarProcess(string procName)
+    {
+        return string.Equals(procName, "GameBar", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(procName, "GameBarFTServer", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(procName, "XboxPcAppFT", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string GetForegroundProcessName()
+    {
+        var hwnd = GetForegroundWindow();
+        GetWindowThreadProcessId(hwnd, out var pid);
+        if (pid == 0)
+        {
+            return "unknown";
+        }
+
+        try
+        {
+            return Process.GetProcessById((int)pid).ProcessName;
+        }
+        catch
+        {
+            return "unknown";
+        }
+    }
+
     private static bool PressCombo((ushort vk, bool ext)[] keys)
     {
-        var inputs = new INPUT[keys.Length * 2];
-        var idx = 0;
-
-        foreach (var k in keys)
+        try
         {
-            inputs[idx++] = BuildKeyInput(k.vk, false, k.ext);
-        }
-        for (var i = keys.Length - 1; i >= 0; i--)
-        {
-            inputs[idx++] = BuildKeyInput(keys[i].vk, true, keys[i].ext);
-        }
+            foreach (var k in keys)
+            {
+                PressVirtualKey(k.vk, false, k.ext);
+            }
+            for (var i = keys.Length - 1; i >= 0; i--)
+            {
+                PressVirtualKey(keys[i].vk, true, keys[i].ext);
+            }
 
-        var sent = SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
-        var err = Marshal.GetLastWin32Error();
-        Log($"send combo inputs={inputs.Length} sent={sent} err={err}");
-        return sent == inputs.Length;
+            Log($"send combo legacy count={keys.Length * 2}");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Log($"send combo legacy exception={ex.GetType().Name}:{ex.Message}");
+            return false;
+        }
     }
 
     private static bool PressKey(ushort vk, bool isExtended)
     {
-        var inputs = new[]
+        try
         {
-            BuildKeyInput(vk, false, isExtended),
-            BuildKeyInput(vk, true, isExtended),
-        };
-        var sent = SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
-        var err = Marshal.GetLastWin32Error();
-        Log($"send key vk=0x{vk:X2} inputs=2 sent={sent} err={err}");
-        return sent == 2;
+            PressVirtualKey(vk, false, isExtended);
+            PressVirtualKey(vk, true, isExtended);
+            Log($"send key legacy vk=0x{vk:X2}");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Log($"send key legacy exception={ex.GetType().Name}:{ex.Message}");
+            return false;
+        }
+    }
+
+    private static void PressVirtualKey(ushort vk, bool keyUp, bool isExtended)
+    {
+        uint flags = 0;
+        if (keyUp) flags |= KEYEVENTF_KEYUP;
+        if (isExtended) flags |= KEYEVENTF_EXTENDEDKEY;
+        keybd_event((byte)vk, 0, flags, UIntPtr.Zero);
     }
 
     private static INPUT BuildKeyInput(ushort vk, bool keyUp, bool isExtended)

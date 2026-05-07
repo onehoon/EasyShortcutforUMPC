@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using Windows.ApplicationModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -11,68 +10,13 @@ namespace Easy_Shortcut_for_UMPC
         public MainPage()
         {
             InitializeComponent();
-            Loaded += MainPage_Loaded;
-            WidgetWebView.NavigationCompleted += WidgetWebView_NavigationCompleted;
-            WidgetWebView.NavigationFailed += WidgetWebView_NavigationFailed;
-            WidgetWebView.ScriptNotify += WidgetWebView_ScriptNotify;
-            WidgetWebView.NavigationStarting += WidgetWebView_NavigationStarting;
-            WidgetWebView.AllowedScriptNotifyUris = WebView.AnyScriptNotifyUri;
-        }
-
-        private void MainPage_Loaded(object sender, RoutedEventArgs e)
-        {
-            StatusText.Text = "Loading: ms-appx-web:///GameBar/Widget.html";
-            WidgetWebView.Navigate(new Uri("ms-appx-web:///GameBar/Widget.html"));
-        }
-
-        private void WidgetWebView_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
-        {
-            StatusText.Text = args.IsSuccess ? "Widget loaded" : $"Load failed: {args.WebErrorStatus}";
-        }
-
-        private void WidgetWebView_NavigationFailed(object sender, WebViewNavigationFailedEventArgs e)
-        {
-            StatusText.Text = $"Navigation failed: {e.WebErrorStatus}";
-        }
-
-        private async void WidgetWebView_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs e)
-        {
-            if (e?.Uri == null)
-            {
-                return;
-            }
-
-            var isCustom = string.Equals(e.Uri.Scheme, "easyshortcut", StringComparison.OrdinalIgnoreCase);
-            var isHttpsBridge = string.Equals(e.Uri.Scheme, "https", StringComparison.OrdinalIgnoreCase)
-                && string.Equals(e.Uri.Host, "easyshortcut", StringComparison.OrdinalIgnoreCase);
-
-            if (!isCustom && !isHttpsBridge)
-            {
-                return;
-            }
-
-            e.Cancel = true;
-            var action = isHttpsBridge
-                ? e.Uri.AbsolutePath.Trim('/').ToLowerInvariant()
-                : (e.Uri.Host?.Trim().ToLowerInvariant() ?? string.Empty);
-            await LaunchHelperActionAsync(action);
-        }
-
-        private async void WidgetWebView_ScriptNotify(object sender, NotifyEventArgs e)
-        {
-            var value = e?.Value ?? string.Empty;
-            if (!value.StartsWith("cmd:", StringComparison.OrdinalIgnoreCase))
-            {
-                return;
-            }
-
-            var action = value.Substring(4).Trim().ToLowerInvariant();
-            await LaunchHelperActionAsync(action);
+            DiagnosticsLog.Write("MainPage ctor");
         }
 
         private async System.Threading.Tasks.Task LaunchHelperActionAsync(string action)
         {
-            StatusText.Text = $"Cmd received: {action}";
+            DiagnosticsLog.Write($"LaunchHelperAction start action={action}");
+
             string groupId = action switch
             {
                 "insert" => "InsertCommand",
@@ -85,43 +29,57 @@ namespace Easy_Shortcut_for_UMPC
 
             if (string.IsNullOrEmpty(groupId))
             {
-                StatusText.Text = $"Unknown cmd: {action}";
+                DiagnosticsLog.Write($"LaunchHelperAction unknown action={action}");
                 return;
             }
 
             try
             {
-                StatusText.Text = $"Launching helper: {action}";
+                DiagnosticsLog.Write($"LaunchFullTrust group={groupId}");
                 await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync(groupId);
-                StatusText.Text = $"Helper launched: {action}";
-                AppendLatestHelperLog();
+                DiagnosticsLog.Write($"LaunchFullTrust success action={action}");
             }
             catch (Exception ex)
             {
-                StatusText.Text = $"Launch failed: {action} / {ex.GetType().Name}";
+                DiagnosticsLog.Write($"LaunchFullTrust fail action={action} ex={ex.GetType().Name} msg={ex.Message}");
             }
         }
 
-        private void AppendLatestHelperLog()
+        private async void InsertButton_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EasyShortcutForUMPC", "helper.log");
-                if (!File.Exists(path))
-                {
-                    return;
-                }
+            await LaunchHelperActionAsync("insert");
+        }
 
-                var lines = File.ReadAllLines(path);
-                if (lines.Length == 0)
-                {
-                    return;
-                }
+        private async void HomeButton_Click(object sender, RoutedEventArgs e)
+        {
+            await LaunchHelperActionAsync("home");
+        }
 
-                StatusText.Text = $"{StatusText.Text} | {lines[lines.Length - 1]}";
-            }
-            catch
+        private async void EndButton_Click(object sender, RoutedEventArgs e)
+        {
+            await LaunchHelperActionAsync("end");
+        }
+
+        private async void CaptureButton_Click(object sender, RoutedEventArgs e)
+        {
+            await LaunchHelperActionAsync("capture");
+        }
+
+        private async void QuitButton_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog confirm = new()
             {
+                Title = "Force Quit",
+                Content = "Run Alt+F4 now?",
+                PrimaryButtonText = "Yes",
+                CloseButtonText = "No",
+                DefaultButton = ContentDialogButton.Close
+            };
+
+            ContentDialogResult result = await confirm.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                await LaunchHelperActionAsync("quit");
             }
         }
     }
