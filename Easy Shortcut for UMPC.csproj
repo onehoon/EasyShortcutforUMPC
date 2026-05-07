@@ -12,6 +12,9 @@
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <DisableRuntimeMarshalling>true</DisableRuntimeMarshalling>
     <EnableMsixTooling>true</EnableMsixTooling>
+    <AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
+    <PackageCertificateKeyFile>EasyShortcut_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificatePassword>1234</PackageCertificatePassword>
   </PropertyGroup>
 
   <ItemGroup>
