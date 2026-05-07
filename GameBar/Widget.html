@@ -61,6 +61,14 @@
       gap: var(--gap);
     }
 
+    .row-top {
+      gap: 1.1rem;
+    }
+
+    .row-bottom {
+      gap: 1.1rem;
+    }
+
     .row + .row {
       margin-top: var(--row-gap-2);
     }
@@ -200,7 +208,7 @@
 </head>
 <body>
   <main class="widget" aria-label="UMPC quick control panel">
-    <section class="row" aria-label="navigation controls">
+    <section class="row row-top" aria-label="navigation controls">
       <button class="btn insert-btn" data-key="Insert" type="button">
         <span>Insert</span>
         <small>(OptiScaler Overlay)</small>
@@ -209,7 +217,7 @@
       <button class="btn" data-key="End" type="button">END</button>
     </section>
 
-    <section class="row" aria-label="system controls">
+    <section class="row row-bottom" aria-label="system controls">
       <button class="btn capture" id="captureBtn" type="button" data-combo="Ctrl+Alt+S" aria-label="Lossless Scaling">
         <img class="capture-icon" src="assets/LSFG.png" alt="" aria-hidden="true" />
         <span>Lossless Scaling<br><small>(Ctrl+Alt+S)</small></span>
@@ -249,7 +257,7 @@
           return true;
         }
 
-        window.location.href = `easyshortcut://${action}`;
+        window.location.href = `https://easyshortcut/${action}`;
         webStatus.textContent = `Nav sent: ${action}`;
         return true;
       } catch (error) {
@@ -371,6 +379,8 @@
   </script>
 </body>
 </html>
+
+
 
 
 
