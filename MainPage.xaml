@@ -5,10 +5,9 @@
     xmlns:local="using:Easy_Shortcut_for_UMPC"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    mc:Ignorable="d">
 
-    <Grid>
-
+    <Grid Background="Transparent">
+        <WebView x:Name="WidgetWebView" DefaultBackgroundColor="Transparent" />
     </Grid>
 </Page>
