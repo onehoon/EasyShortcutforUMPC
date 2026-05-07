@@ -138,7 +138,7 @@
       <Version>6.2.14</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Gaming.XboxGameBar">
-      <Version>7.3.251106001</Version>
+      <Version>7.3.2603250-rc</Version>
     </PackageReference>
   </ItemGroup>
 

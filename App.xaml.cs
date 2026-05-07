@@ -41,26 +41,28 @@ namespace Easy_Shortcut_for_UMPC
 
         protected override void OnActivated(IActivatedEventArgs args)
         {
-            if (args is XboxGameBarWidgetActivatedEventArgs widgetArgs)
+            XboxGameBarWidgetActivatedEventArgs widgetArgs = null;
+            if (args.Kind == ActivationKind.Protocol)
             {
-                if (Window.Current.Content is not Frame rootFrame)
+                var protocolArgs = args as IProtocolActivatedEventArgs;
+                if (protocolArgs?.Uri?.Scheme == "ms-gamebarwidget")
                 {
-                    rootFrame = new Frame();
-                    rootFrame.NavigationFailed += OnNavigationFailed;
-                    Window.Current.Content = rootFrame;
+                    widgetArgs = args as XboxGameBarWidgetActivatedEventArgs;
                 }
+            }
 
-                if (_gameBarWidget == null)
-                {
-                    _gameBarWidget = new XboxGameBarWidget(widgetArgs, Window.Current.CoreWindow, rootFrame);
-                }
+            if (widgetArgs != null && widgetArgs.IsLaunchActivation)
+            {
+                var rootFrame = new Frame();
+                rootFrame.NavigationFailed += OnNavigationFailed;
+                Window.Current.Content = rootFrame;
 
-                if (rootFrame.Content == null || widgetArgs.IsLaunchActivation)
+                _gameBarWidget = new XboxGameBarWidget(widgetArgs, Window.Current.CoreWindow, rootFrame);
+                if (rootFrame.Content == null)
                 {
                     rootFrame.Navigate(typeof(MainPage), _gameBarWidget);
                 }
 
-                Window.Current.Closed -= GameBarWindow_Closed;
                 Window.Current.Closed += GameBarWindow_Closed;
                 Window.Current.Activate();
                 return;
