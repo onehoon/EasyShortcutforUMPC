@@ -18,13 +18,20 @@
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
     <AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
-    <PackageCertificateKeyFile>EasyShortcut_TemporaryKey.pfx</PackageCertificateKeyFile>
-    <AppxBundle>Never</AppxBundle>
+    <PackageCertificateKeyFile>
+    </PackageCertificateKeyFile>
+    <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x64</AppxBundlePlatforms>
     <LangVersion>latest</LangVersion>
     <HelperOutputDir>ShortcutHelper\bin\x64\Release\net8.0-windows\</HelperOutputDir>
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+    <PackageCertificateThumbprint>EA2DB6D23B39FA067F3FDF667EF778AB5296728A</PackageCertificateThumbprint>
+    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+    <GenerateTestArtifacts>True</GenerateTestArtifacts>
+    <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
@@ -80,7 +87,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
-    <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|arm64'">
     <OutputPath>bin\arm64\Release\</OutputPath>
@@ -94,11 +101,9 @@
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
   </PropertyGroup>
-
   <PropertyGroup>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -108,13 +113,11 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
   </ItemGroup>
-
   <ItemGroup>
     <Content Include="Assets\LockScreenLogo.png" Condition="Exists('Assets\LockScreenLogo.png')" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
@@ -141,8 +144,8 @@
     <Content Include="$(HelperOutputDir)ShortcutHelper.runtimeconfig.json">
       <Link>ShortcutHelper\ShortcutHelper.runtimeconfig.json</Link>
     </Content>
+    <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
-
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -153,7 +156,6 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.14</Version>
@@ -162,22 +164,19 @@
       <Version>7.3.2511061</Version>
     </PackageReference>
   </ItemGroup>
-
   <ItemGroup>
     <SDKReference Include="WindowsDesktop, Version=10.0.26100.0">
       <Name>Windows Desktop Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>
-
+  <ItemGroup>
+    <Folder Include="ShortcutHelper\" />
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
-
   <Target Name="BuildShortcutHelper" BeforeTargets="PrepareForBuild">
-    <MSBuild Projects="ShortcutHelper\ShortcutHelper.csproj"
-             Targets="Build"
-             Properties="Configuration=Release;Platform=x64" />
+    <MSBuild Projects="ShortcutHelper\ShortcutHelper.csproj" Targets="Build" Properties="Configuration=Release;Platform=x64" />
   </Target>
-
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
 </Project>

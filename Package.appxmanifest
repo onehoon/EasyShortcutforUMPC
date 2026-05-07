@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
@@ -10,11 +10,11 @@
   IgnorableNamespaces="uap uap3 mp desktop rescap">
 
   <Identity
-    Name="EasyShortcut.for.UMPC.Legacy"
-    Publisher="CN=onehoon"
-    Version="1.0.0.11" />
+    Name="onehoon.EasyShortcutforUMPC"
+    Publisher="CN=1F7B64F8-727D-460F-BC6B-347DD604F69F"
+    Version="1.0.4.0" />
 
-  <mp:PhoneIdentity PhoneProductId="b93c2ec8-1d7f-4b9f-b843-0dbb67cf8f1a" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="4fac8839-76bf-47c8-be7c-57c4109e639e" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>Easy Shortcut for UMPC</DisplayName>
