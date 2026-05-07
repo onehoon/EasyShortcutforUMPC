@@ -120,6 +120,10 @@
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="GameBar\**\*" />
+    <Content Include="ShortcutHelper\ShortcutHelper.exe" />
+    <Content Include="ShortcutHelper\ShortcutHelper.dll" />
+    <Content Include="ShortcutHelper\ShortcutHelper.deps.json" />
+    <Content Include="ShortcutHelper\ShortcutHelper.runtimeconfig.json" />
   </ItemGroup>
 
   <ItemGroup>

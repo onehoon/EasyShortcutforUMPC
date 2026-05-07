@@ -243,13 +243,21 @@
       webStatus.textContent = `Click: ${action}`;
 
       try {
-        window.location.href = `easyshortcut://${action}`;\n        webStatus.textContent = `Nav sent: ${action}`;\n        return true;
+        if (window.external && typeof window.external.notify === 'function') {
+          window.external.notify(`cmd:${action}`);
+          webStatus.textContent = `Notify sent: ${action}`;
+          return true;
+        }
+
+        window.location.href = `easyshortcut://${action}`;
+        webStatus.textContent = `Nav sent: ${action}`;
+        return true;
       } catch (error) {
         webStatus.textContent = `Bridge error: ${error.message || error}`;
         console.log('Bridge failed:', error);
       }
 
-      webStatus.textContent = `Title bridge unavailable: ${action}`;
+      webStatus.textContent = `Bridge unavailable: ${action}`;
       return false;
     }
 
