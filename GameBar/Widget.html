@@ -243,9 +243,7 @@
       webStatus.textContent = `Click: ${action}`;
 
       try {
-        document.title = `cmd:${action}:${Date.now()}`;
-        webStatus.textContent = `Title sent: ${action}`;
-        return true;
+        window.location.href = `easyshortcut://${action}`;\n        webStatus.textContent = `Nav sent: ${action}`;\n        return true;
       } catch (error) {
         webStatus.textContent = `Bridge error: ${error.message || error}`;
         console.log('Bridge failed:', error);
@@ -365,6 +363,9 @@
   </script>
 </body>
 </html>
+
+
+
 
 
 
