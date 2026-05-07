@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
          xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
          xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
@@ -6,7 +6,7 @@
          xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
          xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
          IgnorableNamespaces="uap uap3 mp desktop rescap">
-  <Identity Name="EasyShortcut.for.UMPC.Package" Publisher="CN=onehoon" Version="1.0.0.1"/>
+  <Identity Name="EasyShortcut.for.UMPC.Legacy" Publisher="CN=onehoon" Version="1.0.0.11"/>
   <mp:PhoneIdentity PhoneProductId="b93c2ec8-1d7f-4b9f-b843-0dbb67cf8f1a" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
   <Properties>
     <DisplayName>Easy Shortcut for UMPC</DisplayName>
@@ -35,6 +35,20 @@
                 <PinningSupported>true</PinningSupported>
                 <ActivateAfterInstall>true</ActivateAfterInstall>
                 <FavoriteAfterInstall>true</FavoriteAfterInstall>
+                <Window>
+                  <Size>
+                    <Height>300</Height>
+                    <Width>400</Width>
+                    <MinHeight>150</MinHeight>
+                    <MinWidth>200</MinWidth>
+                    <MaxHeight>350</MaxHeight>
+                    <MaxWidth>450</MaxWidth>
+                  </Size>
+                  <ResizeSupported>
+                    <Horizontal>true</Horizontal>
+                    <Vertical>true</Vertical>
+                  </ResizeSupported>
+                </Window>
               </GameBarWidget>
             </uap3:Properties>
           </uap3:AppExtension>
@@ -44,7 +58,7 @@
             <desktop:ParameterGroup GroupId="InsertCommand" Parameters="insert" />
             <desktop:ParameterGroup GroupId="HomeCommand" Parameters="home" />
             <desktop:ParameterGroup GroupId="EndCommand" Parameters="end" />
-            <desktop:ParameterGroup GroupId="CaptureCommand" Parameters="capture" />
+            <desktop:ParameterGroup GroupId="LosslessScalingCommand" Parameters="losslessscaling" />
             <desktop:ParameterGroup GroupId="QuitCommand" Parameters="quit" />
           </desktop:FullTrustProcess>
         </desktop:Extension>
@@ -52,7 +66,9 @@
     </Application>
   </Applications>
   <Capabilities>
-    <Capability Name="internetClient" />
     <rescap:Capability Name="runFullTrust" />
   </Capabilities>
 </Package>
+
+
+

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
@@ -12,12 +12,12 @@
   <Identity
     Name="EasyShortcut.for.UMPC.Legacy"
     Publisher="CN=onehoon"
-    Version="1.0.0.9" />
+    Version="1.0.0.11" />
 
   <mp:PhoneIdentity PhoneProductId="b93c2ec8-1d7f-4b9f-b843-0dbb67cf8f1a" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>Easy_Shortcut_for_UMPC</DisplayName>
+    <DisplayName>Easy Shortcut for UMPC</DisplayName>
     <PublisherDisplayName>onehoon</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -36,10 +36,10 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="Easy_Shortcut_for_UMPC.App">
       <uap:VisualElements
-        DisplayName="Easy_Shortcut_for_UMPC"
+        DisplayName="Easy Shortcut for UMPC"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="Easy_Shortcut_for_UMPC"
+        Description="Easy Shortcut for UMPC"
         BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
@@ -81,7 +81,7 @@
             <desktop:ParameterGroup GroupId="InsertCommand" Parameters="insert" />
             <desktop:ParameterGroup GroupId="HomeCommand" Parameters="home" />
             <desktop:ParameterGroup GroupId="EndCommand" Parameters="end" />
-            <desktop:ParameterGroup GroupId="CaptureCommand" Parameters="capture" />
+            <desktop:ParameterGroup GroupId="LosslessScalingCommand" Parameters="losslessscaling" />
             <desktop:ParameterGroup GroupId="QuitCommand" Parameters="quit" />
           </desktop:FullTrustProcess>
         </desktop:Extension>
@@ -128,7 +128,9 @@
   </Extensions>
 
   <Capabilities>
-    <Capability Name="internetClient" />
     <rescap:Capability Name="runFullTrust" />
   </Capabilities>
 </Package>
+
+
+

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -256,10 +256,6 @@
           webStatus.textContent = `Notify sent: ${action}`;
           return true;
         }
-
-        window.location.href = `https://easyshortcut/${action}`;
-        webStatus.textContent = `Nav sent: ${action}`;
-        return true;
       } catch (error) {
         webStatus.textContent = `Bridge error: ${error.message || error}`;
         console.log('Bridge failed:', error);
@@ -374,6 +370,17 @@
         mq.addListener(syncDprClass);
       }
     }
+    window.addEventListener('beforeunload', () => {
+      window.removeEventListener('resize', syncDprClass);
+      if (!mq) {
+        return;
+      }
+      if (typeof mq.removeEventListener === 'function') {
+        mq.removeEventListener('change', syncDprClass);
+      } else if (typeof mq.removeListener === 'function') {
+        mq.removeListener(syncDprClass);
+      }
+    });
     syncDprClass();
     notifyWidgetReady();
   </script>

@@ -28,6 +28,9 @@ dist/
 *.cer
 *TemporaryKey*
 **/ShortcutHelper/*.exe
+**/ShortcutHelper/*.dll
+**/ShortcutHelper/*.deps.json
+**/ShortcutHelper/*.runtimeconfig.json
 
 # Logs / temp
 *.log

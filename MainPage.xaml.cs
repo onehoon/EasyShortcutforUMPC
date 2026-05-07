@@ -7,6 +7,19 @@ namespace Easy_Shortcut_for_UMPC
 {
     public sealed partial class MainPage : Page
     {
+        private const string ActionInsert = "insert";
+        private const string ActionHome = "home";
+        private const string ActionEnd = "end";
+        private const string ActionLosslessScaling = "losslessscaling";
+        private const string ActionQuit = "quit";
+
+        // Must stay in sync with desktop:ParameterGroup GroupId values in both manifests.
+        private const string GroupInsert = "InsertCommand";
+        private const string GroupHome = "HomeCommand";
+        private const string GroupEnd = "EndCommand";
+        private const string GroupLosslessScaling = "LosslessScalingCommand";
+        private const string GroupQuit = "QuitCommand";
+
         public MainPage()
         {
             InitializeComponent();
@@ -19,11 +32,11 @@ namespace Easy_Shortcut_for_UMPC
 
             string groupId = action switch
             {
-                "insert" => "InsertCommand",
-                "home" => "HomeCommand",
-                "end" => "EndCommand",
-                "capture" => "CaptureCommand",
-                "quit" => "QuitCommand",
+                ActionInsert => GroupInsert,
+                ActionHome => GroupHome,
+                ActionEnd => GroupEnd,
+                ActionLosslessScaling => GroupLosslessScaling,
+                ActionQuit => GroupQuit,
                 _ => null
             };
 
@@ -47,30 +60,30 @@ namespace Easy_Shortcut_for_UMPC
 
         private async void InsertButton_Click(object sender, RoutedEventArgs e)
         {
-            await LaunchHelperActionAsync("insert");
+            await LaunchHelperActionAsync(ActionInsert);
         }
 
         private async void HomeButton_Click(object sender, RoutedEventArgs e)
         {
-            await LaunchHelperActionAsync("home");
+            await LaunchHelperActionAsync(ActionHome);
         }
 
         private async void EndButton_Click(object sender, RoutedEventArgs e)
         {
-            await LaunchHelperActionAsync("end");
+            await LaunchHelperActionAsync(ActionEnd);
         }
 
         private async void CaptureButton_Click(object sender, RoutedEventArgs e)
         {
-            await LaunchHelperActionAsync("capture");
+            await LaunchHelperActionAsync(ActionLosslessScaling);
         }
 
         private async void QuitButton_Click(object sender, RoutedEventArgs e)
         {
             ContentDialog confirm = new()
             {
-                Title = "Force Quit",
-                Content = "Run Alt+F4 now?",
+                Title = "Close App",
+                Content = "Send Alt+F4 shortcut now?",
                 PrimaryButtonText = "Yes",
                 CloseButtonText = "No",
                 DefaultButton = ContentDialogButton.Close
@@ -79,7 +92,7 @@ namespace Easy_Shortcut_for_UMPC
             ContentDialogResult result = await confirm.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                await LaunchHelperActionAsync("quit");
+                await LaunchHelperActionAsync(ActionQuit);
             }
         }
     }

@@ -22,6 +22,7 @@
     <AppxBundle>Never</AppxBundle>
     <AppxBundlePlatforms>x64</AppxBundlePlatforms>
     <LangVersion>latest</LangVersion>
+    <HelperOutputDir>ShortcutHelper\bin\x64\Release\net8.0-windows\</HelperOutputDir>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
@@ -128,10 +129,18 @@
     <Content Include="Assets\Wide310x150Logo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="GameBar\**\*" />
-    <Content Include="ShortcutHelper\ShortcutHelper.exe" />
-    <Content Include="ShortcutHelper\ShortcutHelper.dll" />
-    <Content Include="ShortcutHelper\ShortcutHelper.deps.json" />
-    <Content Include="ShortcutHelper\ShortcutHelper.runtimeconfig.json" />
+    <Content Include="$(HelperOutputDir)ShortcutHelper.exe">
+      <Link>ShortcutHelper\ShortcutHelper.exe</Link>
+    </Content>
+    <Content Include="$(HelperOutputDir)ShortcutHelper.dll">
+      <Link>ShortcutHelper\ShortcutHelper.dll</Link>
+    </Content>
+    <Content Include="$(HelperOutputDir)ShortcutHelper.deps.json">
+      <Link>ShortcutHelper\ShortcutHelper.deps.json</Link>
+    </Content>
+    <Content Include="$(HelperOutputDir)ShortcutHelper.runtimeconfig.json">
+      <Link>ShortcutHelper\ShortcutHelper.runtimeconfig.json</Link>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -163,6 +172,12 @@
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
+
+  <Target Name="BuildShortcutHelper" BeforeTargets="PrepareForBuild">
+    <MSBuild Projects="ShortcutHelper\ShortcutHelper.csproj"
+             Targets="Build"
+             Properties="Configuration=Release;Platform=x64" />
+  </Target>
 
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
 </Project>

@@ -1,0 +1,42 @@
+Build notes
+
+Helper packaging behavior
+
+- `ShortcutHelper` binaries are not committed.
+- The UWP project now builds `ShortcutHelper/ShortcutHelper.csproj` automatically before packaging.
+- Packaged helper files are taken from:
+  - `ShortcutHelper/bin/x64/Release/net8.0-windows/`
+
+Release x64 build
+
+```powershell
+msbuild "Easy Shortcut for UMPC.csproj" /t:Build /p:Configuration=Release /p:Platform=x64 /p:PackageCertificatePassword=<password>
+```
+
+Output package
+
+- `AppPackages/Easy Shortcut for UMPC_<version>_x64_Test/`
+- Install via `Add-AppDevPackage.ps1` in that folder.
+
+Certificate and signing notes
+
+Local sideload/testing builds
+
+- `PackageCertificateKeyFile` points to a local developer test certificate (`EasyShortcut_TemporaryKey.pfx`).
+- The PFX is intentionally not committed (`.gitignore` excludes `*.pfx` and `*TemporaryKey*`).
+- On a clean machine, create/import a local test certificate before building sideload packages.
+- If using command-line build, pass:
+  - `/p:PackageCertificatePassword=<password>`
+
+Store submission builds
+
+- Store submission packages are signed through the Microsoft Store pipeline.
+- For Store upload workflow, use Visual Studio's Store packaging flow and generate the upload package (`.msixupload`/`.appxupload`) for Partner Center.
+- Do not rely on committing a shared temporary PFX for Store submission.
+
+Clean clone onboarding
+
+1. Restore/build helper and app in `Release|x64`.
+2. Ensure local test certificate exists for sideload package generation.
+3. Use `Add-AppDevPackage.ps1` only for local test install.
+4. Use Store packaging/upload flow for certification submission.

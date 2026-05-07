@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Diagnostics;
 
 namespace Easy_Shortcut_for_UMPC
 {
@@ -19,6 +20,7 @@ namespace Easy_Shortcut_for_UMPC
             }
         }
 
+        [Conditional("DEBUG")]
         internal static void Write(string message)
         {
             try
@@ -32,6 +34,7 @@ namespace Easy_Shortcut_for_UMPC
             }
             catch
             {
+                // Debug diagnostics are best-effort; app behavior must not depend on log I/O.
             }
         }
     }

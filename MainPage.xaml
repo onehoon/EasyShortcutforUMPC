@@ -28,9 +28,6 @@
             <Setter Property="Background" Value="#8C2B5E98" />
         </Style>
 
-        <Style x:Key="DangerButtonStyle" TargetType="Button" BasedOn="{StaticResource ShortcutButtonStyle}">
-            <Setter Property="Background" Value="#994D1C25" />
-        </Style>
     </Page.Resources>
 
     <Grid Background="Transparent" Padding="12">
@@ -46,45 +43,6 @@
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Row="0" ColumnSpacing="12">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <Button Grid.Column="0"
-                            x:Name="InsertButton"
-                            Style="{StaticResource ShortcutButtonStyle}"
-                            Click="InsertButton_Click">
-                        <StackPanel Spacing="2"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center">
-                            <TextBlock Text="Insert"
-                                       HorizontalAlignment="Center"
-                                       TextAlignment="Center" />
-                            <TextBlock Text="(OptiScaler Overlay)"
-                                       FontSize="9.5"
-                                       Opacity="0.82"
-                                       HorizontalAlignment="Center"
-                                       TextAlignment="Center"
-                                       TextWrapping="NoWrap" />
-                        </StackPanel>
-                    </Button>
-
-                    <Button Grid.Column="1"
-                            x:Name="HomeButton"
-                            Style="{StaticResource ShortcutButtonStyle}"
-                            Click="HomeButton_Click"
-                            Content="Home" />
-
-                    <Button Grid.Column="2"
-                            x:Name="EndButton"
-                            Style="{StaticResource ShortcutButtonStyle}"
-                            Click="EndButton_Click"
-                            Content="End" />
-                </Grid>
-
-                <Grid Grid.Row="1" ColumnSpacing="12">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
@@ -107,7 +65,7 @@
                                            HorizontalAlignment="Left"
                                            TextAlignment="Left" />
                                 <TextBlock Text="(Ctrl+Alt+S)"
-                                           FontSize="10.5"
+                                           FontSize="11"
                                            Opacity="0.82"
                                            HorizontalAlignment="Left"
                                            TextAlignment="Left" />
@@ -116,10 +74,50 @@
                     </Button>
 
                     <Button Grid.Column="1"
+                            x:Name="InsertButton"
+                            Style="{StaticResource ShortcutButtonStyle}"
+                            Click="InsertButton_Click">
+                        <StackPanel Spacing="2"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                            <TextBlock Text="OptiScaler Overlay"
+                                       HorizontalAlignment="Center"
+                                       TextAlignment="Center" />
+                            <TextBlock Text="(Alt+Insert)"
+                                       FontSize="11"
+                                       Opacity="0.82"
+                                       HorizontalAlignment="Center"
+                                       TextAlignment="Center"
+                                       TextWrapping="NoWrap" />
+                        </StackPanel>
+                    </Button>
+
+                </Grid>
+
+                <Grid Grid.Row="1" ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0"
+                            x:Name="EndButton"
+                            Style="{StaticResource ShortcutButtonStyle}"
+                            Click="EndButton_Click"
+                            Content="End" />
+
+                    <Button Grid.Column="1"
+                            x:Name="HomeButton"
+                            Style="{StaticResource ShortcutButtonStyle}"
+                            Click="HomeButton_Click"
+                            Content="Home" />
+
+                    <Button Grid.Column="2"
                             x:Name="QuitButton"
-                            Style="{StaticResource DangerButtonStyle}"
+                            Style="{StaticResource ShortcutButtonStyle}"
                             Click="QuitButton_Click"
-                            Content="Force Quit" />
+                            Content="Close App" />
                 </Grid>
             </Grid>
         </Border>
