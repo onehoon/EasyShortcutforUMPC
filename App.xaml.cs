@@ -47,12 +47,7 @@ namespace Easy_Shortcut_for_UMPC
             if (args == null)
             {
                 DiagnosticsLog.Write("OnActivated args is null");
-                var frame = EnsureRootFrame();
-                if (frame.Content == null)
-                {
-                    frame.Navigate(typeof(StandalonePage), null);
-                }
-                Window.Current.Activate();
+                ShowEmergencyFallback();
                 return;
             }
 
