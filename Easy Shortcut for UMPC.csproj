@@ -23,7 +23,7 @@
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x64</AppxBundlePlatforms>
     <LangVersion>latest</LangVersion>
-    <HelperOutputDir>ShortcutHelper\bin\Release\net8.0-windows\win-x64\publish\</HelperOutputDir>
+    <HelperOutputDir>ShortcutHelperNative\x64\Release\</HelperOutputDir>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <PackageCertificateThumbprint>EA2DB6D23B39FA067F3FDF667EF778AB5296728A</PackageCertificateThumbprint>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
@@ -86,8 +86,8 @@
     <Content Include="Assets\Wide310x150Logo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="GameBar\**\*" />
-    <Content Include="$(HelperOutputDir)**\*.*">
-      <Link>ShortcutHelper\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    <Content Include="$(HelperOutputDir)ShortcutHelper.exe">
+      <Link>ShortcutHelper\ShortcutHelper.exe</Link>
     </Content>
     <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
@@ -115,16 +115,16 @@
     </SDKReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ShortcutHelper\" />
+    <Folder Include="ShortcutHelperNative\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
   <Target Name="BuildShortcutHelper" BeforeTargets="PrepareForBuild">
     <MSBuild
-      Projects="ShortcutHelper\ShortcutHelper.csproj"
-      Targets="Publish"
-      Properties="Configuration=Release;RuntimeIdentifier=win-x64;SelfContained=true;PublishSingleFile=false" />
+      Projects="ShortcutHelperNative\ShortcutHelperNative.vcxproj"
+      Targets="Build"
+      Properties="Configuration=Release;Platform=x64" />
   </Target>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
 </Project>
