@@ -49,7 +49,34 @@
     </Page.Resources>
 
     <Grid Background="Transparent" Padding="12">
-        <Border Background="#CC1A1C21"
+        <Border x:Name="StandaloneInfoPanel"
+                Visibility="Collapsed"
+                Background="#CC1A1C21"
+                BorderBrush="Transparent"
+                BorderThickness="0"
+                CornerRadius="12"
+                VerticalAlignment="Top">
+            <StackPanel Padding="16" Spacing="10">
+                <TextBlock Text="Easy Shortcut for UMPC"
+                           FontSize="28"
+                           FontWeight="SemiBold"
+                           Foreground="#FFF7F8FB"
+                           TextWrapping="WrapWholeWords" />
+                <TextBlock Text="This app is intended to be used from Xbox Game Bar."
+                           FontSize="15"
+                           Foreground="#FFF7F8FB"
+                           Opacity="0.92"
+                           TextWrapping="WrapWholeWords" />
+                <TextBlock Text="Open Xbox Game Bar with Win+G, then launch “Easy Shortcut for UMPC” from the Widget menu."
+                           FontSize="15"
+                           Foreground="#FFF7F8FB"
+                           Opacity="0.88"
+                           TextWrapping="WrapWholeWords" />
+            </StackPanel>
+        </Border>
+
+        <Border x:Name="WidgetPanel"
+                Background="#CC1A1C21"
                 BorderBrush="Transparent"
                 BorderThickness="0"
                 CornerRadius="12"

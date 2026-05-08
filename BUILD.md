@@ -7,6 +7,10 @@ Active shipping path
 - The effective manifest for build/package/output is:
   - `Package.appxmanifest`
 - `EasyShortcut.Package` (WAP/Desktop Bridge) is not used in the active shipping flow.
+- Game Bar folder policy:
+  - Widget UI is rendered from XAML (`MainPage.xaml`), not HTML.
+  - Legacy `GameBar/Widget.html` was removed to avoid duplicate maintenance drift.
+  - Keep only actual packaged runtime assets under `GameBar/` (for example `GameBar/assets` and `GameBar/Icons`).
 
 Helper packaging behavior
 

@@ -1,15 +1,17 @@
 using System;
 using Windows.ApplicationModel;
-using Windows.UI;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Navigation;
 
 namespace Easy_Shortcut_for_UMPC
 {
     public sealed partial class MainPage : Page
     {
+        private bool _isQuitDialogOpen;
+
         private const string ActionInsert = "insert";
         private const string ActionAltInsert = "altinsert";
         private const string ActionHome = "home";
@@ -17,7 +19,7 @@ namespace Easy_Shortcut_for_UMPC
         private const string ActionLosslessScaling = "losslessscaling";
         private const string ActionQuit = "quit";
 
-        // Must stay in sync with desktop:ParameterGroup GroupId values in both manifests.
+        // Must stay in sync with desktop:ParameterGroup GroupId values in Package.appxmanifest.
         private const string GroupInsert = "InsertCommand";
         private const string GroupAltInsert = "AltInsertCommand";
         private const string GroupHome = "HomeCommand";
@@ -29,6 +31,14 @@ namespace Easy_Shortcut_for_UMPC
         {
             InitializeComponent();
             DiagnosticsLog.Write("MainPage ctor");
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            var isWidgetMode = e.Parameter != null;
+            WidgetPanel.Visibility = isWidgetMode ? Visibility.Visible : Visibility.Collapsed;
+            StandaloneInfoPanel.Visibility = isWidgetMode ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private void Button_PointerEntered(object sender, PointerRoutedEventArgs e)
@@ -51,7 +61,7 @@ namespace Easy_Shortcut_for_UMPC
             ApplyStateBrush(sender as Button, "ButtonBackground");
         }
 
-        private static void ApplyStateBrush(Button button, string key)
+        private void ApplyStateBrush(Button button, string key)
         {
             if (button == null)
             {
@@ -73,19 +83,7 @@ namespace Easy_Shortcut_for_UMPC
                 _ => $"{prefix}Background"
             };
 
-            if (button.Resources.ContainsKey(resourceKey) && button.Resources[resourceKey] is Brush localBrush)
-            {
-                button.Background = localBrush;
-                return;
-            }
-
-            if (button.Parent is FrameworkElement fe && fe.Resources.ContainsKey(resourceKey) && fe.Resources[resourceKey] is Brush parentBrush)
-            {
-                button.Background = parentBrush;
-                return;
-            }
-
-            if (Window.Current?.Content is FrameworkElement root && root.Resources.ContainsKey(resourceKey) && root.Resources[resourceKey] is Brush rootBrush)
+            if (Resources.ContainsKey(resourceKey) && Resources[resourceKey] is Brush rootBrush)
             {
                 button.Background = rootBrush;
             }
@@ -151,19 +149,32 @@ namespace Easy_Shortcut_for_UMPC
 
         private async void QuitButton_Click(object sender, RoutedEventArgs e)
         {
-            ContentDialog confirm = new()
+            if (_isQuitDialogOpen)
             {
-                Title = "Close App",
-                Content = "Send Alt+F4 shortcut now?",
-                PrimaryButtonText = "Yes",
-                CloseButtonText = "No",
-                DefaultButton = ContentDialogButton.Close
-            };
+                return;
+            }
 
-            ContentDialogResult result = await confirm.ShowAsync();
-            if (result == ContentDialogResult.Primary)
+            _isQuitDialogOpen = true;
+            try
             {
-                await LaunchHelperActionAsync(ActionQuit);
+                ContentDialog confirm = new()
+                {
+                    Title = "Close App",
+                    Content = "Send Alt+F4 shortcut now?",
+                    PrimaryButtonText = "Yes",
+                    CloseButtonText = "No",
+                    DefaultButton = ContentDialogButton.Close
+                };
+
+                ContentDialogResult result = await confirm.ShowAsync();
+                if (result == ContentDialogResult.Primary)
+                {
+                    await LaunchHelperActionAsync(ActionQuit);
+                }
+            }
+            finally
+            {
+                _isQuitDialogOpen = false;
             }
         }
     }

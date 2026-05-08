@@ -86,17 +86,8 @@
     <Content Include="Assets\Wide310x150Logo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="GameBar\**\*" />
-    <Content Include="$(HelperOutputDir)ShortcutHelper.exe">
-      <Link>ShortcutHelper\ShortcutHelper.exe</Link>
-    </Content>
-    <Content Include="$(HelperOutputDir)ShortcutHelper.dll">
-      <Link>ShortcutHelper\ShortcutHelper.dll</Link>
-    </Content>
-    <Content Include="$(HelperOutputDir)ShortcutHelper.deps.json">
-      <Link>ShortcutHelper\ShortcutHelper.deps.json</Link>
-    </Content>
-    <Content Include="$(HelperOutputDir)ShortcutHelper.runtimeconfig.json">
-      <Link>ShortcutHelper\ShortcutHelper.runtimeconfig.json</Link>
+    <Content Include="$(HelperOutputDir)**\*.*">
+      <Link>ShortcutHelper\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>
     <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
