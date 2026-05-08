@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <shellapi.h>
 #include <string>
 #include <fstream>
 #include <filesystem>
@@ -126,8 +127,18 @@ namespace {
     }
 }
 
-int wmain(int argc, wchar_t** argv) {
+int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int) {
+    int argc = 0;
+    wchar_t** argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+    if (argv == nullptr || argc <= 1) {
+        if (argv != nullptr) {
+            LocalFree(argv);
+        }
+        return 0;
+    }
+
     const auto action = ResolveAction(argc, argv);
+    LocalFree(argv);
     if (action.empty()) return 0;
 
     Sleep(kInitialSettleMs);
