@@ -3,8 +3,10 @@ using Microsoft.Gaming.XboxGameBar;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Core;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace Easy_Shortcut_for_UMPC
@@ -42,6 +44,17 @@ namespace Easy_Shortcut_for_UMPC
         protected override void OnActivated(IActivatedEventArgs args)
         {
             DiagnosticsLog.Write($"OnActivated kind={args?.Kind}");
+            if (args == null)
+            {
+                DiagnosticsLog.Write("OnActivated args is null");
+                var frame = EnsureRootFrame();
+                if (frame.Content == null)
+                {
+                    frame.Navigate(typeof(StandalonePage), null);
+                }
+                Window.Current.Activate();
+                return;
+            }
 
             XboxGameBarWidgetActivatedEventArgs widgetArgs = null;
 
@@ -110,22 +123,7 @@ namespace Easy_Shortcut_for_UMPC
         {
             DiagnosticsLog.Write($"NavigationFailed page={e.SourcePageType?.FullName} msg={e.Exception?.Message}");
             e.Handled = true;
-            try
-            {
-                if (Window.Current.Content is not Frame frame)
-                {
-                    frame = new Frame();
-                    frame.NavigationFailed += OnNavigationFailed;
-                    Window.Current.Content = frame;
-                }
-
-                frame.Navigate(typeof(StandalonePage), null);
-                Window.Current.Activate();
-            }
-            catch (Exception ex)
-            {
-                DiagnosticsLog.Write($"NavigationFailed fallback fail msg={ex.Message}");
-            }
+            ShowEmergencyFallback();
         }
 
         private void OnSuspending(object sender, SuspendingEventArgs e)
@@ -139,21 +137,34 @@ namespace Easy_Shortcut_for_UMPC
         {
             DiagnosticsLog.Write($"UnhandledException msg={e.Message}");
             e.Handled = true;
+            ShowEmergencyFallback();
+        }
+
+        private void ShowEmergencyFallback()
+        {
             try
             {
-                if (Window.Current.Content is not Frame frame)
+                var root = new Grid
                 {
-                    frame = new Frame();
-                    frame.NavigationFailed += OnNavigationFailed;
-                    Window.Current.Content = frame;
-                }
+                    Background = new SolidColorBrush(Color.FromArgb(255, 26, 28, 33)),
+                    Padding = new Thickness(24)
+                };
 
-                frame.Navigate(typeof(StandalonePage), null);
+                var message = new TextBlock
+                {
+                    Text = "Easy Shortcut for UMPC is intended to be used from Xbox Game Bar.\n\nOpen Xbox Game Bar with Win+G, then launch Easy Shortcut for UMPC from the Widget menu.",
+                    Foreground = new SolidColorBrush(Colors.White),
+                    FontSize = 16,
+                    TextWrapping = TextWrapping.Wrap
+                };
+
+                root.Children.Add(message);
+                Window.Current.Content = root;
                 Window.Current.Activate();
             }
             catch (Exception ex)
             {
-                DiagnosticsLog.Write($"UnhandledException fallback fail msg={ex.Message}");
+                DiagnosticsLog.Write($"EmergencyFallback fail msg={ex.Message}");
             }
         }
     }
