@@ -31,6 +31,12 @@ dist/
 **/ShortcutHelper/*.dll
 **/ShortcutHelper/*.deps.json
 **/ShortcutHelper/*.runtimeconfig.json
+ShortcutHelperNative/x64/
+ShortcutHelperNative/**/*.exe
+ShortcutHelperNative/**/*.pdb
+ShortcutHelperNative/**/*.obj
+ShortcutHelperNative/**/*.ilk
+ShortcutHelperNative/**/*.idb
 
 # Logs / temp
 *.log
