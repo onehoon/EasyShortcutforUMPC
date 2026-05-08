@@ -17,7 +17,7 @@ Helper packaging behavior
 - Legacy C# helper project is archived at `_deprecated/ShortcutHelper` and is non-shipping.
 - Active helper implementation is native C++ at `ShortcutHelperNative`.
 - `ShortcutHelper` binaries are not committed.
-- The UWP project publishes `ShortcutHelper/ShortcutHelper.csproj` automatically before packaging.
+- The UWP project builds `ShortcutHelperNative/ShortcutHelperNative.vcxproj` automatically before packaging.
 - Packaged helper files are taken from:
   - `ShortcutHelperNative/x64/Release/`
 

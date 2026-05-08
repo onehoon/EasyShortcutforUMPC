@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <shellapi.h>
+#include <shlobj.h>
 #include <string>
 #include <fstream>
 #include <filesystem>
@@ -11,13 +12,21 @@ namespace {
     constexpr DWORD kPostFocusSettleMs = 420;
 
     std::wstring GetLocalDataPath(const wchar_t* fileName) {
-        wchar_t* localAppData = nullptr;
-        size_t len = 0;
-        _wdupenv_s(&localAppData, &len, L"LOCALAPPDATA");
-        std::wstring base = localAppData ? localAppData : L"";
-        if (localAppData) {
-            free(localAppData);
+        std::wstring base;
+        PWSTR knownFolderPath = nullptr;
+        if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &knownFolderPath)) && knownFolderPath != nullptr) {
+            base = knownFolderPath;
+            CoTaskMemFree(knownFolderPath);
+        } else {
+            wchar_t* localAppData = nullptr;
+            size_t len = 0;
+            _wdupenv_s(&localAppData, &len, L"LOCALAPPDATA");
+            base = localAppData ? localAppData : L"";
+            if (localAppData) {
+                free(localAppData);
+            }
         }
+
         std::filesystem::path p = std::filesystem::path(base) / L"EasyShortcutForUMPC";
         std::filesystem::create_directories(p);
         return (p / fileName).wstring();
