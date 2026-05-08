@@ -13,33 +13,8 @@ internal static class Program
     private const int InitialInputSettleDelayMs = 120;
     // Additional wait after focus returns, to avoid key delivery racing with overlay teardown.
     private const int PostFocusSettleDelayMs = 420;
-    private const uint INPUT_KEYBOARD = 1;
     private const uint KEYEVENTF_KEYUP = 0x0002;
     private const uint KEYEVENTF_EXTENDEDKEY = 0x0001;
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct INPUT
-    {
-        public uint type;
-        public InputUnion U;
-    }
-
-    [StructLayout(LayoutKind.Explicit)]
-    private struct InputUnion
-    {
-        [FieldOffset(0)]
-        public KEYBDINPUT ki;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct KEYBDINPUT
-    {
-        public ushort wVk;
-        public ushort wScan;
-        public uint dwFlags;
-        public uint time;
-        public IntPtr dwExtraInfo;
-    }
 
     [DllImport("user32.dll", SetLastError = true)]
     private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
@@ -131,7 +106,6 @@ internal static class Program
                 case "altinsert":
                 case "home":
                 case "end":
-                case "capture":
                 case "losslessscaling":
                 case "quit":
                     return arg;

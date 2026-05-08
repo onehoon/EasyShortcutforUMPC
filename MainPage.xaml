@@ -68,10 +68,10 @@
 
                     <Button Grid.Column="0"
                             x:Name="CaptureButton"
+                            Tag="capture"
                             Style="{StaticResource CaptureButtonStyle}"
                             Click="CaptureButton_Click"
                             PointerEntered="Button_PointerEntered"
-                            PointerMoved="Button_PointerMoved"
                             PointerExited="Button_PointerExited"
                             PointerPressed="Button_PointerPressed"
                             PointerReleased="Button_PointerReleased">
@@ -98,10 +98,10 @@
 
                     <Button Grid.Column="1"
                             x:Name="QuitButton"
+                            Tag="default"
                             Style="{StaticResource ShortcutButtonStyle}"
                             Click="QuitButton_Click"
                             PointerEntered="Button_PointerEntered"
-                            PointerMoved="Button_PointerMoved"
                             PointerExited="Button_PointerExited"
                             PointerPressed="Button_PointerPressed"
                             PointerReleased="Button_PointerReleased"
@@ -123,10 +123,10 @@
 
                         <Button Grid.Column="0"
                                 x:Name="InsertButton"
+                                Tag="overlay"
                                 Style="{StaticResource OverlayButtonStyle}"
                                 Click="InsertButton_Click"
                                 PointerEntered="Button_PointerEntered"
-                                PointerMoved="Button_PointerMoved"
                                 PointerExited="Button_PointerExited"
                                 PointerPressed="Button_PointerPressed"
                                 PointerReleased="Button_PointerReleased">
@@ -147,10 +147,10 @@
 
                         <Button Grid.Column="1"
                                 x:Name="AltInsertButton"
+                                Tag="overlay"
                                 Style="{StaticResource OverlayButtonStyle}"
                                 Click="AltInsertButton_Click"
                                 PointerEntered="Button_PointerEntered"
-                                PointerMoved="Button_PointerMoved"
                                 PointerExited="Button_PointerExited"
                                 PointerPressed="Button_PointerPressed"
                                 PointerReleased="Button_PointerReleased">
@@ -178,10 +178,10 @@
 
                     <Button Grid.Column="0"
                             x:Name="HomeButton"
+                            Tag="default"
                             Style="{StaticResource ShortcutButtonStyle}"
                             Click="HomeButton_Click"
                             PointerEntered="Button_PointerEntered"
-                            PointerMoved="Button_PointerMoved"
                             PointerExited="Button_PointerExited"
                             PointerPressed="Button_PointerPressed"
                             PointerReleased="Button_PointerReleased"
@@ -189,10 +189,10 @@
 
                     <Button Grid.Column="1"
                             x:Name="EndButton"
+                            Tag="default"
                             Style="{StaticResource ShortcutButtonStyle}"
                             Click="EndButton_Click"
                             PointerEntered="Button_PointerEntered"
-                            PointerMoved="Button_PointerMoved"
                             PointerExited="Button_PointerExited"
                             PointerPressed="Button_PointerPressed"
                             PointerReleased="Button_PointerReleased"

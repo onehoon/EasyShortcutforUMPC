@@ -36,11 +36,6 @@ namespace Easy_Shortcut_for_UMPC
             ApplyStateBrush(sender as Button, "ButtonBackgroundPointerOver");
         }
 
-        private void Button_PointerMoved(object sender, PointerRoutedEventArgs e)
-        {
-            ApplyStateBrush(sender as Button, "ButtonBackgroundPointerOver");
-        }
-
         private void Button_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             ApplyStateBrush(sender as Button, "ButtonBackgroundPressed");
@@ -48,7 +43,7 @@ namespace Easy_Shortcut_for_UMPC
 
         private void Button_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            ApplyStateBrush(sender as Button, "ButtonBackgroundPointerOver");
+            ApplyStateBrush(sender as Button, "ButtonBackground");
         }
 
         private void Button_PointerExited(object sender, PointerRoutedEventArgs e)
@@ -63,41 +58,37 @@ namespace Easy_Shortcut_for_UMPC
                 return;
             }
 
-            (Color normal, Color hover, Color pressed) palette = button.Name switch
+            var paletteTag = (button.Tag as string)?.ToLowerInvariant() ?? "default";
+            var prefix = paletteTag switch
             {
-                "CaptureButton" => (ColorFrom("#8C2B5E98"), ColorFrom("#8C3A6FAB"), ColorFrom("#8C457ABC")),
-                "InsertButton" => (ColorFrom("#2C5535"), ColorFrom("#3A6B45"), ColorFrom("#447A50")),
-                "AltInsertButton" => (ColorFrom("#2C5535"), ColorFrom("#3A6B45"), ColorFrom("#447A50")),
-                _ => (ColorFrom("#8C44484F"), ColorFrom("#8C545963"), ColorFrom("#8C5B616B"))
+                "capture" => "CaptureButton",
+                "overlay" => "OverlayButton",
+                _ => "DefaultButton"
             };
 
-            var color = key switch
+            var resourceKey = key switch
             {
-                "ButtonBackgroundPressed" => palette.pressed,
-                "ButtonBackgroundPointerOver" => palette.hover,
-                _ => palette.normal
+                "ButtonBackgroundPressed" => $"{prefix}BackgroundPressed",
+                "ButtonBackgroundPointerOver" => $"{prefix}BackgroundPointerOver",
+                _ => $"{prefix}Background"
             };
 
-            button.Background = new SolidColorBrush(color);
-        }
-
-        private static Color ColorFrom(string hex)
-        {
-            hex = hex.TrimStart('#');
-            if (hex.Length == 8)
+            if (button.Resources.ContainsKey(resourceKey) && button.Resources[resourceKey] is Brush localBrush)
             {
-                return Color.FromArgb(
-                    Convert.ToByte(hex.Substring(0, 2), 16),
-                    Convert.ToByte(hex.Substring(2, 2), 16),
-                    Convert.ToByte(hex.Substring(4, 2), 16),
-                    Convert.ToByte(hex.Substring(6, 2), 16));
+                button.Background = localBrush;
+                return;
             }
 
-            return Color.FromArgb(
-                0xFF,
-                Convert.ToByte(hex.Substring(0, 2), 16),
-                Convert.ToByte(hex.Substring(2, 2), 16),
-                Convert.ToByte(hex.Substring(4, 2), 16));
+            if (button.Parent is FrameworkElement fe && fe.Resources.ContainsKey(resourceKey) && fe.Resources[resourceKey] is Brush parentBrush)
+            {
+                button.Background = parentBrush;
+                return;
+            }
+
+            if (Window.Current?.Content is FrameworkElement root && root.Resources.ContainsKey(resourceKey) && root.Resources[resourceKey] is Brush rootBrush)
+            {
+                button.Background = rootBrush;
+            }
         }
 
         private async System.Threading.Tasks.Task LaunchHelperActionAsync(string action)

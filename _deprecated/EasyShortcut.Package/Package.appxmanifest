@@ -45,7 +45,7 @@
                     <MaxWidth>464</MaxWidth>
                   </Size>
                   <ResizeSupported>
-                    <Horizontal>true</Horizontal>
+                    <Horizontal>false</Horizontal>
                     <Vertical>true</Vertical>
                   </ResizeSupported>
                 </Window>

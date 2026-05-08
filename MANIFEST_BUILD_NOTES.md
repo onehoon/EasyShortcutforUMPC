@@ -9,15 +9,12 @@ Current effective build path
 
 Packaging project status
 
-- `EasyShortcut.Package/Package.appxmanifest` exists for WAP/Desktop Bridge packaging.
-- It is kept synchronized for:
-  - Identity
-  - Display names
-  - Game Bar widget settings (including Window size)
-- It is not the active output path unless the WAP project is explicitly built.
+- `_deprecated/EasyShortcut.Package/Package.appxmanifest` exists for archived WAP/Desktop Bridge packaging.
+- It is not part of the active shipping path and should be treated as non-shipping/reference only.
+- To avoid split-brain behavior, always build and submit from the root UWP project flow.
 
 Store submission guidance
 
 - If submitting with the current UWP-only build flow, verify final package metadata from the installed package manifest:
   - `%ProgramFiles%\\WindowsApps\\<PackageName>\\AppxManifest.xml`
-- If switching to WAP flow later, ensure WAP becomes the only shipping path and keep one source-of-truth manifest strategy.
+- If switching to WAP flow later, first adopt WAP as the single shipping path and then re-align manifests before submission.

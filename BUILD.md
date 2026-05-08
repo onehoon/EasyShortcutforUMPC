@@ -1,11 +1,19 @@
 Build notes
 
+Active shipping path
+
+- This repository ships from the root UWP project only:
+  - `Easy Shortcut for UMPC.csproj`
+- The effective manifest for build/package/output is:
+  - `Package.appxmanifest`
+- `EasyShortcut.Package` (WAP/Desktop Bridge) is not used in the active shipping flow.
+
 Helper packaging behavior
 
 - `ShortcutHelper` binaries are not committed.
-- The UWP project now builds `ShortcutHelper/ShortcutHelper.csproj` automatically before packaging.
+- The UWP project publishes `ShortcutHelper/ShortcutHelper.csproj` automatically before packaging.
 - Packaged helper files are taken from:
-  - `ShortcutHelper/bin/x64/Release/net8.0-windows/`
+  - `ShortcutHelper/bin/Release/net8.0-windows/win-x64/publish/`
 
 Release x64 build
 

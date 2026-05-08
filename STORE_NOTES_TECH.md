@@ -88,3 +88,10 @@ Decision record
 - For Store submission readiness, keep the current runtime behavior unchanged.
 - Defer end-to-end delivery acknowledgement to a later milestone.
 
+Store Notes to Certification (direct launch clarification)
+
+- This app is intended to be used from Xbox Game Bar (`Win+G`).
+- The primary experience is the Game Bar widget UI.
+- When launched directly from Start, the app may open Xbox Game Bar context as part of its shortcut handoff flow.
+- All shortcut actions are user-initiated from visible buttons, and the helper runs on demand and exits immediately.
+
