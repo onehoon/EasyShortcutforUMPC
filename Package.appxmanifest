@@ -12,7 +12,7 @@
   <Identity
     Name="onehoon.EasyShortcutforUMPC"
     Publisher="CN=1F7B64F8-727D-460F-BC6B-347DD604F69F"
-    Version="1.0.4.0" />
+    Version="1.0.5.0" />
 
   <mp:PhoneIdentity PhoneProductId="4fac8839-76bf-47c8-be7c-57c4109e639e" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
@@ -60,12 +60,12 @@
                 <FavoriteAfterInstall>true</FavoriteAfterInstall>
                 <Window>
                   <Size>
-                    <Height>300</Height>
-                    <Width>400</Width>
-                    <MinHeight>150</MinHeight>
-                    <MinWidth>200</MinWidth>
-                    <MaxHeight>350</MaxHeight>
-                    <MaxWidth>450</MaxWidth>
+                    <Height>360</Height>
+                    <Width>464</Width>
+                    <MinHeight>330</MinHeight>
+                    <MinWidth>464</MinWidth>
+                    <MaxHeight>420</MaxHeight>
+                    <MaxWidth>464</MaxWidth>
                   </Size>
                   <ResizeSupported>
                     <Horizontal>true</Horizontal>
@@ -79,6 +79,7 @@
         <desktop:Extension Category="windows.fullTrustProcess" Executable="ShortcutHelper\ShortcutHelper.exe">
           <desktop:FullTrustProcess>
             <desktop:ParameterGroup GroupId="InsertCommand" Parameters="insert" />
+            <desktop:ParameterGroup GroupId="AltInsertCommand" Parameters="altinsert" />
             <desktop:ParameterGroup GroupId="HomeCommand" Parameters="home" />
             <desktop:ParameterGroup GroupId="EndCommand" Parameters="end" />
             <desktop:ParameterGroup GroupId="LosslessScalingCommand" Parameters="losslessscaling" />

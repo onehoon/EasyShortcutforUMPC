@@ -6,7 +6,7 @@
          xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
          xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
          IgnorableNamespaces="uap uap3 mp desktop rescap">
-  <Identity Name="EasyShortcut.for.UMPC.Legacy" Publisher="CN=onehoon" Version="1.0.4.0"/>
+  <Identity Name="EasyShortcut.for.UMPC.Legacy" Publisher="CN=onehoon" Version="1.0.5.0"/>
   <mp:PhoneIdentity PhoneProductId="b93c2ec8-1d7f-4b9f-b843-0dbb67cf8f1a" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
   <Properties>
     <DisplayName>Easy Shortcut for UMPC</DisplayName>
@@ -37,12 +37,12 @@
                 <FavoriteAfterInstall>true</FavoriteAfterInstall>
                 <Window>
                   <Size>
-                    <Height>300</Height>
-                    <Width>400</Width>
-                    <MinHeight>150</MinHeight>
-                    <MinWidth>200</MinWidth>
-                    <MaxHeight>350</MaxHeight>
-                    <MaxWidth>450</MaxWidth>
+                    <Height>360</Height>
+                    <Width>464</Width>
+                    <MinHeight>330</MinHeight>
+                    <MinWidth>464</MinWidth>
+                    <MaxHeight>420</MaxHeight>
+                    <MaxWidth>464</MaxWidth>
                   </Size>
                   <ResizeSupported>
                     <Horizontal>true</Horizontal>
@@ -56,6 +56,7 @@
         <desktop:Extension Category="windows.fullTrustProcess" Executable="ShortcutHelper\ShortcutHelper.exe">
           <desktop:FullTrustProcess>
             <desktop:ParameterGroup GroupId="InsertCommand" Parameters="insert" />
+            <desktop:ParameterGroup GroupId="AltInsertCommand" Parameters="altinsert" />
             <desktop:ParameterGroup GroupId="HomeCommand" Parameters="home" />
             <desktop:ParameterGroup GroupId="EndCommand" Parameters="end" />
             <desktop:ParameterGroup GroupId="LosslessScalingCommand" Parameters="losslessscaling" />

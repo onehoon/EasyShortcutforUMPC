@@ -102,7 +102,8 @@ internal static class Program
             CloseGameBarAndWaitForFocusReturn();
             var ok = action switch
             {
-                "insert" => PressCombo(new (ushort vk, bool ext)[] { (0x12, false), (0x2D, true) }),
+                "insert" => PressKey(0x2D, isExtended: true),
+                "altinsert" => PressCombo(new (ushort vk, bool ext)[] { (0x12, false), (0x2D, true) }),
                 "home" => PressKey(0x24, isExtended: true),
                 "end" => PressKey(0x23, isExtended: true),
                 "losslessscaling" => PressCombo(new (ushort vk, bool ext)[] { (0x11, false), (0x12, false), (0x53, false) }),
@@ -127,6 +128,7 @@ internal static class Program
             switch (arg)
             {
                 case "insert":
+                case "altinsert":
                 case "home":
                 case "end":
                 case "capture":
