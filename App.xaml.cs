@@ -30,8 +30,8 @@ namespace Easy_Shortcut_for_UMPC
             {
                 if (rootFrame.Content == null)
                 {
-                    DiagnosticsLog.Write("OnLaunched navigate MainPage");
-                    rootFrame.Navigate(typeof(MainPage), null);
+                    DiagnosticsLog.Write("OnLaunched navigate StandalonePage");
+                    rootFrame.Navigate(typeof(StandalonePage), null);
                 }
 
                 DiagnosticsLog.Write("OnLaunched activate window");
@@ -67,7 +67,7 @@ namespace Easy_Shortcut_for_UMPC
                     Window.Current.CoreWindow,
                     rootFrame);
 
-                rootFrame.Navigate(typeof(MainPage), _gameBarWidget);
+                rootFrame.Navigate(typeof(WidgetPage), _gameBarWidget);
                 Window.Current.Closed += GameBarWindow_Closed;
                 Window.Current.Activate();
                 return;
@@ -76,8 +76,8 @@ namespace Easy_Shortcut_for_UMPC
             var fallbackFrame = EnsureRootFrame();
             if (fallbackFrame.Content == null)
             {
-                DiagnosticsLog.Write("OnActivated fallback navigate MainPage");
-                fallbackFrame.Navigate(typeof(MainPage), null);
+                DiagnosticsLog.Write("OnActivated fallback navigate StandalonePage");
+                fallbackFrame.Navigate(typeof(StandalonePage), null);
             }
 
             DiagnosticsLog.Write("OnActivated fallback activate window");
@@ -108,8 +108,24 @@ namespace Easy_Shortcut_for_UMPC
 
         private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
-            DiagnosticsLog.Write($"NavigationFailed page={e.SourcePageType?.FullName}");
-            throw new Exception($"Failed to load page '{e.SourcePageType.FullName}'.");
+            DiagnosticsLog.Write($"NavigationFailed page={e.SourcePageType?.FullName} msg={e.Exception?.Message}");
+            e.Handled = true;
+            try
+            {
+                if (Window.Current.Content is not Frame frame)
+                {
+                    frame = new Frame();
+                    frame.NavigationFailed += OnNavigationFailed;
+                    Window.Current.Content = frame;
+                }
+
+                frame.Navigate(typeof(StandalonePage), null);
+                Window.Current.Activate();
+            }
+            catch (Exception ex)
+            {
+                DiagnosticsLog.Write($"NavigationFailed fallback fail msg={ex.Message}");
+            }
         }
 
         private void OnSuspending(object sender, SuspendingEventArgs e)
@@ -121,7 +137,24 @@ namespace Easy_Shortcut_for_UMPC
 
         private void OnUnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e)
         {
-            DiagnosticsLog.Write($"UnhandledException handled={e.Handled} msg={e.Message}");
+            DiagnosticsLog.Write($"UnhandledException msg={e.Message}");
+            e.Handled = true;
+            try
+            {
+                if (Window.Current.Content is not Frame frame)
+                {
+                    frame = new Frame();
+                    frame.NavigationFailed += OnNavigationFailed;
+                    Window.Current.Content = frame;
+                }
+
+                frame.Navigate(typeof(StandalonePage), null);
+                Window.Current.Activate();
+            }
+            catch (Exception ex)
+            {
+                DiagnosticsLog.Write($"UnhandledException fallback fail msg={ex.Message}");
+            }
         }
     }
 }

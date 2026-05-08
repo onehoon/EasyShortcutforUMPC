@@ -1,0 +1,182 @@
+﻿<Page
+    x:Class="Easy_Shortcut_for_UMPC.WidgetPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <SolidColorBrush x:Key="DefaultButtonBackground" Color="#8C44484F" />
+        <SolidColorBrush x:Key="DefaultButtonBackgroundPointerOver" Color="#8C545963" />
+        <SolidColorBrush x:Key="DefaultButtonBackgroundPressed" Color="#8C5B616B" />
+
+        <SolidColorBrush x:Key="CaptureButtonBackground" Color="#8C2B5E98" />
+        <SolidColorBrush x:Key="CaptureButtonBackgroundPointerOver" Color="#8C3A6FAB" />
+        <SolidColorBrush x:Key="CaptureButtonBackgroundPressed" Color="#8C457ABC" />
+
+        <SolidColorBrush x:Key="OverlayButtonBackground" Color="#2C5535" />
+        <SolidColorBrush x:Key="OverlayButtonBackgroundPointerOver" Color="#3A6B45" />
+        <SolidColorBrush x:Key="OverlayButtonBackgroundPressed" Color="#447A50" />
+
+        <SolidColorBrush x:Key="ButtonBorderBrushTransparent" Color="Transparent" />
+
+        <Style x:Key="ShortcutButtonStyle" TargetType="Button">
+            <Setter Property="MinHeight" Value="84" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="Background" Value="{StaticResource DefaultButtonBackground}" />
+            <Setter Property="Foreground" Value="#FFF7F8FB" />
+            <Setter Property="BorderBrush" Value="{StaticResource ButtonBorderBrushTransparent}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="CaptureButtonStyle" TargetType="Button" BasedOn="{StaticResource ShortcutButtonStyle}">
+            <Setter Property="Background" Value="{StaticResource CaptureButtonBackground}" />
+        </Style>
+
+        <Style x:Key="OverlayButtonStyle" TargetType="Button" BasedOn="{StaticResource ShortcutButtonStyle}">
+            <Setter Property="Background" Value="{StaticResource OverlayButtonBackground}" />
+        </Style>
+
+    </Page.Resources>
+
+    <Grid Background="Transparent" Padding="12">
+        <Border
+            x:Name="WidgetPanel"
+            Background="#CC1A1C21"
+            BorderBrush="Transparent"
+            BorderThickness="0"
+            CornerRadius="12"
+            VerticalAlignment="Top">
+            <Grid Padding="12" RowSpacing="12">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button
+                        Grid.Column="0"
+                        x:Name="CaptureButton"
+                        Tag="capture"
+                        Style="{StaticResource CaptureButtonStyle}"
+                        Click="CaptureButton_Click"
+                        PointerEntered="Button_PointerEntered"
+                        PointerExited="Button_PointerExited"
+                        PointerPressed="Button_PointerPressed"
+                        PointerReleased="Button_PointerReleased">
+                        <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Image Source="GameBar/assets/LSFG.png" Width="30" Height="30" Stretch="Uniform" />
+                            <StackPanel Spacing="2" VerticalAlignment="Center">
+                                <TextBlock Text="Lossless Scaling" HorizontalAlignment="Left" TextAlignment="Left" />
+                                <TextBlock Text="(Ctrl+Alt+S)" FontSize="13" Opacity="0.82" HorizontalAlignment="Left" TextAlignment="Left" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+
+                    <Button
+                        Grid.Column="1"
+                        x:Name="QuitButton"
+                        Tag="default"
+                        Style="{StaticResource ShortcutButtonStyle}"
+                        Click="QuitButton_Click"
+                        PointerEntered="Button_PointerEntered"
+                        PointerExited="Button_PointerExited"
+                        PointerPressed="Button_PointerPressed"
+                        PointerReleased="Button_PointerReleased"
+                        Content="Close App" />
+                </Grid>
+
+                <Grid Grid.Row="1" RowSpacing="12">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Button
+                            Grid.Column="0"
+                            x:Name="InsertButton"
+                            Tag="overlay"
+                            Style="{StaticResource OverlayButtonStyle}"
+                            Click="InsertButton_Click"
+                            PointerEntered="Button_PointerEntered"
+                            PointerExited="Button_PointerExited"
+                            PointerPressed="Button_PointerPressed"
+                            PointerReleased="Button_PointerReleased">
+                            <StackPanel Spacing="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Text="OptiScaler Overlay" HorizontalAlignment="Center" TextAlignment="Center" />
+                                <TextBlock Text="(Insert)" FontSize="13" Opacity="0.82" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="NoWrap" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button
+                            Grid.Column="1"
+                            x:Name="AltInsertButton"
+                            Tag="overlay"
+                            Style="{StaticResource OverlayButtonStyle}"
+                            Click="AltInsertButton_Click"
+                            PointerEntered="Button_PointerEntered"
+                            PointerExited="Button_PointerExited"
+                            PointerPressed="Button_PointerPressed"
+                            PointerReleased="Button_PointerReleased">
+                            <StackPanel Spacing="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Text="OptiScaler Overlay" HorizontalAlignment="Center" TextAlignment="Center" />
+                                <TextBlock Text="(Alt+Insert)" FontSize="13" Opacity="0.82" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="NoWrap" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <Grid Grid.Row="1" ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Button
+                            Grid.Column="0"
+                            x:Name="HomeButton"
+                            Tag="default"
+                            Style="{StaticResource ShortcutButtonStyle}"
+                            Click="HomeButton_Click"
+                            PointerEntered="Button_PointerEntered"
+                            PointerExited="Button_PointerExited"
+                            PointerPressed="Button_PointerPressed"
+                            PointerReleased="Button_PointerReleased"
+                            Content="Home" />
+
+                        <Button
+                            Grid.Column="1"
+                            x:Name="EndButton"
+                            Tag="default"
+                            Style="{StaticResource ShortcutButtonStyle}"
+                            Click="EndButton_Click"
+                            PointerEntered="Button_PointerEntered"
+                            PointerExited="Button_PointerExited"
+                            PointerPressed="Button_PointerPressed"
+                            PointerReleased="Button_PointerReleased"
+                            Content="End" />
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

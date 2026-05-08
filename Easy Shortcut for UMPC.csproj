@@ -63,8 +63,11 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="DiagnosticsLog.cs" />
-    <Compile Include="MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
+    <Compile Include="StandalonePage.xaml.cs">
+      <DependentUpon>StandalonePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WidgetPage.xaml.cs">
+      <DependentUpon>WidgetPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -96,7 +99,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainPage.xaml">
+    <Page Include="StandalonePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WidgetPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
