@@ -90,7 +90,7 @@
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="GameBar\**\*" />
     <Content Include="$(HelperOutputDir)ShortcutHelper.exe">
-      <Link>ShortcutHelper\ShortcutHelper.exe</Link>
+      <TargetPath>ShortcutHelper\ShortcutHelper.exe</TargetPath>
     </Content>
     <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
