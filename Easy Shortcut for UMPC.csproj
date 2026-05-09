@@ -134,5 +134,20 @@
       Targets="Build"
       Properties="Configuration=Release;Platform=x64" />
   </Target>
+  <Target Name="CopyBetaInstallScript" AfterTargets="Build">
+    <ItemGroup>
+      <PackageArtifacts Include="AppPackages\**\*.msixbundle;AppPackages\**\*.appxbundle;AppPackages\**\*.msix;AppPackages\**\*.appx;AppPackages\**\*.cer" Exclude="AppPackages\**\Dependencies\**\*" Condition="Exists('AppPackages')" />
+      <PackageOutputFolders Include="$(OutputPath)" Condition="Exists('$(OutputPath)')" />
+      <PackageOutputFolders Include="@(PackageArtifacts->'%(RootDir)%(Directory)')" />
+      <BetaInstallFiles Include="Tools\Install-Beta.ps1" Condition="Exists('Tools\Install-Beta.ps1')" />
+      <BetaInstallFiles Include="Tools\Install-Beta.cmd" Condition="Exists('Tools\Install-Beta.cmd')" />
+    </ItemGroup>
+
+    <Copy
+      SourceFiles="@(BetaInstallFiles)"
+      DestinationFolder="%(PackageOutputFolders.Identity)"
+      SkipUnchangedFiles="true"
+      Condition="'@(BetaInstallFiles)' != '' and '@(PackageOutputFolders)' != ''" />
+  </Target>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
 </Project>
