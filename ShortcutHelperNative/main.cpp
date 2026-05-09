@@ -99,7 +99,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int) {
     }
 
     Sleep(kInitialSettleMs);
-    if (ShouldSkipDuplicate(action)) {
+    if (action != L"detect-resolution-presets" && ShouldSkipDuplicate(action)) {
         return 0;
     }
 

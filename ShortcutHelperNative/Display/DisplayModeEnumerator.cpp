@@ -49,12 +49,15 @@ bool ContainsModeAtCurrentTiming(const std::wstring& gdiDeviceName, int width, i
         return false;
     }
 
+    const bool currentFrequencyIsDefault =
+        current.dmDisplayFrequency == 0 || current.dmDisplayFrequency == 1;
+
     const auto detailed = EnumerateDetailedModes(gdiDeviceName);
     for (const auto& mode : detailed) {
         if (mode.width == width &&
             mode.height == height &&
-            mode.frequency == static_cast<int>(current.dmDisplayFrequency) &&
-            mode.bitsPerPel == static_cast<int>(current.dmBitsPerPel)) {
+            mode.bitsPerPel == static_cast<int>(current.dmBitsPerPel) &&
+            (currentFrequencyIsDefault || mode.frequency == static_cast<int>(current.dmDisplayFrequency))) {
             return true;
         }
     }
