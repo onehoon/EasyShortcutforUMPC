@@ -1,6 +1,6 @@
 # Easy Shortcut for UMPC
 
-<img src="docs/Widget.jpg" alt="Easy Shortcut for UMPC Widget" width="1200" />
+<img src="docs/widget.jpg" alt="Easy Shortcut for UMPC Widget" width="1200" />
 
 
 ## Designed for UMPCs and handheld Windows PCs
