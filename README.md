@@ -1,6 +1,5 @@
 # Easy Shortcut for UMPC
-
-<img width="597" height="647" alt="Widget" src="https://github.com/user-attachments/assets/85417e67-5820-4d88-afe4-d2209f23e71e" />
+<img width="715" height="908" alt="Widget" src="https://github.com/user-attachments/assets/c086eef1-defd-4d64-b6d5-b1dee1da36d8" />
 
 ## Designed for UMPCs and handheld Windows PCs
 
