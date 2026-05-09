@@ -107,34 +107,42 @@ bool ShouldSkipDuplicate(const std::wstring& action) {
 }
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int) {
-    int argc = 0;
-    wchar_t** argv = CommandLineToArgvW(GetCommandLineW(), &argc);
-    if (argv == nullptr || argc <= 1) {
-        if (argv != nullptr) {
-            LocalFree(argv);
+    // Avoid Windows fault UI from surfacing to the packaged app experience.
+    SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
+
+    try {
+        int argc = 0;
+        wchar_t** argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+        if (argv == nullptr || argc <= 1) {
+            if (argv != nullptr) {
+                LocalFree(argv);
+            }
+            return 0;
         }
+
+        const auto action = ResolveAction(argc, argv);
+        LocalFree(argv);
+        if (action.empty()) {
+            return 0;
+        }
+
+        Sleep(kInitialSettleMs);
+        if (action != L"detect-resolution-presets" && ShouldSkipDuplicate(action)) {
+            return 0;
+        }
+
+        if (commands::IsShortcutCommand(action)) {
+            commands::ExecuteShortcutCommand(action);
+            return 0;
+        }
+
+        if (commands::IsDisplayResolutionCommand(action)) {
+            commands::ExecuteDisplayResolutionCommand(action);
+        }
+
+        return 0;
+    } catch (...) {
+        // Best-effort helper: swallow any unexpected native failure.
         return 0;
     }
-
-    const auto action = ResolveAction(argc, argv);
-    LocalFree(argv);
-    if (action.empty()) {
-        return 0;
-    }
-
-    Sleep(kInitialSettleMs);
-    if (action != L"detect-resolution-presets" && ShouldSkipDuplicate(action)) {
-        return 0;
-    }
-
-    if (commands::IsShortcutCommand(action)) {
-        commands::ExecuteShortcutCommand(action);
-        return 0;
-    }
-
-    if (commands::IsDisplayResolutionCommand(action)) {
-        commands::ExecuteDisplayResolutionCommand(action);
-    }
-
-    return 0;
 }

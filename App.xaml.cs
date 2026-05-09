@@ -23,7 +23,16 @@ namespace Easy_Shortcut_for_UMPC
         public App()
         {
             InitializeComponent();
-            DiagnosticsLog.Write("App ctor");
+            try
+            {
+                PackageVersion version = Package.Current.Id.Version;
+                DiagnosticsLog.Write($"App ctor version={version.Major}.{version.Minor}.{version.Build}.{version.Revision}");
+            }
+            catch (Exception ex)
+            {
+                DiagnosticsLog.WriteException("App ctor version read failed", ex);
+                DiagnosticsLog.Write("App ctor version=unknown");
+            }
             Suspending += OnSuspending;
             UnhandledException += OnUnhandledException;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;

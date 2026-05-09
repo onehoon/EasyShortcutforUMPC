@@ -32,15 +32,59 @@ namespace Easy_Shortcut_for_UMPC
 
         public WidgetSettingsPage()
         {
-            InitializeComponent();
-            InitializeCombos();
+            try
+            {
+                InitializeComponent();
+                InitializeCombos();
+            }
+            catch (Exception ex)
+            {
+                // Keep settings page usable even if combo initialization fails.
+                _draft = WidgetSettingsDefaults.Create();
+                try
+                {
+                    if (ValidationTextBlock != null)
+                    {
+                        SetValidation($"Settings UI initialization failed: {ex.Message}");
+                    }
+                }
+                catch
+                {
+                    // Never allow initialization-time UI errors to crash startup.
+                }
+            }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             _gameBarWidget = e.Parameter as XboxGameBarWidget;
-            LoadDraft();
+            try
+            {
+                LoadDraft();
+            }
+            catch (Exception ex)
+            {
+                _draft = WidgetSettingsDefaults.Create();
+
+                try
+                {
+                    InitializeCombos();
+                    SplitShortcut(_draft.BuiltInLosslessKeys, out string losslessModifier, out string losslessKey);
+                    LosslessModifierCombo.SelectedItem = ModifierOptions.Contains(losslessModifier) ? losslessModifier : "Ctrl + Alt";
+                    LosslessKeyCombo.SelectedItem = KeyOptions.Contains(losslessKey) ? losslessKey : "S";
+
+                    BindCustomSlot("custom1", Custom1ModifierCombo, Custom1KeyCombo);
+                    BindCustomSlot("custom2", Custom2ModifierCombo, Custom2KeyCombo);
+                    BindCustomSlot("custom3", Custom3ModifierCombo, Custom3KeyCombo);
+                    RenderSectionOrder();
+                    SetValidation($"Failed to load settings. Defaults were restored: {ex.Message}");
+                }
+                catch
+                {
+                    // Last-resort: swallow to avoid crashing settings page activation.
+                }
+            }
         }
 
         private void InitializeCombos()
