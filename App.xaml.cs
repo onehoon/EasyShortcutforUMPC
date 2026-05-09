@@ -196,7 +196,7 @@ namespace Easy_Shortcut_for_UMPC
             ShowEmergencyFallback();
         }
 
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private void CurrentDomain_UnhandledException(object sender, System.UnhandledExceptionEventArgs e)
         {
             DiagnosticsLog.Write($"AppDomain.UnhandledException terminating={e.IsTerminating}");
             DiagnosticsLog.WriteException("AppDomain.UnhandledException detail", e.ExceptionObject as Exception);
