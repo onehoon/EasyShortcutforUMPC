@@ -45,3 +45,4 @@ ShortcutHelperNative/**/*.idb
 *.bak
 Thumbs.db
 Desktop.ini
+_deprecated/
