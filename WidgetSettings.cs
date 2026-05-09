@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Windows.Data.Json;
 using Windows.Storage;
 
@@ -95,7 +96,7 @@ namespace Easy_Shortcut_for_UMPC
 
             if (IsValidKeys(input.BuiltInLosslessKeys))
             {
-                result.BuiltInLosslessKeys = new List<string>(input.BuiltInLosslessKeys);
+                result.BuiltInLosslessKeys = input.BuiltInLosslessKeys.Select(k => k.Trim()).ToList();
             }
 
             foreach (string slotId in new[] { "custom1", "custom2", "custom3" })
@@ -104,7 +105,7 @@ namespace Easy_Shortcut_for_UMPC
                 {
                     result.CustomShortcuts[slotId] = new CustomShortcutSlot
                     {
-                        Keys = IsValidKeys(slot.Keys) ? new List<string>(slot.Keys) : new List<string>()
+                        Keys = IsValidKeys(slot.Keys) ? slot.Keys.Select(k => k.Trim()).ToList() : new List<string>()
                     };
                 }
             }
