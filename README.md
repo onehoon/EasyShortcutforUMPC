@@ -26,6 +26,24 @@ The widget uses a compact, fixed-width layout with large touch-friendly buttons,
 | End | `End` |
 | Close App | `Alt + F4` |
 
+## Display Resolution
+
+Resolution-switching feature is only for UMPCs and handheld Windows PCs.
+
+Resolution buttons are shown only when the device is using its internal display.  
+For compatibility and stability reasons, the resolution buttons are hidden when an external monitor is connected.
+
+Available resolution options depend on the detected internal display resolution:
+
+| Internal display | Available options |
+|---|---|
+| 1200p | 1200p, 1080p, 1050p |
+| 1080p | 1080p, 900p, 720p |
+
+> [!NOTE]
+> The resolution-switching feature is intended for UMPC standalone mode.
+> On desktop PCs or devices using an external display, the resolution buttons will not be shown.
+
 > [!NOTE]
 > Some games or applications may block simulated keyboard input.
 > Some system-level apps or elevated/admin apps may not respond to shortcuts from the widget.
