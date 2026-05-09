@@ -197,7 +197,7 @@ namespace Easy_Shortcut_for_UMPC
                     "1080p", ActionSetResolution1080,
                     "900p", ActionSetResolution900,
                     "720p", ActionSetResolution720,
-                    "900p", ActionSetResolution1440x900);
+                    string.Empty, null);
                 ApplyPresetVisibility(state.Support1080p, state.Support900p, state.Support720p, false);
             }
         }
@@ -254,6 +254,11 @@ namespace Easy_Shortcut_for_UMPC
             {
                 visibleButtons.Add(ResolutionButton4);
             }
+
+            Grid.SetColumn(ResolutionButton1, 0);
+            Grid.SetColumn(ResolutionButton2, 0);
+            Grid.SetColumn(ResolutionButton3, 0);
+            Grid.SetColumn(ResolutionButton4, 0);
 
             ResolutionButtonsGrid.ColumnDefinitions.Clear();
             for (int i = 0; i < visibleButtons.Count; i++)
