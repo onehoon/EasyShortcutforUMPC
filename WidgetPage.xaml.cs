@@ -58,8 +58,16 @@ namespace Easy_Shortcut_for_UMPC
 
         private async void WidgetPage_Loaded(object sender, RoutedEventArgs e)
         {
-            ApplySettingsToUi();
-            await InitializeResolutionSectionAsync();
+            try
+            {
+                ApplySettingsToUi();
+                await InitializeResolutionSectionAsync();
+            }
+            catch (Exception ex)
+            {
+                DiagnosticsLog.WriteException("WidgetPage_Loaded failed", ex);
+                DisplayResolutionSection.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void Button_PointerEntered(object sender, PointerRoutedEventArgs e)
@@ -367,8 +375,16 @@ namespace Easy_Shortcut_for_UMPC
 
         private void ReloadSettings()
         {
-            _settings = WidgetSettingsStore.Load();
-            ApplySettingsToUi();
+            try
+            {
+                _settings = WidgetSettingsStore.Load();
+                ApplySettingsToUi();
+            }
+            catch (Exception ex)
+            {
+                DiagnosticsLog.WriteException("ReloadSettings failed", ex);
+                _settings = WidgetSettingsDefaults.Create();
+            }
         }
 
         private string GetCustomButtonText(string slotId)
