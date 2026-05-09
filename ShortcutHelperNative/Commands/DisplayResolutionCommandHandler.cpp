@@ -41,7 +41,14 @@ std::wstring GetLocalStatePath() {
     return path.wstring();
 }
 
-void WriteState(bool available, const std::wstring& group) {
+void WriteState(
+    bool available,
+    const std::wstring& group,
+    bool support1200,
+    bool support1080,
+    bool support1050,
+    bool support900,
+    bool support720) {
     const auto dir = GetLocalStatePath();
     if (dir.empty()) {
         return;
@@ -54,37 +61,52 @@ void WriteState(bool available, const std::wstring& group) {
 
     out << L"available=" << (available ? 1 : 0) << L"\n";
     out << L"group=" << group << L"\n";
+    out << L"support_1200p=" << (support1200 ? 1 : 0) << L"\n";
+    out << L"support_1080p=" << (support1080 ? 1 : 0) << L"\n";
+    out << L"support_1050p=" << (support1050 ? 1 : 0) << L"\n";
+    out << L"support_900p=" << (support900 ? 1 : 0) << L"\n";
+    out << L"support_720p=" << (support720 ? 1 : 0) << L"\n";
 }
 
 bool IsTargetSupported(const std::wstring& gdiDeviceName, int width, int height) {
-    const auto modes = display::EnumerateModes(gdiDeviceName);
-    return display::ContainsMode(modes, width, height);
+    return display::ContainsModeAtCurrentTiming(gdiDeviceName, width, height);
 }
 
 void RunDetection() {
     const auto info = display::DetectPrimaryDisplayInfo();
     if (!info.valid || info.hasActiveExternalPath || !info.primaryIsInternal || info.primaryGdiDeviceName.empty()) {
-        WriteState(false, L"none");
+        WriteState(false, L"none", false, false, false, false, false);
         return;
     }
 
     const auto modes = display::EnumerateModes(info.primaryGdiDeviceName);
     if (modes.empty()) {
-        WriteState(false, L"none");
+        WriteState(false, L"none", false, false, false, false, false);
         return;
     }
 
-    if (display::ContainsMode(modes, 1920, 1200)) {
-        WriteState(true, L"1200");
+    const bool has1200Base = display::ContainsMode(modes, 1920, 1200);
+    const bool has1080Base = display::ContainsMode(modes, 1920, 1080);
+
+    if (has1200Base) {
+        const bool support1200 = IsTargetSupported(info.primaryGdiDeviceName, 1920, 1200);
+        const bool support1080 = IsTargetSupported(info.primaryGdiDeviceName, 1920, 1080);
+        const bool support1050 = IsTargetSupported(info.primaryGdiDeviceName, 1680, 1050);
+        const bool any = support1200 || support1080 || support1050;
+        WriteState(any, L"1200", support1200, support1080, support1050, false, false);
         return;
     }
 
-    if (display::ContainsMode(modes, 1920, 1080)) {
-        WriteState(true, L"1080");
+    if (has1080Base) {
+        const bool support1080 = IsTargetSupported(info.primaryGdiDeviceName, 1920, 1080);
+        const bool support900 = IsTargetSupported(info.primaryGdiDeviceName, 1600, 900);
+        const bool support720 = IsTargetSupported(info.primaryGdiDeviceName, 1280, 720);
+        const bool any = support1080 || support900 || support720;
+        WriteState(any, L"1080", false, support1080, false, support900, support720);
         return;
     }
 
-    WriteState(false, L"none");
+    WriteState(false, L"none", false, false, false, false, false);
 }
 
 void RunSetResolution(int width, int height) {
@@ -104,6 +126,7 @@ void RunSetResolution(int width, int height) {
 namespace commands {
 bool IsDisplayResolutionCommand(const std::wstring& action) {
     return action == L"detect-resolution-presets" ||
+           action == L"rollback-resolution" ||
            action == L"set-resolution-1920-1200" ||
            action == L"set-resolution-1920-1080" ||
            action == L"set-resolution-1680-1050" ||
@@ -114,6 +137,11 @@ bool IsDisplayResolutionCommand(const std::wstring& action) {
 void ExecuteDisplayResolutionCommand(const std::wstring& action) {
     if (action == L"detect-resolution-presets") {
         RunDetection();
+    } else if (action == L"rollback-resolution") {
+        const auto info = display::DetectPrimaryDisplayInfo();
+        if (info.valid && !info.hasActiveExternalPath && info.primaryIsInternal && !info.primaryGdiDeviceName.empty()) {
+            (void)display::RollbackPrimaryResolution(info.primaryGdiDeviceName);
+        }
     } else if (action == L"set-resolution-1920-1200") {
         RunSetResolution(1920, 1200);
     } else if (action == L"set-resolution-1920-1080") {

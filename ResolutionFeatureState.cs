@@ -18,11 +18,21 @@ namespace Easy_Shortcut_for_UMPC
     {
         internal bool Available { get; set; }
         internal ResolutionPresetGroup Group { get; set; }
+        internal bool Support1200p { get; set; }
+        internal bool Support1080p { get; set; }
+        internal bool Support1050p { get; set; }
+        internal bool Support900p { get; set; }
+        internal bool Support720p { get; set; }
 
         internal static readonly ResolutionFeatureState Unavailable = new ResolutionFeatureState
         {
             Available = false,
-            Group = ResolutionPresetGroup.None
+            Group = ResolutionPresetGroup.None,
+            Support1200p = false,
+            Support1080p = false,
+            Support1050p = false,
+            Support900p = false,
+            Support720p = false
         };
     }
 
@@ -123,8 +133,18 @@ namespace Easy_Shortcut_for_UMPC
             return new ResolutionFeatureState
             {
                 Available = true,
-                Group = group
+                Group = group,
+                Support1200p = IsEnabled(values, "support_1200p"),
+                Support1080p = IsEnabled(values, "support_1080p"),
+                Support1050p = IsEnabled(values, "support_1050p"),
+                Support900p = IsEnabled(values, "support_900p"),
+                Support720p = IsEnabled(values, "support_720p")
             };
+        }
+
+        private static bool IsEnabled(Dictionary<string, string> values, string key)
+        {
+            return values.TryGetValue(key, out string value) && value == "1";
         }
     }
 }

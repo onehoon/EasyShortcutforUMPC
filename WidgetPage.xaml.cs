@@ -165,7 +165,7 @@ namespace Easy_Shortcut_for_UMPC
                     "1200p", ActionSetResolution1200,
                     "1080p", ActionSetResolution1080,
                     "1050p", ActionSetResolution1050);
-                DisplayResolutionSection.Visibility = Visibility.Visible;
+                ApplyPresetVisibility(state.Support1200p, state.Support1080p, state.Support1050p);
                 return;
             }
 
@@ -175,7 +175,7 @@ namespace Easy_Shortcut_for_UMPC
                     "1080p", ActionSetResolution1080,
                     "900p", ActionSetResolution900,
                     "720p", ActionSetResolution720);
-                DisplayResolutionSection.Visibility = Visibility.Visible;
+                ApplyPresetVisibility(state.Support1080p, state.Support900p, state.Support720p);
             }
         }
 
@@ -193,6 +193,20 @@ namespace Easy_Shortcut_for_UMPC
             _resolutionAction1 = action1;
             _resolutionAction2 = action2;
             _resolutionAction3 = action3;
+        }
+
+        private void ApplyPresetVisibility(bool showFirst, bool showSecond, bool showThird)
+        {
+            ResolutionButton1.Visibility = showFirst ? Visibility.Visible : Visibility.Collapsed;
+            ResolutionButton2.Visibility = showSecond ? Visibility.Visible : Visibility.Collapsed;
+            ResolutionButton3.Visibility = showThird ? Visibility.Visible : Visibility.Collapsed;
+
+            _resolutionAction1 = showFirst ? _resolutionAction1 : null;
+            _resolutionAction2 = showSecond ? _resolutionAction2 : null;
+            _resolutionAction3 = showThird ? _resolutionAction3 : null;
+
+            bool anyVisible = showFirst || showSecond || showThird;
+            DisplayResolutionSection.Visibility = anyVisible ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private async void InsertButton_Click(object sender, RoutedEventArgs e)

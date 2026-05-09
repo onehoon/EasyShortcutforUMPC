@@ -5,13 +5,29 @@
 #include <set>
 
 namespace display {
-std::vector<std::pair<int, int>> EnumerateModes(const std::wstring& gdiDeviceName) {
-    std::set<std::pair<int, int>> uniqueModes;
+std::vector<DisplayModeInfo> EnumerateDetailedModes(const std::wstring& gdiDeviceName) {
+    std::vector<DisplayModeInfo> modes;
 
     DEVMODEW dm{};
     dm.dmSize = sizeof(dm);
     for (DWORD modeIndex = 0; EnumDisplaySettingsExW(gdiDeviceName.c_str(), modeIndex, &dm, 0); ++modeIndex) {
-        uniqueModes.insert({ static_cast<int>(dm.dmPelsWidth), static_cast<int>(dm.dmPelsHeight) });
+        DisplayModeInfo mode;
+        mode.width = static_cast<int>(dm.dmPelsWidth);
+        mode.height = static_cast<int>(dm.dmPelsHeight);
+        mode.frequency = static_cast<int>(dm.dmDisplayFrequency);
+        mode.bitsPerPel = static_cast<int>(dm.dmBitsPerPel);
+        modes.push_back(mode);
+    }
+
+    return modes;
+}
+
+std::vector<std::pair<int, int>> EnumerateModes(const std::wstring& gdiDeviceName) {
+    std::set<std::pair<int, int>> uniqueModes;
+
+    const auto detailed = EnumerateDetailedModes(gdiDeviceName);
+    for (const auto& mode : detailed) {
+        uniqueModes.insert({ mode.width, mode.height });
     }
 
     return std::vector<std::pair<int, int>>(uniqueModes.begin(), uniqueModes.end());
@@ -23,6 +39,26 @@ bool ContainsMode(const std::vector<std::pair<int, int>>& modes, int width, int 
             return true;
         }
     }
+    return false;
+}
+
+bool ContainsModeAtCurrentTiming(const std::wstring& gdiDeviceName, int width, int height) {
+    DEVMODEW current{};
+    current.dmSize = sizeof(current);
+    if (!EnumDisplaySettingsExW(gdiDeviceName.c_str(), ENUM_CURRENT_SETTINGS, &current, 0)) {
+        return false;
+    }
+
+    const auto detailed = EnumerateDetailedModes(gdiDeviceName);
+    for (const auto& mode : detailed) {
+        if (mode.width == width &&
+            mode.height == height &&
+            mode.frequency == static_cast<int>(current.dmDisplayFrequency) &&
+            mode.bitsPerPel == static_cast<int>(current.dmBitsPerPel)) {
+            return true;
+        }
+    }
+
     return false;
 }
 }
