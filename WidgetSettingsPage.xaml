@@ -33,7 +33,6 @@
                 <StackPanel Spacing="8">
                     <TextBlock Text="Settings" FontSize="22" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
 
-                    <TextBlock Text="Built-in Shortcuts" FontSize="16" FontWeight="SemiBold" Foreground="#FFF7F8FB" Margin="0,4,0,0" />
                     <TextBlock Text="Lossless Scaling" FontSize="16" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
                     <Grid ColumnSpacing="10">
                         <Grid.ColumnDefinitions>
