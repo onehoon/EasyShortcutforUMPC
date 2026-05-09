@@ -20,7 +20,6 @@ namespace Easy_Shortcut_for_UMPC
         private WidgetSettings _settings;
         private XboxGameBarWidget _gameBarWidget;
         private bool _eventsHooked;
-        private bool _resolutionDetectionAttempted;
 
         private const string ActionInsert = "insert";
         private const string ActionAltInsert = "altinsert";
@@ -57,10 +56,10 @@ namespace Easy_Shortcut_for_UMPC
             Loaded += WidgetPage_Loaded;
         }
 
-        private void WidgetPage_Loaded(object sender, RoutedEventArgs e)
+        private async void WidgetPage_Loaded(object sender, RoutedEventArgs e)
         {
             ApplySettingsToUi();
-            InitializeResolutionSectionDeferred();
+            await InitializeResolutionSectionAsync();
         }
 
         private void Button_PointerEntered(object sender, PointerRoutedEventArgs e)
@@ -152,52 +151,20 @@ namespace Easy_Shortcut_for_UMPC
             }
         }
 
-        private void InitializeResolutionSectionDeferred()
+        private async System.Threading.Tasks.Task InitializeResolutionSectionAsync()
         {
-            _resolutionDetectionAttempted = false;
-            DisplayResolutionSection.Visibility = Visibility.Visible;
-            ConfigureResolutionButtons(
-                "Detect", null,
-                string.Empty, null,
-                string.Empty, null);
-            ApplyPresetVisibility(true, false, false);
-        }
-
-        private async System.Threading.Tasks.Task EnsureResolutionSectionInitializedAsync()
-        {
-            if (_resolutionDetectionAttempted)
-            {
-                return;
-            }
-
-            _resolutionDetectionAttempted = true;
-
-            ConfigureResolutionButtons(
-                "Detecting...", null,
-                string.Empty, null,
-                string.Empty, null);
-            ApplyPresetVisibility(true, false, false);
+            DisplayResolutionSection.Visibility = Visibility.Collapsed;
 
             DateTimeOffset launchStamp = DateTimeOffset.UtcNow;
             bool launched = await LaunchHelperActionAsync(ActionDetectResolutionPresets);
             if (!launched)
             {
-                ConfigureResolutionButtons(
-                    "Unavailable", null,
-                    string.Empty, null,
-                    string.Empty, null);
-                ApplyPresetVisibility(true, false, false);
                 return;
             }
 
             ResolutionFeatureState state = await ResolutionFeatureStateStore.WaitForStateRefreshAsync(launchStamp, 2200);
             if (!state.Available)
             {
-                ConfigureResolutionButtons(
-                    "Unavailable", null,
-                    string.Empty, null,
-                    string.Empty, null);
-                ApplyPresetVisibility(true, false, false);
                 return;
             }
 
@@ -218,14 +185,7 @@ namespace Easy_Shortcut_for_UMPC
                     "900p", ActionSetResolution900,
                     "720p", ActionSetResolution720);
                 ApplyPresetVisibility(state.Support1080p, state.Support900p, state.Support720p);
-                return;
             }
-
-            ConfigureResolutionButtons(
-                "Unavailable", null,
-                string.Empty, null,
-                string.Empty, null);
-            ApplyPresetVisibility(true, false, false);
         }
 
         private void ConfigureResolutionButtons(
@@ -457,11 +417,6 @@ namespace Easy_Shortcut_for_UMPC
 
         private async void ResolutionButton1_Click(object sender, RoutedEventArgs e)
         {
-            if (!_resolutionDetectionAttempted)
-            {
-                await EnsureResolutionSectionInitializedAsync();
-            }
-
             if (!string.IsNullOrEmpty(_resolutionAction1))
             {
                 await LaunchHelperActionAsync(_resolutionAction1);
@@ -470,11 +425,6 @@ namespace Easy_Shortcut_for_UMPC
 
         private async void ResolutionButton2_Click(object sender, RoutedEventArgs e)
         {
-            if (!_resolutionDetectionAttempted)
-            {
-                await EnsureResolutionSectionInitializedAsync();
-            }
-
             if (!string.IsNullOrEmpty(_resolutionAction2))
             {
                 await LaunchHelperActionAsync(_resolutionAction2);
@@ -483,11 +433,6 @@ namespace Easy_Shortcut_for_UMPC
 
         private async void ResolutionButton3_Click(object sender, RoutedEventArgs e)
         {
-            if (!_resolutionDetectionAttempted)
-            {
-                await EnsureResolutionSectionInitializedAsync();
-            }
-
             if (!string.IsNullOrEmpty(_resolutionAction3))
             {
                 await LaunchHelperActionAsync(_resolutionAction3);
