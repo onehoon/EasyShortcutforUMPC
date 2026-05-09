@@ -159,9 +159,9 @@ namespace Easy_Shortcut_for_UMPC
             }
 
             _draft.BuiltInLosslessKeys = losslessKeys;
-            TryUpdateCustom("custom1", Custom1ModifierCombo, Custom1KeyCombo);
-            TryUpdateCustom("custom2", Custom2ModifierCombo, Custom2KeyCombo);
-            TryUpdateCustom("custom3", Custom3ModifierCombo, Custom3KeyCombo);
+            UpdateCustom("custom1", Custom1ModifierCombo, Custom1KeyCombo);
+            UpdateCustom("custom2", Custom2ModifierCombo, Custom2KeyCombo);
+            UpdateCustom("custom3", Custom3ModifierCombo, Custom3KeyCombo);
 
             try
             {
@@ -175,7 +175,7 @@ namespace Easy_Shortcut_for_UMPC
             }
         }
 
-        private void TryUpdateCustom(string slotId, ComboBox modifier, ComboBox key)
+        private void UpdateCustom(string slotId, ComboBox modifier, ComboBox key)
         {
             List<string> keys = ComposeShortcut(modifier.SelectedItem as string ?? "None", key.SelectedItem as string ?? "Not Set");
 

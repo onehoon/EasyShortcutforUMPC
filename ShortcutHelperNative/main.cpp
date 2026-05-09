@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
+#include <vector>
 
 #include "Commands/DisplayResolutionCommandHandler.h"
 #include "Commands/ShortcutCommandHandler.h"

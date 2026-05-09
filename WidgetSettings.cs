@@ -147,11 +147,6 @@ namespace Easy_Shortcut_for_UMPC
                 return false;
             }
 
-            if (keys.Count == 1)
-            {
-                return !IsModifierToken(keys[0]);
-            }
-
             for (int i = 0; i < keys.Count; i++)
             {
                 if (string.IsNullOrWhiteSpace(keys[i]))
@@ -160,9 +155,23 @@ namespace Easy_Shortcut_for_UMPC
                 }
             }
 
-            if (IsModifierToken(keys[keys.Count - 1]))
+            string primaryKey = keys[keys.Count - 1].Trim();
+            if (string.Equals(primaryKey, "Not Set", StringComparison.OrdinalIgnoreCase))
             {
                 return false;
+            }
+
+            if (IsModifierToken(primaryKey))
+            {
+                return false;
+            }
+
+            for (int i = 0; i < keys.Count - 1; i++)
+            {
+                if (!IsModifierToken(keys[i]))
+                {
+                    return false;
+                }
             }
 
             return true;
