@@ -30,3 +30,12 @@ The widget uses a compact, fixed-width layout with large touch-friendly buttons,
 > Some games or applications may block simulated keyboard input.
 > Some system-level apps or elevated/admin apps may not respond to shortcuts from the widget.
 > The Close App button asks for confirmation before sending Alt + F4.
+
+## License
+
+This project is licensed under the GNU General Public License v3.0.
+
+You may use, modify, and redistribute this project under the terms of the GPL-3.0 license.  
+If you distribute modified versions or binaries, you must also provide the corresponding source code under the same license.
+
+See the [LICENSE](LICENSE) file for details.
