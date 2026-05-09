@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Gaming.XboxGameBar;
+using Windows.UI.Core;
 using Windows.ApplicationModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -241,6 +242,7 @@ namespace Easy_Shortcut_for_UMPC
         {
             base.OnNavigatedTo(e);
             _gameBarWidget = e.Parameter as XboxGameBarWidget;
+            Window.Current.Activated += CurrentWindow_Activated;
             if (_gameBarWidget != null)
             {
                 _gameBarWidget.SettingsClicked += Widget_SettingsClicked;
@@ -249,6 +251,7 @@ namespace Easy_Shortcut_for_UMPC
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
+            Window.Current.Activated -= CurrentWindow_Activated;
             if (_gameBarWidget != null)
             {
                 _gameBarWidget.SettingsClicked -= Widget_SettingsClicked;
@@ -259,7 +262,24 @@ namespace Easy_Shortcut_for_UMPC
 
         private async void Widget_SettingsClicked(XboxGameBarWidget sender, object args)
         {
-            await sender.ActivateSettingsAsync();
+            try
+            {
+                await sender.ActivateSettingsAsync();
+            }
+            catch (Exception ex)
+            {
+                DiagnosticsLog.Write($"SettingsClicked ActivateSettingsAsync failed msg={ex.Message}");
+            }
+        }
+
+        private void CurrentWindow_Activated(object sender, WindowActivatedEventArgs e)
+        {
+            if (e.WindowActivationState == CoreWindowActivationState.Deactivated)
+            {
+                return;
+            }
+
+            ReloadSettings();
         }
 
         private async void CustomButton1_Click(object sender, RoutedEventArgs e)
@@ -316,6 +336,12 @@ namespace Easy_Shortcut_for_UMPC
             CustomButton3.Content = GetCustomButtonText("custom3");
 
             ApplySectionOrder();
+        }
+
+        private void ReloadSettings()
+        {
+            _settings = WidgetSettingsStore.Load();
+            ApplySettingsToUi();
         }
 
         private string GetCustomButtonText(string slotId)

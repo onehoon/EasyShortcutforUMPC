@@ -4,7 +4,32 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    RequestedTheme="Dark"
     mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Foreground" Value="#FFF7F8FB" />
+            <Setter Property="Background" Value="#6633363C" />
+            <Setter Property="BorderBrush" Value="#AA545963" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Foreground" Value="#FFF7F8FB" />
+            <Setter Property="Background" Value="#6633363C" />
+            <Setter Property="BorderBrush" Value="#AA545963" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="#FFF7F8FB" />
+            <Setter Property="Background" Value="#8C44484F" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+
+    </Page.Resources>
 
     <Grid Background="#CC1A1C21" Padding="10">
         <Border
@@ -27,8 +52,6 @@
                     <Border Background="#3033363C" CornerRadius="8" Padding="8">
                         <StackPanel Spacing="6">
                             <TextBlock Text="Custom 1" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
-                            <ToggleSwitch x:Name="Custom1EnabledToggle" Header="Enabled" />
-                            <TextBox x:Name="Custom1LabelTextBox" Header="Label" />
                             <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
                             <ComboBox x:Name="Custom1ModifierCombo" />
                             <TextBlock Text="Key" Foreground="#CCF7F8FB" />
@@ -40,8 +63,6 @@
                     <Border Background="#3033363C" CornerRadius="8" Padding="8">
                         <StackPanel Spacing="6">
                             <TextBlock Text="Custom 2" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
-                            <ToggleSwitch x:Name="Custom2EnabledToggle" Header="Enabled" />
-                            <TextBox x:Name="Custom2LabelTextBox" Header="Label" />
                             <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
                             <ComboBox x:Name="Custom2ModifierCombo" />
                             <TextBlock Text="Key" Foreground="#CCF7F8FB" />
@@ -53,8 +74,6 @@
                     <Border Background="#3033363C" CornerRadius="8" Padding="8">
                         <StackPanel Spacing="6">
                             <TextBlock Text="Custom 3" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
-                            <ToggleSwitch x:Name="Custom3EnabledToggle" Header="Enabled" />
-                            <TextBox x:Name="Custom3LabelTextBox" Header="Label" />
                             <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
                             <ComboBox x:Name="Custom3ModifierCombo" />
                             <TextBlock Text="Key" Foreground="#CCF7F8FB" />

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Windows.Data.Json;
+using Windows.Storage;
 
 namespace Easy_Shortcut_for_UMPC
 {
@@ -19,9 +20,9 @@ namespace Easy_Shortcut_for_UMPC
                 SectionOrder = new List<string>(DefaultSectionOrder),
                 CustomShortcuts = new Dictionary<string, CustomShortcutSlot>(StringComparer.OrdinalIgnoreCase)
                 {
-                    ["custom1"] = new CustomShortcutSlot { Enabled = false, Label = "Custom 1", Keys = new List<string>() },
-                    ["custom2"] = new CustomShortcutSlot { Enabled = false, Label = "Custom 2", Keys = new List<string>() },
-                    ["custom3"] = new CustomShortcutSlot { Enabled = false, Label = "Custom 3", Keys = new List<string>() }
+                    ["custom1"] = new CustomShortcutSlot { Keys = new List<string>() },
+                    ["custom2"] = new CustomShortcutSlot { Keys = new List<string>() },
+                    ["custom3"] = new CustomShortcutSlot { Keys = new List<string>() }
                 }
             };
         }
@@ -37,8 +38,6 @@ namespace Easy_Shortcut_for_UMPC
 
     internal sealed class CustomShortcutSlot
     {
-        internal bool Enabled { get; set; }
-        internal string Label { get; set; }
         internal List<string> Keys { get; set; } = new List<string>();
     }
 
@@ -105,8 +104,6 @@ namespace Easy_Shortcut_for_UMPC
                 {
                     result.CustomShortcuts[slotId] = new CustomShortcutSlot
                     {
-                        Enabled = slot.Enabled && IsValidKeys(slot.Keys),
-                        Label = string.IsNullOrWhiteSpace(slot.Label) ? result.CustomShortcuts[slotId].Label : slot.Label.Trim(),
                         Keys = IsValidKeys(slot.Keys) ? new List<string>(slot.Keys) : new List<string>()
                     };
                 }
@@ -140,7 +137,7 @@ namespace Easy_Shortcut_for_UMPC
 
         internal static bool IsConfigured(CustomShortcutSlot slot)
         {
-            return slot != null && slot.Enabled && IsValidKeys(slot.Keys);
+            return slot != null && IsValidKeys(slot.Keys);
         }
 
         internal static bool IsValidKeys(IReadOnlyList<string> keys)
@@ -163,8 +160,7 @@ namespace Easy_Shortcut_for_UMPC
 
         private static string GetSettingsFilePath()
         {
-            string baseDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EasyShortcutForUMPC");
-            return Path.Combine(baseDir, SettingsFileName);
+            return Path.Combine(ApplicationData.Current.LocalFolder.Path, SettingsFileName);
         }
 
         private static string Serialize(WidgetSettings settings)
@@ -188,11 +184,7 @@ namespace Easy_Shortcut_for_UMPC
             foreach (var slotId in new[] { "custom1", "custom2", "custom3" })
             {
                 var slot = settings.CustomShortcuts[slotId];
-                var slotObj = new JsonObject
-                {
-                    ["enabled"] = JsonValue.CreateBooleanValue(slot.Enabled),
-                    ["label"] = JsonValue.CreateStringValue(slot.Label ?? string.Empty)
-                };
+                var slotObj = new JsonObject();
 
                 var keys = new JsonArray();
                 foreach (string key in slot.Keys)
@@ -254,16 +246,6 @@ namespace Easy_Shortcut_for_UMPC
                     {
                         var slotObj = slotValue.GetObject();
                         var slot = parsed.CustomShortcuts[slotId];
-
-                        if (slotObj.TryGetValue("enabled", out IJsonValue enabledValue) && enabledValue.ValueType == JsonValueType.Boolean)
-                        {
-                            slot.Enabled = enabledValue.GetBoolean();
-                        }
-
-                        if (slotObj.TryGetValue("label", out IJsonValue labelValue) && labelValue.ValueType == JsonValueType.String)
-                        {
-                            slot.Label = labelValue.GetString();
-                        }
 
                         slot.Keys = ReadStringArray(slotObj, "keys");
                     }

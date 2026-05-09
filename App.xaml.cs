@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Gaming.XboxGameBar;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -13,7 +14,9 @@ namespace Easy_Shortcut_for_UMPC
 {
     public sealed partial class App : Application
     {
-        private XboxGameBarWidget _gameBarWidget;
+        private XboxGameBarWidget _mainWidget;
+        private XboxGameBarWidget _settingsWidget;
+        private readonly Dictionary<CoreWindow, string> _widgetWindows = new Dictionary<CoreWindow, string>();
 
         public App()
         {
@@ -70,18 +73,22 @@ namespace Easy_Shortcut_for_UMPC
                 rootFrame.NavigationFailed += OnNavigationFailed;
                 Window.Current.Content = rootFrame;
 
-                _gameBarWidget = new XboxGameBarWidget(
+                XboxGameBarWidget widget = new XboxGameBarWidget(
                     widgetArgs,
                     Window.Current.CoreWindow,
                     rootFrame);
 
                 if (string.Equals(widgetArgs.AppExtensionId, "Widget2Settings", StringComparison.OrdinalIgnoreCase))
                 {
-                    rootFrame.Navigate(typeof(WidgetSettingsPage), _gameBarWidget);
+                    _settingsWidget = widget;
+                    _widgetWindows[Window.Current.CoreWindow] = "Widget2Settings";
+                    rootFrame.Navigate(typeof(WidgetSettingsPage), widget);
                 }
                 else
                 {
-                    rootFrame.Navigate(typeof(WidgetPage), _gameBarWidget);
+                    _mainWidget = widget;
+                    _widgetWindows[Window.Current.CoreWindow] = "Widget2";
+                    rootFrame.Navigate(typeof(WidgetPage), widget);
                 }
 
                 Window.Current.Closed += GameBarWindow_Closed;
@@ -103,7 +110,20 @@ namespace Easy_Shortcut_for_UMPC
         private void GameBarWindow_Closed(object sender, CoreWindowEventArgs e)
         {
             DiagnosticsLog.Write("GameBarWindow_Closed");
-            _gameBarWidget = null;
+            if (sender is CoreWindow coreWindow && _widgetWindows.TryGetValue(coreWindow, out string appExtensionId))
+            {
+                if (string.Equals(appExtensionId, "Widget2Settings", StringComparison.OrdinalIgnoreCase))
+                {
+                    _settingsWidget = null;
+                }
+                else
+                {
+                    _mainWidget = null;
+                }
+
+                _widgetWindows.Remove(coreWindow);
+            }
+
             Window.Current.Closed -= GameBarWindow_Closed;
         }
 

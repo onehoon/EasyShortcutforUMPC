@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Gaming.XboxGameBar;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -27,7 +26,6 @@ namespace Easy_Shortcut_for_UMPC
         };
 
         private WidgetSettings _draft;
-        private XboxGameBarWidget _gameBarWidget;
 
         public WidgetSettingsPage()
         {
@@ -38,7 +36,6 @@ namespace Easy_Shortcut_for_UMPC
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            _gameBarWidget = e.Parameter as XboxGameBarWidget;
             LoadDraft();
         }
 
@@ -63,25 +60,23 @@ namespace Easy_Shortcut_for_UMPC
             LosslessModifierCombo.SelectedItem = ModifierOptions.Contains(losslessModifier) ? losslessModifier : "Ctrl + Alt";
             LosslessKeyCombo.SelectedItem = KeyOptions.Contains(losslessKey) ? losslessKey : "S";
 
-            BindCustomSlot("custom1", "Custom 1", Custom1EnabledToggle, Custom1LabelTextBox, Custom1ModifierCombo, Custom1KeyCombo);
-            BindCustomSlot("custom2", "Custom 2", Custom2EnabledToggle, Custom2LabelTextBox, Custom2ModifierCombo, Custom2KeyCombo);
-            BindCustomSlot("custom3", "Custom 3", Custom3EnabledToggle, Custom3LabelTextBox, Custom3ModifierCombo, Custom3KeyCombo);
+            BindCustomSlot("custom1", Custom1ModifierCombo, Custom1KeyCombo);
+            BindCustomSlot("custom2", Custom2ModifierCombo, Custom2KeyCombo);
+            BindCustomSlot("custom3", Custom3ModifierCombo, Custom3KeyCombo);
 
             RenderSectionOrder();
             ValidationTextBlock.Visibility = Visibility.Collapsed;
             ValidationTextBlock.Text = string.Empty;
         }
 
-        private void BindCustomSlot(string slotId, string defaultLabel, ToggleSwitch enabled, TextBox label, ComboBox modifier, ComboBox key)
+        private void BindCustomSlot(string slotId, ComboBox modifier, ComboBox key)
         {
             if (!_draft.CustomShortcuts.TryGetValue(slotId, out CustomShortcutSlot slot) || slot == null)
             {
-                slot = new CustomShortcutSlot { Enabled = false, Label = defaultLabel, Keys = new List<string>() };
+                slot = new CustomShortcutSlot { Keys = new List<string>() };
                 _draft.CustomShortcuts[slotId] = slot;
             }
 
-            enabled.IsOn = slot.Enabled;
-            label.Text = string.IsNullOrWhiteSpace(slot.Label) ? defaultLabel : slot.Label;
             SplitShortcut(slot.Keys, out string currentModifier, out string currentKey);
             modifier.SelectedItem = ModifierOptions.Contains(currentModifier) ? currentModifier : "None";
             key.SelectedItem = KeyOptions.Contains(currentKey) ? currentKey : "Not Set";
@@ -158,39 +153,32 @@ namespace Easy_Shortcut_for_UMPC
             }
 
             _draft.BuiltInLosslessKeys = losslessKeys;
-            if (!TryUpdateCustom("custom1", "Custom 1", Custom1EnabledToggle, Custom1LabelTextBox, Custom1ModifierCombo, Custom1KeyCombo))
+            if (!TryUpdateCustom("custom1", Custom1ModifierCombo, Custom1KeyCombo))
             {
                 return;
             }
 
-            if (!TryUpdateCustom("custom2", "Custom 2", Custom2EnabledToggle, Custom2LabelTextBox, Custom2ModifierCombo, Custom2KeyCombo))
+            if (!TryUpdateCustom("custom2", Custom2ModifierCombo, Custom2KeyCombo))
             {
                 return;
             }
 
-            if (!TryUpdateCustom("custom3", "Custom 3", Custom3EnabledToggle, Custom3LabelTextBox, Custom3ModifierCombo, Custom3KeyCombo))
+            if (!TryUpdateCustom("custom3", Custom3ModifierCombo, Custom3KeyCombo))
             {
                 return;
             }
 
             _draft = WidgetSettingsStore.Normalize(_draft);
             WidgetSettingsStore.Save(_draft);
-            SetValidation("Saved.", isError: false);
+            CloseCurrentWidgetWindow();
         }
 
-        private bool TryUpdateCustom(string slotId, string defaultLabel, ToggleSwitch enabled, TextBox label, ComboBox modifier, ComboBox key)
+        private bool TryUpdateCustom(string slotId, ComboBox modifier, ComboBox key)
         {
             List<string> keys = ComposeShortcut(modifier.SelectedItem as string ?? "None", key.SelectedItem as string ?? "Not Set");
-            if (enabled.IsOn && keys.Count == 0)
-            {
-                SetValidation($"{defaultLabel} is enabled but has no valid key.");
-                return false;
-            }
 
             _draft.CustomShortcuts[slotId] = new CustomShortcutSlot
             {
-                Enabled = enabled.IsOn,
-                Label = string.IsNullOrWhiteSpace(label.Text) ? defaultLabel : label.Text.Trim(),
                 Keys = keys
             };
 
@@ -199,29 +187,26 @@ namespace Easy_Shortcut_for_UMPC
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            LoadDraft();
-            SetValidation("Changes discarded.", isError: false);
+            CloseCurrentWidgetWindow();
         }
 
         private void Custom1Reset_Click(object sender, RoutedEventArgs e)
         {
-            ResetSlot("Custom 1", Custom1EnabledToggle, Custom1LabelTextBox, Custom1ModifierCombo, Custom1KeyCombo);
+            ResetSlot(Custom1ModifierCombo, Custom1KeyCombo);
         }
 
         private void Custom2Reset_Click(object sender, RoutedEventArgs e)
         {
-            ResetSlot("Custom 2", Custom2EnabledToggle, Custom2LabelTextBox, Custom2ModifierCombo, Custom2KeyCombo);
+            ResetSlot(Custom2ModifierCombo, Custom2KeyCombo);
         }
 
         private void Custom3Reset_Click(object sender, RoutedEventArgs e)
         {
-            ResetSlot("Custom 3", Custom3EnabledToggle, Custom3LabelTextBox, Custom3ModifierCombo, Custom3KeyCombo);
+            ResetSlot(Custom3ModifierCombo, Custom3KeyCombo);
         }
 
-        private void ResetSlot(string defaultLabel, ToggleSwitch enabled, TextBox label, ComboBox modifier, ComboBox key)
+        private void ResetSlot(ComboBox modifier, ComboBox key)
         {
-            enabled.IsOn = false;
-            label.Text = defaultLabel;
             modifier.SelectedItem = "None";
             key.SelectedItem = "Not Set";
         }
@@ -246,6 +231,18 @@ namespace Easy_Shortcut_for_UMPC
             ValidationTextBlock.Text = text;
             ValidationTextBlock.Foreground = new SolidColorBrush(isError ? Windows.UI.Color.FromArgb(255, 255, 128, 128) : Windows.UI.Color.FromArgb(255, 160, 255, 160));
             ValidationTextBlock.Visibility = Visibility.Visible;
+        }
+
+        private void CloseCurrentWidgetWindow()
+        {
+            try
+            {
+                Window.Current.Close();
+            }
+            catch (Exception ex)
+            {
+                SetValidation($"Failed to close settings window: {ex.Message}");
+            }
         }
 
         private static List<string> ComposeShortcut(string modifier, string key)

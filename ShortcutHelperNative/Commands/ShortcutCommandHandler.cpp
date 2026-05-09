@@ -1,6 +1,7 @@
 #include "ShortcutCommandHandler.h"
 
 #include <windows.h>
+#include <appmodel.h>
 
 #include <filesystem>
 #include <fstream>
@@ -36,16 +37,41 @@ std::wstring Trim(const std::wstring& value) {
     return value.substr(start, end - start);
 }
 
-std::filesystem::path GetSettingsPath() {
+std::wstring GetPackageLocalStatePath() {
+    UINT32 length = 0;
+    LONG result = GetCurrentPackageFamilyName(&length, nullptr);
+    if (result != ERROR_INSUFFICIENT_BUFFER || length == 0) {
+        return L"";
+    }
+
+    std::vector<wchar_t> packageFamilyName(length);
+    if (GetCurrentPackageFamilyName(&length, packageFamilyName.data()) != ERROR_SUCCESS) {
+        return L"";
+    }
+
     wchar_t* localAppData = nullptr;
-    size_t len = 0;
-    _wdupenv_s(&localAppData, &len, L"LOCALAPPDATA");
-    std::filesystem::path base = localAppData != nullptr ? localAppData : L"";
-    if (localAppData != nullptr) {
+    size_t envLen = 0;
+    _wdupenv_s(&localAppData, &envLen, L"LOCALAPPDATA");
+    std::wstring base = localAppData ? localAppData : L"";
+    if (localAppData) {
         free(localAppData);
     }
 
-    return base / L"EasyShortcutForUMPC" / L"widget_settings.json";
+    if (base.empty()) {
+        return L"";
+    }
+
+    std::filesystem::path path = std::filesystem::path(base) / L"Packages" / packageFamilyName.data() / L"LocalState";
+    return path.wstring();
+}
+
+std::filesystem::path GetSettingsPath() {
+    std::wstring localState = GetPackageLocalStatePath();
+    if (localState.empty()) {
+        return {};
+    }
+
+    return std::filesystem::path(localState) / L"widget_settings.json";
 }
 
 std::wstring ReadTextFile(const std::filesystem::path& path) {
@@ -128,34 +154,6 @@ std::vector<std::wstring> ExtractStringArray(const std::wstring& source, const s
     return values;
 }
 
-bool ExtractBool(const std::wstring& source, const std::wstring& key, bool fallback) {
-    std::wstring quotedKey = L"\"" + key + L"\"";
-    size_t keyPos = source.find(quotedKey);
-    if (keyPos == std::wstring::npos) {
-        return fallback;
-    }
-
-    size_t colon = source.find(L":", keyPos);
-    if (colon == std::wstring::npos) {
-        return fallback;
-    }
-
-    size_t valueStart = colon + 1;
-    while (valueStart < source.size() && iswspace(source[valueStart])) {
-        ++valueStart;
-    }
-
-    if (source.compare(valueStart, 4, L"true") == 0) {
-        return true;
-    }
-
-    if (source.compare(valueStart, 5, L"false") == 0) {
-        return false;
-    }
-
-    return fallback;
-}
-
 WORD MapKeyNameToVirtualKey(const std::wstring& keyName) {
     static const std::map<std::wstring, WORD> named = {
         {L"insert", VK_INSERT}, {L"delete", VK_DELETE}, {L"home", VK_HOME}, {L"end", VK_END},
@@ -188,6 +186,24 @@ WORD MapKeyNameToVirtualKey(const std::wstring& keyName) {
     }
 
     return 0;
+}
+
+bool IsExtendedKey(WORD vk) {
+    switch (vk) {
+        case VK_INSERT:
+        case VK_DELETE:
+        case VK_HOME:
+        case VK_END:
+        case VK_PRIOR:
+        case VK_NEXT:
+        case VK_UP:
+        case VK_DOWN:
+        case VK_LEFT:
+        case VK_RIGHT:
+            return true;
+        default:
+            return false;
+    }
 }
 
 std::vector<std::pair<WORD, bool>> BuildComboFromKeys(const std::vector<std::wstring>& keys) {
@@ -235,7 +251,7 @@ std::vector<std::pair<WORD, bool>> BuildComboFromKeys(const std::vector<std::wst
         combo.push_back({VK_SHIFT, false});
     }
 
-    combo.push_back({primaryKey, false});
+    combo.push_back({primaryKey, IsExtendedKey(primaryKey)});
     return combo;
 }
 
@@ -268,7 +284,7 @@ std::vector<std::pair<WORD, bool>> GetCustomComboFromSettings(const std::wstring
     }
 
     std::wstring slot = ExtractObjectByName(customRoot, slotName);
-    if (slot.empty() || !ExtractBool(slot, L"enabled", false)) {
+    if (slot.empty()) {
         return {};
     }
 
@@ -305,10 +321,7 @@ bool IsShortcutCommand(const std::wstring& action) {
            action == L"custom1" ||
            action == L"custom2" ||
            action == L"custom3" ||
-           action == L"home" ||
-           action == L"end" ||
-           action == L"losslessscaling" ||
-           action == L"quit";
+           action == L"losslessscaling";
 }
 
 void ExecuteShortcutCommand(const std::wstring& action) {
@@ -333,14 +346,8 @@ void ExecuteShortcutCommand(const std::wstring& action) {
         if (!combo.empty()) {
             keyboard::SendCombo(combo);
         }
-    } else if (action == L"home") {
-        keyboard::SendCombo({ {VK_HOME, true} });
-    } else if (action == L"end") {
-        keyboard::SendCombo({ {VK_END, true} });
     } else if (action == L"losslessscaling") {
         keyboard::SendCombo(GetLosslessComboFromSettings());
-    } else if (action == L"quit") {
-        keyboard::SendCombo({ {VK_MENU, false}, {VK_F4, false} });
     }
 }
 }
