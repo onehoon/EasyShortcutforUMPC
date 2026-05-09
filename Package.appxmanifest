@@ -84,7 +84,6 @@
             <desktop:ParameterGroup GroupId="LosslessScalingCommand" Parameters="losslessscaling" />
             <desktop:ParameterGroup GroupId="QuitCommand" Parameters="quit" />
             <desktop:ParameterGroup GroupId="DetectResolutionPresetsCommand" Parameters="detect-resolution-presets" />
-            <desktop:ParameterGroup GroupId="RollbackResolutionCommand" Parameters="rollback-resolution" />
             <desktop:ParameterGroup GroupId="SetResolution1920x1200Command" Parameters="set-resolution-1920-1200" />
             <desktop:ParameterGroup GroupId="SetResolution1920x1080Command" Parameters="set-resolution-1920-1080" />
             <desktop:ParameterGroup GroupId="SetResolution1680x1050Command" Parameters="set-resolution-1680-1050" />

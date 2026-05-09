@@ -69,6 +69,8 @@ void WriteState(
 }
 
 bool IsTargetSupported(const std::wstring& gdiDeviceName, int width, int height) {
+    // Only expose/apply presets that support the current refresh rate and color depth.
+    // This feature intentionally does not switch refresh rate.
     return display::ContainsModeAtCurrentTiming(gdiDeviceName, width, height);
 }
 
@@ -126,7 +128,6 @@ void RunSetResolution(int width, int height) {
 namespace commands {
 bool IsDisplayResolutionCommand(const std::wstring& action) {
     return action == L"detect-resolution-presets" ||
-           action == L"rollback-resolution" ||
            action == L"set-resolution-1920-1200" ||
            action == L"set-resolution-1920-1080" ||
            action == L"set-resolution-1680-1050" ||
@@ -137,11 +138,6 @@ bool IsDisplayResolutionCommand(const std::wstring& action) {
 void ExecuteDisplayResolutionCommand(const std::wstring& action) {
     if (action == L"detect-resolution-presets") {
         RunDetection();
-    } else if (action == L"rollback-resolution") {
-        const auto info = display::DetectPrimaryDisplayInfo();
-        if (info.valid && !info.hasActiveExternalPath && info.primaryIsInternal && !info.primaryGdiDeviceName.empty()) {
-            (void)display::RollbackPrimaryResolution(info.primaryGdiDeviceName);
-        }
     } else if (action == L"set-resolution-1920-1200") {
         RunSetResolution(1920, 1200);
     } else if (action == L"set-resolution-1920-1080") {
