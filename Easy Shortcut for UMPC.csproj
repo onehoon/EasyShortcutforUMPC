@@ -23,6 +23,10 @@
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x64</AppxBundlePlatforms>
     <LangVersion>latest</LangVersion>
+    <Version>1.0.8.0</Version>
+    <AssemblyVersion>1.0.8.0</AssemblyVersion>
+    <FileVersion>1.0.8.0</FileVersion>
+    <InformationalVersion>1.0.8.0</InformationalVersion>
     <HelperOutputDir>ShortcutHelperNative\x64\Release\</HelperOutputDir>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <PackageCertificateThumbprint>EA2DB6D23B39FA067F3FDF667EF778AB5296728A</PackageCertificateThumbprint>
@@ -64,6 +68,7 @@
     </Compile>
     <Compile Include="DiagnosticsLog.cs" />
     <Compile Include="ResolutionFeatureState.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StandalonePage.xaml.cs">
       <DependentUpon>StandalonePage.xaml</DependentUpon>
     </Compile>
@@ -96,6 +101,12 @@
     <Content Include="GameBar\**\*" />
     <Content Include="$(HelperOutputDir)ShortcutHelper.exe">
       <TargetPath>ShortcutHelper\ShortcutHelper.exe</TargetPath>
+    </Content>
+    <Content Include="$(HelperOutputDir)*.dll">
+      <TargetPath>ShortcutHelper\%(Filename)%(Extension)</TargetPath>
+    </Content>
+    <Content Include="$(HelperOutputDir)*.json">
+      <TargetPath>ShortcutHelper\%(Filename)%(Extension)</TargetPath>
     </Content>
     <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>

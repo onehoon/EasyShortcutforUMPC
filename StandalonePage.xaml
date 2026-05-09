@@ -20,13 +20,7 @@
                     Foreground="#FFF7F8FB"
                     TextWrapping="WrapWholeWords" />
                 <TextBlock
-                    Text="This app is intended to be used from Xbox Game Bar."
-                    FontSize="15"
-                    Foreground="#FFF7F8FB"
-                    Opacity="0.92"
-                    TextWrapping="WrapWholeWords" />
-                <TextBlock
-                    Text="Open Xbox Game Bar with Win+G, then open this widget from the Widget menu."
+                    Text="Easy Shortcut for UMPC is designed to run as an Xbox Game Bar widget. Press Win + G and open it from the widget list."
                     FontSize="15"
                     Foreground="#FFF7F8FB"
                     Opacity="0.88"

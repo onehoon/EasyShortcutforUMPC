@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Gaming.XboxGameBar;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -25,87 +26,105 @@ namespace Easy_Shortcut_for_UMPC
             DiagnosticsLog.Write("App ctor");
             Suspending += OnSuspending;
             UnhandledException += OnUnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         }
 
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-            DiagnosticsLog.Write($"OnLaunched prelaunch={e.PrelaunchActivated} args='{e.Arguments}'");
-            var rootFrame = EnsureRootFrame();
-
-            if (!e.PrelaunchActivated)
+            try
             {
-                if (rootFrame.Content == null)
-                {
-                    DiagnosticsLog.Write("OnLaunched navigate StandalonePage");
-                    rootFrame.Navigate(typeof(StandalonePage), null);
-                }
+                DiagnosticsLog.Write($"OnLaunched prelaunch={e.PrelaunchActivated} args='{e.Arguments}'");
+                var rootFrame = EnsureRootFrame();
 
-                DiagnosticsLog.Write("OnLaunched activate window");
-                Window.Current.Activate();
+                if (!e.PrelaunchActivated)
+                {
+                    if (rootFrame.Content == null)
+                    {
+                        DiagnosticsLog.Write("OnLaunched navigate StandalonePage");
+                        rootFrame.Navigate(typeof(StandalonePage), null);
+                    }
+
+                    DiagnosticsLog.Write("OnLaunched activate window");
+                    Window.Current.Activate();
+                }
+            }
+            catch (Exception ex)
+            {
+                DiagnosticsLog.WriteException("OnLaunched fail", ex);
+                ShowEmergencyFallback();
             }
         }
 
         protected override void OnActivated(IActivatedEventArgs args)
         {
-            DiagnosticsLog.Write($"OnActivated kind={args?.Kind}");
-            if (args == null)
+            try
             {
-                DiagnosticsLog.Write("OnActivated args is null");
-                ShowEmergencyFallback();
-                return;
-            }
-
-            XboxGameBarWidgetActivatedEventArgs widgetArgs = null;
-
-            if (args.Kind == ActivationKind.Protocol)
-            {
-                var protocolArgs = args as IProtocolActivatedEventArgs;
-                if (protocolArgs?.Uri?.Scheme == "ms-gamebarwidget")
+                DiagnosticsLog.Write($"OnActivated kind={args?.Kind}");
+                if (args == null)
                 {
-                    widgetArgs = args as XboxGameBarWidgetActivatedEventArgs;
-                    DiagnosticsLog.Write($"OnActivated protocol={protocolArgs.Uri}");
-                }
-            }
-
-            if (widgetArgs != null && widgetArgs.IsLaunchActivation)
-            {
-                DiagnosticsLog.Write($"Widget activation appExtension={widgetArgs.AppExtensionId}");
-                var rootFrame = new Frame();
-                rootFrame.NavigationFailed += OnNavigationFailed;
-                Window.Current.Content = rootFrame;
-
-                XboxGameBarWidget widget = new XboxGameBarWidget(
-                    widgetArgs,
-                    Window.Current.CoreWindow,
-                    rootFrame);
-
-                if (string.Equals(widgetArgs.AppExtensionId, "Widget2Settings", StringComparison.OrdinalIgnoreCase))
-                {
-                    _settingsWidget = widget;
-                    _widgetWindows[Window.Current.CoreWindow] = "Widget2Settings";
-                    rootFrame.Navigate(typeof(WidgetSettingsPage), widget);
-                }
-                else
-                {
-                    _mainWidget = widget;
-                    _widgetWindows[Window.Current.CoreWindow] = "Widget2";
-                    rootFrame.Navigate(typeof(WidgetPage), widget);
+                    DiagnosticsLog.Write("OnActivated args is null");
+                    ShowEmergencyFallback();
+                    return;
                 }
 
-                Window.Current.Closed += GameBarWindow_Closed;
+                XboxGameBarWidgetActivatedEventArgs widgetArgs = null;
+
+                if (args.Kind == ActivationKind.Protocol)
+                {
+                    var protocolArgs = args as IProtocolActivatedEventArgs;
+                    if (protocolArgs?.Uri?.Scheme == "ms-gamebarwidget")
+                    {
+                        widgetArgs = args as XboxGameBarWidgetActivatedEventArgs;
+                        DiagnosticsLog.Write($"OnActivated protocol={protocolArgs.Uri}");
+                    }
+                }
+
+                if (widgetArgs != null && widgetArgs.IsLaunchActivation)
+                {
+                    DiagnosticsLog.Write($"Widget activation appExtension={widgetArgs.AppExtensionId}");
+                    var rootFrame = new Frame();
+                    rootFrame.NavigationFailed += OnNavigationFailed;
+                    Window.Current.Content = rootFrame;
+
+                    XboxGameBarWidget widget = new XboxGameBarWidget(
+                        widgetArgs,
+                        Window.Current.CoreWindow,
+                        rootFrame);
+
+                    if (string.Equals(widgetArgs.AppExtensionId, "Widget2Settings", StringComparison.OrdinalIgnoreCase))
+                    {
+                        _settingsWidget = widget;
+                        _widgetWindows[Window.Current.CoreWindow] = "Widget2Settings";
+                        rootFrame.Navigate(typeof(WidgetSettingsPage), widget);
+                    }
+                    else
+                    {
+                        _mainWidget = widget;
+                        _widgetWindows[Window.Current.CoreWindow] = "Widget2";
+                        rootFrame.Navigate(typeof(WidgetPage), widget);
+                    }
+
+                    Window.Current.Closed += GameBarWindow_Closed;
+                    Window.Current.Activate();
+                    return;
+                }
+
+                var fallbackFrame = EnsureRootFrame();
+                if (fallbackFrame.Content == null)
+                {
+                    DiagnosticsLog.Write("OnActivated fallback navigate StandalonePage");
+                    fallbackFrame.Navigate(typeof(StandalonePage), null);
+                }
+
+                DiagnosticsLog.Write("OnActivated fallback activate window");
                 Window.Current.Activate();
-                return;
             }
-
-            var fallbackFrame = EnsureRootFrame();
-            if (fallbackFrame.Content == null)
+            catch (Exception ex)
             {
-                DiagnosticsLog.Write("OnActivated fallback navigate StandalonePage");
-                fallbackFrame.Navigate(typeof(StandalonePage), null);
+                DiagnosticsLog.WriteException("OnActivated fail", ex);
+                ShowEmergencyFallback();
             }
-
-            DiagnosticsLog.Write("OnActivated fallback activate window");
-            Window.Current.Activate();
         }
 
         private void GameBarWindow_Closed(object sender, CoreWindowEventArgs e)
@@ -160,8 +179,24 @@ namespace Easy_Shortcut_for_UMPC
         private void OnUnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e)
         {
             DiagnosticsLog.Write($"UnhandledException msg={e.Message}");
+            if (e.Exception != null)
+            {
+                DiagnosticsLog.WriteException("UnhandledException detail", e.Exception);
+            }
             e.Handled = true;
             ShowEmergencyFallback();
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            DiagnosticsLog.Write($"AppDomain.UnhandledException terminating={e.IsTerminating}");
+            DiagnosticsLog.WriteException("AppDomain.UnhandledException detail", e.ExceptionObject as Exception);
+        }
+
+        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            DiagnosticsLog.WriteException("TaskScheduler.UnobservedTaskException", e.Exception);
+            e.SetObserved();
         }
 
         private void ShowEmergencyFallback()

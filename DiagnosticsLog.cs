@@ -1,26 +1,44 @@
 using System;
 using System.IO;
-using System.Diagnostics;
+using Windows.Storage;
 
 namespace Easy_Shortcut_for_UMPC
 {
     internal static class DiagnosticsLog
     {
         private static readonly object Sync = new object();
+        private static string _cachedLogPath;
 
         private static string LogPath
         {
             get
             {
-                var dir = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "EasyShortcutForUMPC");
+                if (!string.IsNullOrEmpty(_cachedLogPath))
+                {
+                    return _cachedLogPath;
+                }
+
+                string dir = null;
+                try
+                {
+                    dir = ApplicationData.Current.LocalFolder.Path;
+                }
+                catch
+                {
+                    // Fall through to temp path when LocalFolder is unavailable.
+                }
+
+                if (string.IsNullOrWhiteSpace(dir))
+                {
+                    dir = Path.Combine(Path.GetTempPath(), "EasyShortcutForUMPC");
+                }
+
                 Directory.CreateDirectory(dir);
-                return Path.Combine(dir, "uwp.log");
+                _cachedLogPath = Path.Combine(dir, "diagnostics.log");
+                return _cachedLogPath;
             }
         }
 
-        [Conditional("DEBUG")]
         internal static void Write(string message)
         {
             try
@@ -36,6 +54,17 @@ namespace Easy_Shortcut_for_UMPC
             {
                 // Debug diagnostics are best-effort; app behavior must not depend on log I/O.
             }
+        }
+
+        internal static void WriteException(string context, Exception ex)
+        {
+            if (ex == null)
+            {
+                Write($"{context} exception=(null)");
+                return;
+            }
+
+            Write($"{context} ex={ex.GetType().FullName} hr=0x{ex.HResult:X8} msg={ex.Message} stack={ex.StackTrace}");
         }
     }
 }
