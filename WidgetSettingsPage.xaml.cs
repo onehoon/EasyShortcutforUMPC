@@ -348,6 +348,7 @@ namespace Easy_Shortcut_for_UMPC
         {
             return sectionId switch
             {
+                WidgetSettingsDefaults.SectionLosslessScaling => "Lossless Scaling",
                 "overlay" => "OptiScaler Overlay",
                 "resolution" => "Display Resolution",
                 "custom" => "Custom",

@@ -50,10 +50,9 @@ You can:
 - Reset custom buttons back to `Not Set`
 - Change the layout order of widget sections
 
-The Lossless Scaling button and Settings button remain fixed at the top of the widget.
+The layout order can be customized for the following sections:
 
-The following sections can be reordered:
-
+- Lossless Scaling
 - OptiScaler Overlay
 - Display Resolution
 - Custom

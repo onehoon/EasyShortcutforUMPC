@@ -401,9 +401,10 @@ namespace Easy_Shortcut_for_UMPC
         {
             var map = new Dictionary<string, FrameworkElement>(StringComparer.OrdinalIgnoreCase)
             {
-                ["overlay"] = OverlaySection,
-                ["resolution"] = DisplayResolutionSection,
-                ["custom"] = CustomSection
+                [WidgetSettingsDefaults.SectionLosslessScaling] = LosslessScalingSection,
+                [WidgetSettingsDefaults.SectionOverlay] = OverlaySection,
+                [WidgetSettingsDefaults.SectionResolution] = DisplayResolutionSection,
+                [WidgetSettingsDefaults.SectionCustom] = CustomSection
             };
 
             ReorderableSectionsPanel.Children.Clear();
@@ -413,6 +414,11 @@ namespace Easy_Shortcut_for_UMPC
                 {
                     ReorderableSectionsPanel.Children.Add(element);
                 }
+            }
+
+            if (!ReorderableSectionsPanel.Children.Contains(LosslessScalingSection))
+            {
+                ReorderableSectionsPanel.Children.Add(LosslessScalingSection);
             }
 
             if (!ReorderableSectionsPanel.Children.Contains(OverlaySection))

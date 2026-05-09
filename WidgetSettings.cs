@@ -9,8 +9,19 @@ namespace Easy_Shortcut_for_UMPC
 {
     internal static class WidgetSettingsDefaults
     {
+        internal const string SectionLosslessScaling = "LosslessScaling";
+        internal const string SectionOverlay = "overlay";
+        internal const string SectionResolution = "resolution";
+        internal const string SectionCustom = "custom";
+
         internal static readonly IReadOnlyList<string> DefaultLosslessKeys = new[] { "Ctrl", "Alt", "S" };
-        internal static readonly IReadOnlyList<string> DefaultSectionOrder = new[] { "overlay", "resolution", "custom" };
+        internal static readonly IReadOnlyList<string> DefaultSectionOrder = new[]
+        {
+            SectionLosslessScaling,
+            SectionOverlay,
+            SectionResolution,
+            SectionCustom
+        };
 
         internal static WidgetSettings Create()
         {
@@ -117,22 +128,28 @@ namespace Easy_Shortcut_for_UMPC
                 var cleaned = new List<string>();
                 foreach (string section in input.SectionOrder)
                 {
-                    if (string.Equals(section, "overlay", StringComparison.OrdinalIgnoreCase) ||
-                        string.Equals(section, "resolution", StringComparison.OrdinalIgnoreCase) ||
-                        string.Equals(section, "custom", StringComparison.OrdinalIgnoreCase))
+                    string normalizedSection = NormalizeSectionId(section);
+                    if (!string.IsNullOrEmpty(normalizedSection) && !cleaned.Contains(normalizedSection, StringComparer.OrdinalIgnoreCase))
                     {
-                        string normalized = section.ToLowerInvariant();
-                        if (!cleaned.Contains(normalized))
-                        {
-                            cleaned.Add(normalized);
-                        }
+                        cleaned.Add(normalizedSection);
                     }
                 }
 
-                if (cleaned.Count == 3)
+                if (!cleaned.Contains(WidgetSettingsDefaults.SectionLosslessScaling, StringComparer.OrdinalIgnoreCase))
                 {
-                    result.SectionOrder = cleaned;
+                    // Preserve existing user-defined order and insert new section at the top for older saved layouts.
+                    cleaned.Insert(0, WidgetSettingsDefaults.SectionLosslessScaling);
                 }
+
+                foreach (string defaultSection in WidgetSettingsDefaults.DefaultSectionOrder)
+                {
+                    if (!cleaned.Contains(defaultSection, StringComparer.OrdinalIgnoreCase))
+                    {
+                        cleaned.Add(defaultSection);
+                    }
+                }
+
+                result.SectionOrder = cleaned;
             }
 
             return result;
@@ -192,6 +209,38 @@ namespace Easy_Shortcut_for_UMPC
                 || string.Equals(normalized, "Control", StringComparison.OrdinalIgnoreCase)
                 || string.Equals(normalized, "Alt", StringComparison.OrdinalIgnoreCase)
                 || string.Equals(normalized, "Shift", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string NormalizeSectionId(string section)
+        {
+            if (string.IsNullOrWhiteSpace(section))
+            {
+                return null;
+            }
+
+            string normalized = section.Trim();
+            if (string.Equals(normalized, WidgetSettingsDefaults.SectionLosslessScaling, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(normalized, "losslessscaling", StringComparison.OrdinalIgnoreCase))
+            {
+                return WidgetSettingsDefaults.SectionLosslessScaling;
+            }
+
+            if (string.Equals(normalized, WidgetSettingsDefaults.SectionOverlay, StringComparison.OrdinalIgnoreCase))
+            {
+                return WidgetSettingsDefaults.SectionOverlay;
+            }
+
+            if (string.Equals(normalized, WidgetSettingsDefaults.SectionResolution, StringComparison.OrdinalIgnoreCase))
+            {
+                return WidgetSettingsDefaults.SectionResolution;
+            }
+
+            if (string.Equals(normalized, WidgetSettingsDefaults.SectionCustom, StringComparison.OrdinalIgnoreCase))
+            {
+                return WidgetSettingsDefaults.SectionCustom;
+            }
+
+            return null;
         }
 
         private static string GetSettingsFilePath()
