@@ -368,7 +368,6 @@ namespace Easy_Shortcut_for_UMPC
         private void ReloadSettings()
         {
             _settings = WidgetSettingsStore.Load();
-            DiagnosticsLog.Write("Reloaded SectionOrder=" + string.Join(",", _settings.SectionOrder));
             ApplySettingsToUi();
         }
 
