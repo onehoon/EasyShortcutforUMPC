@@ -45,6 +45,7 @@ namespace Easy_Shortcut_for_UMPC
     internal static class WidgetSettingsStore
     {
         private const string SettingsFileName = "widget_settings.json";
+        internal static event EventHandler SettingsSaved;
 
         internal static WidgetSettings Load()
         {
@@ -81,6 +82,7 @@ namespace Easy_Shortcut_for_UMPC
             string filePath = GetSettingsFilePath();
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
             File.WriteAllText(filePath, Serialize(normalized));
+            SettingsSaved?.Invoke(null, EventArgs.Empty);
         }
 
         internal static WidgetSettings Normalize(WidgetSettings input)

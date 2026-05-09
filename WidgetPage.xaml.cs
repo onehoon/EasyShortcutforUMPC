@@ -250,6 +250,7 @@ namespace Easy_Shortcut_for_UMPC
             }
 
             Window.Current.Activated += CurrentWindow_Activated;
+            WidgetSettingsStore.SettingsSaved += WidgetSettingsStore_SettingsSaved;
             if (_gameBarWidget != null)
             {
                 _gameBarWidget.SettingsClicked += Widget_SettingsClicked;
@@ -263,6 +264,7 @@ namespace Easy_Shortcut_for_UMPC
             if (_eventsHooked)
             {
                 Window.Current.Activated -= CurrentWindow_Activated;
+                WidgetSettingsStore.SettingsSaved -= WidgetSettingsStore_SettingsSaved;
                 if (_gameBarWidget != null)
                 {
                     _gameBarWidget.SettingsClicked -= Widget_SettingsClicked;
@@ -287,6 +289,14 @@ namespace Easy_Shortcut_for_UMPC
             }
 
             ReloadSettings();
+        }
+
+        private async void WidgetSettingsStore_SettingsSaved(object sender, EventArgs e)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                ReloadSettings();
+            });
         }
 
         private async void CustomButton1_Click(object sender, RoutedEventArgs e)
@@ -358,6 +368,7 @@ namespace Easy_Shortcut_for_UMPC
         private void ReloadSettings()
         {
             _settings = WidgetSettingsStore.Load();
+            DiagnosticsLog.Write("Reloaded SectionOrder=" + string.Join(",", _settings.SectionOrder));
             ApplySettingsToUi();
         }
 

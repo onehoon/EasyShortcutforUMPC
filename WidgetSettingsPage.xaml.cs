@@ -170,6 +170,7 @@ namespace Easy_Shortcut_for_UMPC
             try
             {
                 _draft = WidgetSettingsStore.Normalize(_draft);
+                DiagnosticsLog.Write("Saving SectionOrder=" + string.Join(",", _draft.SectionOrder));
                 WidgetSettingsStore.Save(_draft);
                 await CloseSettingsAndReturnToMainAsync();
             }
