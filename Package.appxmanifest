@@ -80,7 +80,7 @@
           <uap3:AppExtension
             Name="microsoft.gameBarUIExtension"
             Id="Widget2Settings"
-            DisplayName="Easy Shortcut for UMPC Settings"
+            DisplayName="Settings"
             Description="Settings for Easy Shortcut for UMPC"
             PublicFolder="GameBar">
             <uap3:Properties>
