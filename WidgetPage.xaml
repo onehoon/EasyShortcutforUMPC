@@ -46,6 +46,12 @@
             <Setter Property="Background" Value="{StaticResource OverlayButtonBackground}" />
         </Style>
 
+        <Style x:Key="ResolutionButtonStyle" TargetType="Button" BasedOn="{StaticResource ShortcutButtonStyle}">
+            <Setter Property="MinHeight" Value="64" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="FontSize" Value="15" />
+        </Style>
+
     </Page.Resources>
 
     <Grid Background="Transparent" Padding="12">
@@ -58,6 +64,8 @@
             VerticalAlignment="Top">
             <Grid Padding="12" RowSpacing="12">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
@@ -100,81 +108,120 @@
                         Content="Close App" />
                 </Grid>
 
-                <Grid Grid.Row="1" RowSpacing="12">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                <Grid Grid.Row="1" ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-                    <Grid Grid.Row="0" ColumnSpacing="12">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                    <Button
+                        Grid.Column="0"
+                        x:Name="InsertButton"
+                        Tag="overlay"
+                        Style="{StaticResource OverlayButtonStyle}"
+                        Click="InsertButton_Click"
+                        PointerEntered="Button_PointerEntered"
+                        PointerExited="Button_PointerExited"
+                        PointerPressed="Button_PointerPressed"
+                        PointerReleased="Button_PointerReleased">
+                        <StackPanel Spacing="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="OptiScaler Overlay" HorizontalAlignment="Center" TextAlignment="Center" />
+                            <TextBlock Text="(Insert)" FontSize="13" Opacity="0.82" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="NoWrap" />
+                        </StackPanel>
+                    </Button>
 
-                        <Button
-                            Grid.Column="0"
-                            x:Name="InsertButton"
-                            Tag="overlay"
-                            Style="{StaticResource OverlayButtonStyle}"
-                            Click="InsertButton_Click"
-                            PointerEntered="Button_PointerEntered"
-                            PointerExited="Button_PointerExited"
-                            PointerPressed="Button_PointerPressed"
-                            PointerReleased="Button_PointerReleased">
-                            <StackPanel Spacing="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock Text="OptiScaler Overlay" HorizontalAlignment="Center" TextAlignment="Center" />
-                                <TextBlock Text="(Insert)" FontSize="13" Opacity="0.82" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="NoWrap" />
-                            </StackPanel>
-                        </Button>
+                    <Button
+                        Grid.Column="1"
+                        x:Name="AltInsertButton"
+                        Tag="overlay"
+                        Style="{StaticResource OverlayButtonStyle}"
+                        Click="AltInsertButton_Click"
+                        PointerEntered="Button_PointerEntered"
+                        PointerExited="Button_PointerExited"
+                        PointerPressed="Button_PointerPressed"
+                        PointerReleased="Button_PointerReleased">
+                        <StackPanel Spacing="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="OptiScaler Overlay" HorizontalAlignment="Center" TextAlignment="Center" />
+                            <TextBlock Text="(Alt+Insert)" FontSize="13" Opacity="0.82" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="NoWrap" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
 
-                        <Button
-                            Grid.Column="1"
-                            x:Name="AltInsertButton"
-                            Tag="overlay"
-                            Style="{StaticResource OverlayButtonStyle}"
-                            Click="AltInsertButton_Click"
-                            PointerEntered="Button_PointerEntered"
-                            PointerExited="Button_PointerExited"
-                            PointerPressed="Button_PointerPressed"
-                            PointerReleased="Button_PointerReleased">
-                            <StackPanel Spacing="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock Text="OptiScaler Overlay" HorizontalAlignment="Center" TextAlignment="Center" />
-                                <TextBlock Text="(Alt+Insert)" FontSize="13" Opacity="0.82" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="NoWrap" />
-                            </StackPanel>
-                        </Button>
-                    </Grid>
+                <Border
+                    x:Name="DisplayResolutionSection"
+                    Grid.Row="2"
+                    Background="#6633363C"
+                    BorderBrush="#66FFFFFF"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    Padding="10"
+                    Visibility="Collapsed">
+                    <StackPanel Spacing="10">
+                        <TextBlock
+                            Text="Display Resolution"
+                            FontSize="15"
+                            FontWeight="SemiBold"
+                            Foreground="#FFF7F8FB" />
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                    <Grid Grid.Row="1" ColumnSpacing="12">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                            <Button
+                                Grid.Column="0"
+                                x:Name="ResolutionButton1"
+                                Style="{StaticResource ResolutionButtonStyle}"
+                                Click="ResolutionButton1_Click"
+                                Content="1200p" />
 
-                        <Button
-                            Grid.Column="0"
-                            x:Name="HomeButton"
-                            Tag="default"
-                            Style="{StaticResource ShortcutButtonStyle}"
-                            Click="HomeButton_Click"
-                            PointerEntered="Button_PointerEntered"
-                            PointerExited="Button_PointerExited"
-                            PointerPressed="Button_PointerPressed"
-                            PointerReleased="Button_PointerReleased"
-                            Content="Home" />
+                            <Button
+                                Grid.Column="1"
+                                x:Name="ResolutionButton2"
+                                Style="{StaticResource ResolutionButtonStyle}"
+                                Click="ResolutionButton2_Click"
+                                Content="1080p" />
 
-                        <Button
-                            Grid.Column="1"
-                            x:Name="EndButton"
-                            Tag="default"
-                            Style="{StaticResource ShortcutButtonStyle}"
-                            Click="EndButton_Click"
-                            PointerEntered="Button_PointerEntered"
-                            PointerExited="Button_PointerExited"
-                            PointerPressed="Button_PointerPressed"
-                            PointerReleased="Button_PointerReleased"
-                            Content="End" />
-                    </Grid>
+                            <Button
+                                Grid.Column="2"
+                                x:Name="ResolutionButton3"
+                                Style="{StaticResource ResolutionButtonStyle}"
+                                Click="ResolutionButton3_Click"
+                                Content="1050p" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Grid Grid.Row="3" ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button
+                        Grid.Column="0"
+                        x:Name="EndButton"
+                        Tag="default"
+                        Style="{StaticResource ShortcutButtonStyle}"
+                        Click="EndButton_Click"
+                        PointerEntered="Button_PointerEntered"
+                        PointerExited="Button_PointerExited"
+                        PointerPressed="Button_PointerPressed"
+                        PointerReleased="Button_PointerReleased"
+                        Content="End" />
+
+                    <Button
+                        Grid.Column="1"
+                        x:Name="HomeButton"
+                        Tag="default"
+                        Style="{StaticResource ShortcutButtonStyle}"
+                        Click="HomeButton_Click"
+                        PointerEntered="Button_PointerEntered"
+                        PointerExited="Button_PointerExited"
+                        PointerPressed="Button_PointerPressed"
+                        PointerReleased="Button_PointerReleased"
+                        Content="Home" />
                 </Grid>
             </Grid>
         </Border>

@@ -83,6 +83,12 @@
             <desktop:ParameterGroup GroupId="EndCommand" Parameters="end" />
             <desktop:ParameterGroup GroupId="LosslessScalingCommand" Parameters="losslessscaling" />
             <desktop:ParameterGroup GroupId="QuitCommand" Parameters="quit" />
+            <desktop:ParameterGroup GroupId="DetectResolutionPresetsCommand" Parameters="detect-resolution-presets" />
+            <desktop:ParameterGroup GroupId="SetResolution1920x1200Command" Parameters="set-resolution-1920-1200" />
+            <desktop:ParameterGroup GroupId="SetResolution1920x1080Command" Parameters="set-resolution-1920-1080" />
+            <desktop:ParameterGroup GroupId="SetResolution1680x1050Command" Parameters="set-resolution-1680-1050" />
+            <desktop:ParameterGroup GroupId="SetResolution1600x900Command" Parameters="set-resolution-1600-900" />
+            <desktop:ParameterGroup GroupId="SetResolution1280x720Command" Parameters="set-resolution-1280-720" />
           </desktop:FullTrustProcess>
         </desktop:Extension>
       </Extensions>
