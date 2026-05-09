@@ -47,6 +47,7 @@ void WriteState(
     bool support1200,
     bool support1080,
     bool support1050,
+    bool support800,
     bool support900,
     bool support720) {
     const auto dir = GetLocalStatePath();
@@ -64,6 +65,7 @@ void WriteState(
     out << L"support_1200p=" << (support1200 ? 1 : 0) << L"\n";
     out << L"support_1080p=" << (support1080 ? 1 : 0) << L"\n";
     out << L"support_1050p=" << (support1050 ? 1 : 0) << L"\n";
+    out << L"support_1440x900=" << (support800 ? 1 : 0) << L"\n";
     out << L"support_900p=" << (support900 ? 1 : 0) << L"\n";
     out << L"support_720p=" << (support720 ? 1 : 0) << L"\n";
 }
@@ -77,13 +79,13 @@ bool IsTargetSupported(const std::wstring& gdiDeviceName, int width, int height)
 void RunDetection() {
     const auto info = display::DetectPrimaryDisplayInfo();
     if (!info.valid || info.hasActiveExternalPath || !info.primaryIsInternal || info.primaryGdiDeviceName.empty()) {
-        WriteState(false, L"none", false, false, false, false, false);
+        WriteState(false, L"none", false, false, false, false, false, false);
         return;
     }
 
     const auto modes = display::EnumerateModes(info.primaryGdiDeviceName);
     if (modes.empty()) {
-        WriteState(false, L"none", false, false, false, false, false);
+        WriteState(false, L"none", false, false, false, false, false, false);
         return;
     }
 
@@ -94,8 +96,9 @@ void RunDetection() {
         const bool support1200 = IsTargetSupported(info.primaryGdiDeviceName, 1920, 1200);
         const bool support1080 = IsTargetSupported(info.primaryGdiDeviceName, 1920, 1080);
         const bool support1050 = IsTargetSupported(info.primaryGdiDeviceName, 1680, 1050);
-        const bool any = support1200 || support1080 || support1050;
-        WriteState(any, L"1200", support1200, support1080, support1050, false, false);
+        const bool support800 = IsTargetSupported(info.primaryGdiDeviceName, 1440, 900);
+        const bool any = support1200 || support1080 || support1050 || support800;
+        WriteState(any, L"1200", support1200, support1080, support1050, support800, false, false);
         return;
     }
 
@@ -104,11 +107,11 @@ void RunDetection() {
         const bool support900 = IsTargetSupported(info.primaryGdiDeviceName, 1600, 900);
         const bool support720 = IsTargetSupported(info.primaryGdiDeviceName, 1280, 720);
         const bool any = support1080 || support900 || support720;
-        WriteState(any, L"1080", false, support1080, false, support900, support720);
+        WriteState(any, L"1080", false, support1080, false, false, support900, support720);
         return;
     }
 
-    WriteState(false, L"none", false, false, false, false, false);
+    WriteState(false, L"none", false, false, false, false, false, false);
 }
 
 void RunSetResolution(int width, int height) {
@@ -132,6 +135,7 @@ bool IsDisplayResolutionCommand(const std::wstring& action) {
            action == L"set-resolution-1920-1080" ||
            action == L"set-resolution-1680-1050" ||
            action == L"set-resolution-1600-900" ||
+           action == L"set-resolution-1440-900" ||
            action == L"set-resolution-1280-720";
 }
 
@@ -146,6 +150,8 @@ void ExecuteDisplayResolutionCommand(const std::wstring& action) {
         RunSetResolution(1680, 1050);
     } else if (action == L"set-resolution-1600-900") {
         RunSetResolution(1600, 900);
+    } else if (action == L"set-resolution-1440-900") {
+        RunSetResolution(1440, 900);
     } else if (action == L"set-resolution-1280-720") {
         RunSetResolution(1280, 720);
     }

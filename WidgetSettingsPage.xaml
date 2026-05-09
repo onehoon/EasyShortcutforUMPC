@@ -32,27 +32,29 @@
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Spacing="8">
                     <TextBlock Text="Lossless Scaling" FontSize="16" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
-                    <Grid ColumnSpacing="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="120" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+                    <Border Background="#3033363C" CornerRadius="8" Padding="8">
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="168" />
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                        <StackPanel Grid.Column="0" Spacing="4">
-                            <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
-                            <ComboBox x:Name="LosslessModifierCombo" Height="40" MinHeight="40" HorizontalAlignment="Stretch" />
-                        </StackPanel>
+                            <StackPanel Grid.Column="0" Spacing="4">
+                                <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
+                                <ComboBox x:Name="LosslessModifierCombo" Height="40" MinHeight="40" HorizontalAlignment="Stretch" />
+                            </StackPanel>
 
-                        <StackPanel Grid.Column="1" Spacing="4">
-                            <TextBlock Text="Key" Foreground="#CCF7F8FB" />
-                            <ComboBox x:Name="LosslessKeyCombo" Height="40" MinHeight="40" HorizontalAlignment="Stretch" />
-                        </StackPanel>
+                            <StackPanel Grid.Column="1" Spacing="4">
+                                <TextBlock Text="Key" Foreground="#CCF7F8FB" />
+                                <ComboBox x:Name="LosslessKeyCombo" Height="40" MinHeight="40" HorizontalAlignment="Stretch" />
+                            </StackPanel>
 
-                        <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
-                            <Button x:Name="LosslessResetButton" Content="Reset" Click="LosslessReset_Click" Height="40" MinHeight="40" MinWidth="64" />
-                        </StackPanel>
-                    </Grid>
+                            <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
+                                <Button x:Name="LosslessResetButton" Content="Reset" Click="LosslessReset_Click" Height="40" MinHeight="40" MinWidth="64" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
 
                     <TextBlock Text="Custom Shortcuts" FontSize="16" FontWeight="SemiBold" Foreground="#FFF7F8FB" Margin="0,8,0,0" />
 
@@ -61,8 +63,8 @@
                             <TextBlock Text="Custom 1" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
                             <Grid ColumnSpacing="8">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="112" />
+                                    <ColumnDefinition Width="168" />
+                                    <ColumnDefinition Width="140" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
@@ -88,8 +90,8 @@
                             <TextBlock Text="Custom 2" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
                             <Grid ColumnSpacing="8">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="112" />
+                                    <ColumnDefinition Width="168" />
+                                    <ColumnDefinition Width="140" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
@@ -115,8 +117,8 @@
                             <TextBlock Text="Custom 3" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
                             <Grid ColumnSpacing="8">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="112" />
+                                    <ColumnDefinition Width="168" />
+                                    <ColumnDefinition Width="140" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 

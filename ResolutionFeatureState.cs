@@ -21,6 +21,7 @@ namespace Easy_Shortcut_for_UMPC
         internal bool Support1200p { get; set; }
         internal bool Support1080p { get; set; }
         internal bool Support1050p { get; set; }
+        internal bool Support1440x900 { get; set; }
         internal bool Support900p { get; set; }
         internal bool Support720p { get; set; }
 
@@ -31,6 +32,7 @@ namespace Easy_Shortcut_for_UMPC
             Support1200p = false,
             Support1080p = false,
             Support1050p = false,
+            Support1440x900 = false,
             Support900p = false,
             Support720p = false
         };
@@ -137,6 +139,7 @@ namespace Easy_Shortcut_for_UMPC
                 Support1200p = IsEnabled(values, "support_1200p"),
                 Support1080p = IsEnabled(values, "support_1080p"),
                 Support1050p = IsEnabled(values, "support_1050p"),
+                Support1440x900 = IsEnabled(values, "support_1440x900"),
                 Support900p = IsEnabled(values, "support_900p"),
                 Support720p = IsEnabled(values, "support_720p")
             };

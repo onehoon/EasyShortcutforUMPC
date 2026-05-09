@@ -103,14 +103,15 @@
                             <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Image Source="GameBar/assets/LSFG.png" Width="30" Height="30" Stretch="Uniform" />
                                 <StackPanel Spacing="2" VerticalAlignment="Center">
-                                    <TextBlock Text="Lossless Scaling" HorizontalAlignment="Left" TextAlignment="Left" />
+                                    <TextBlock Text="Lossless Scaling" HorizontalAlignment="Center" TextAlignment="Center" />
                                     <TextBlock
                                         x:Name="LosslessShortcutTextBlock"
-                                        Text="(Ctrl + Alt + S)"
+                                        Text="(Ctrl+Alt+S)"
                                         FontSize="13"
                                         Opacity="0.82"
-                                        HorizontalAlignment="Left"
-                                        TextAlignment="Left" />
+                                        HorizontalAlignment="Center"
+                                        TextAlignment="Center"
+                                        TextWrapping="NoWrap" />
                                 </StackPanel>
                             </StackPanel>
                         </Button>
@@ -183,8 +184,9 @@
                                 FontSize="15"
                                 FontWeight="SemiBold"
                                 Foreground="#FFF7F8FB" />
-                            <Grid ColumnSpacing="6">
+                            <Grid x:Name="ResolutionButtonsGrid" ColumnSpacing="6">
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
@@ -210,6 +212,14 @@
                                     Style="{StaticResource ResolutionButtonStyle}"
                                     Click="ResolutionButton3_Click"
                                     Content="1050p" />
+
+                                <Button
+                                    Grid.Column="3"
+                                    x:Name="ResolutionButton4"
+                                    Style="{StaticResource ResolutionButtonStyle}"
+                                    Click="ResolutionButton4_Click"
+                                    Content="900p"
+                                    Visibility="Collapsed" />
                             </Grid>
                         </StackPanel>
                     </Border>

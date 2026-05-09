@@ -12,7 +12,7 @@
   <Identity
     Name="onehoon.EasyShortcutforUMPC"
     Publisher="CN=1F7B64F8-727D-460F-BC6B-347DD604F69F"
-    Version="1.0.8.0" />
+    Version="1.0.9.0" />
 
   <mp:PhoneIdentity PhoneProductId="4fac8839-76bf-47c8-be7c-57c4109e639e" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
@@ -116,6 +116,7 @@
             <desktop:ParameterGroup GroupId="SetResolution1920x1080Command" Parameters="set-resolution-1920-1080" />
             <desktop:ParameterGroup GroupId="SetResolution1680x1050Command" Parameters="set-resolution-1680-1050" />
             <desktop:ParameterGroup GroupId="SetResolution1600x900Command" Parameters="set-resolution-1600-900" />
+            <desktop:ParameterGroup GroupId="SetResolution1440x900Command" Parameters="set-resolution-1440-900" />
             <desktop:ParameterGroup GroupId="SetResolution1280x720Command" Parameters="set-resolution-1280-720" />
           </desktop:FullTrustProcess>
         </desktop:Extension>

@@ -17,6 +17,7 @@ namespace Easy_Shortcut_for_UMPC
         private string _resolutionAction1;
         private string _resolutionAction2;
         private string _resolutionAction3;
+        private string _resolutionAction4;
         private WidgetSettings _settings;
         private XboxGameBarWidget _gameBarWidget;
         private bool _eventsHooked;
@@ -32,6 +33,7 @@ namespace Easy_Shortcut_for_UMPC
         private const string ActionSetResolution1080 = "set-resolution-1920-1080";
         private const string ActionSetResolution1050 = "set-resolution-1680-1050";
         private const string ActionSetResolution900 = "set-resolution-1600-900";
+        private const string ActionSetResolution1440x900 = "set-resolution-1440-900";
         private const string ActionSetResolution720 = "set-resolution-1280-720";
 
         // Must stay in sync with desktop:ParameterGroup GroupId values in Package.appxmanifest.
@@ -46,6 +48,7 @@ namespace Easy_Shortcut_for_UMPC
         private const string GroupSetResolution1080 = "SetResolution1920x1080Command";
         private const string GroupSetResolution1050 = "SetResolution1680x1050Command";
         private const string GroupSetResolution900 = "SetResolution1600x900Command";
+        private const string GroupSetResolution1440x900 = "SetResolution1440x900Command";
         private const string GroupSetResolution720 = "SetResolution1280x720Command";
 
         public WidgetPage()
@@ -135,6 +138,7 @@ namespace Easy_Shortcut_for_UMPC
                 ActionSetResolution1080 => GroupSetResolution1080,
                 ActionSetResolution1050 => GroupSetResolution1050,
                 ActionSetResolution900 => GroupSetResolution900,
+                ActionSetResolution1440x900 => GroupSetResolution1440x900,
                 ActionSetResolution720 => GroupSetResolution720,
                 _ => null
             };
@@ -181,8 +185,9 @@ namespace Easy_Shortcut_for_UMPC
                 ConfigureResolutionButtons(
                     "1200p", ActionSetResolution1200,
                     "1080p", ActionSetResolution1080,
-                    "1050p", ActionSetResolution1050);
-                ApplyPresetVisibility(state.Support1200p, state.Support1080p, state.Support1050p);
+                    "1050p", ActionSetResolution1050,
+                    "900p", ActionSetResolution1440x900);
+                ApplyPresetVisibility(state.Support1200p, state.Support1080p, state.Support1050p, state.Support1440x900);
                 return;
             }
 
@@ -191,8 +196,9 @@ namespace Easy_Shortcut_for_UMPC
                 ConfigureResolutionButtons(
                     "1080p", ActionSetResolution1080,
                     "900p", ActionSetResolution900,
-                    "720p", ActionSetResolution720);
-                ApplyPresetVisibility(state.Support1080p, state.Support900p, state.Support720p);
+                    "720p", ActionSetResolution720,
+                    "900p", ActionSetResolution1440x900);
+                ApplyPresetVisibility(state.Support1080p, state.Support900p, state.Support720p, false);
             }
         }
 
@@ -202,27 +208,61 @@ namespace Easy_Shortcut_for_UMPC
             string label2,
             string action2,
             string label3,
-            string action3)
+            string action3,
+            string label4,
+            string action4)
         {
             ResolutionButton1.Content = label1;
             ResolutionButton2.Content = label2;
             ResolutionButton3.Content = label3;
+            ResolutionButton4.Content = label4;
             _resolutionAction1 = action1;
             _resolutionAction2 = action2;
             _resolutionAction3 = action3;
+            _resolutionAction4 = action4;
         }
 
-        private void ApplyPresetVisibility(bool showFirst, bool showSecond, bool showThird)
+        private void ApplyPresetVisibility(bool showFirst, bool showSecond, bool showThird, bool showFourth)
         {
             ResolutionButton1.Visibility = showFirst ? Visibility.Visible : Visibility.Collapsed;
             ResolutionButton2.Visibility = showSecond ? Visibility.Visible : Visibility.Collapsed;
             ResolutionButton3.Visibility = showThird ? Visibility.Visible : Visibility.Collapsed;
+            ResolutionButton4.Visibility = showFourth ? Visibility.Visible : Visibility.Collapsed;
 
             _resolutionAction1 = showFirst ? _resolutionAction1 : null;
             _resolutionAction2 = showSecond ? _resolutionAction2 : null;
             _resolutionAction3 = showThird ? _resolutionAction3 : null;
+            _resolutionAction4 = showFourth ? _resolutionAction4 : null;
 
-            bool anyVisible = showFirst || showSecond || showThird;
+            var visibleButtons = new List<Button>(4);
+            if (showFirst)
+            {
+                visibleButtons.Add(ResolutionButton1);
+            }
+
+            if (showSecond)
+            {
+                visibleButtons.Add(ResolutionButton2);
+            }
+
+            if (showThird)
+            {
+                visibleButtons.Add(ResolutionButton3);
+            }
+
+            if (showFourth)
+            {
+                visibleButtons.Add(ResolutionButton4);
+            }
+
+            ResolutionButtonsGrid.ColumnDefinitions.Clear();
+            for (int i = 0; i < visibleButtons.Count; i++)
+            {
+                ResolutionButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                Grid.SetColumn(visibleButtons[i], i);
+            }
+
+            bool anyVisible = visibleButtons.Count > 0;
             DisplayResolutionSection.Visibility = anyVisible ? Visibility.Visible : Visibility.Collapsed;
             ApplySectionOrder();
         }
@@ -461,9 +501,17 @@ namespace Easy_Shortcut_for_UMPC
             }
         }
 
+        private async void ResolutionButton4_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(_resolutionAction4))
+            {
+                await LaunchHelperActionAsync(_resolutionAction4);
+            }
+        }
+
         private static string FormatShortcut(IReadOnlyList<string> keys)
         {
-            return WidgetSettingsStore.IsValidKeys(keys) ? string.Join(" + ", keys) : "Not Set";
+            return WidgetSettingsStore.IsValidKeys(keys) ? string.Join("+", keys) : "Not Set";
         }
 
     }

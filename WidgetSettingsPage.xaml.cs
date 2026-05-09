@@ -136,7 +136,7 @@ namespace Easy_Shortcut_for_UMPC
             for (int i = 0; i < _draft.SectionOrder.Count; i++)
             {
                 string section = _draft.SectionOrder[i];
-                var row = new Grid { ColumnSpacing = 8 };
+                var row = new Grid { ColumnSpacing = 6, Margin = new Thickness(0, 0, 16, 6) };
                 row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
                 row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
@@ -148,8 +148,23 @@ namespace Easy_Shortcut_for_UMPC
                     Foreground = new SolidColorBrush(Windows.UI.Colors.White)
                 };
 
-                var up = new Button { Content = "▲", MinWidth = 40, IsEnabled = i > 0 };
-                var down = new Button { Content = "▼", MinWidth = 40, IsEnabled = i < _draft.SectionOrder.Count - 1 };
+                var up = new Button
+                {
+                    Content = "▲",
+                    MinWidth = 56,
+                    Height = 40,
+                    Padding = new Thickness(12, 0, 12, 0),
+                    Margin = new Thickness(0, 0, 6, 0),
+                    IsEnabled = i > 0
+                };
+                var down = new Button
+                {
+                    Content = "▼",
+                    MinWidth = 56,
+                    Height = 40,
+                    Padding = new Thickness(12, 0, 12, 0),
+                    IsEnabled = i < _draft.SectionOrder.Count - 1
+                };
 
                 int index = i;
                 up.Click += (_, __) =>
