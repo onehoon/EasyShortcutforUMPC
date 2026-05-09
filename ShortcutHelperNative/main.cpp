@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <appmodel.h>
 #include <shellapi.h>
 #include <shlobj.h>
 
@@ -14,6 +15,28 @@ constexpr DWORD kDuplicateGuardMs = 700;
 constexpr DWORD kInitialSettleMs = 120;
 
 std::wstring GetLocalDataPath(const wchar_t* fileName) {
+    UINT32 packageFamilyNameLength = 0;
+    LONG packageResult = GetCurrentPackageFamilyName(&packageFamilyNameLength, nullptr);
+    if (packageResult == ERROR_INSUFFICIENT_BUFFER && packageFamilyNameLength > 0) {
+        std::vector<wchar_t> packageFamilyName(packageFamilyNameLength);
+        if (GetCurrentPackageFamilyName(&packageFamilyNameLength, packageFamilyName.data()) == ERROR_SUCCESS) {
+            wchar_t* localAppData = nullptr;
+            size_t len = 0;
+            _wdupenv_s(&localAppData, &len, L"LOCALAPPDATA");
+            std::wstring base = localAppData ? localAppData : L"";
+            if (localAppData) {
+                free(localAppData);
+            }
+
+            if (!base.empty()) {
+                std::filesystem::path packageLocalStatePath = std::filesystem::path(base) / L"Packages" / packageFamilyName.data() / L"LocalState";
+                std::filesystem::create_directories(packageLocalStatePath);
+                return (packageLocalStatePath / fileName).wstring();
+            }
+        }
+    }
+
+    // Fallback for unexpected non-packaged execution contexts.
     std::wstring base;
     PWSTR knownFolderPath = nullptr;
     if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &knownFolderPath)) && knownFolderPath != nullptr) {

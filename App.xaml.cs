@@ -14,6 +14,7 @@ namespace Easy_Shortcut_for_UMPC
 {
     public sealed partial class App : Application
     {
+        // Keep widget instances alive for the lifetime of each Game Bar window.
         private XboxGameBarWidget _mainWidget;
         private XboxGameBarWidget _settingsWidget;
         private readonly Dictionary<CoreWindow, string> _widgetWindows = new Dictionary<CoreWindow, string>();

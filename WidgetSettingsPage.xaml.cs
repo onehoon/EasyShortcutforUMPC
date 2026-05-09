@@ -145,6 +145,12 @@ namespace Easy_Shortcut_for_UMPC
             ValidationTextBlock.Visibility = Visibility.Collapsed;
             ValidationTextBlock.Text = string.Empty;
 
+            if (string.Equals(LosslessKeyCombo.SelectedItem as string, "Not Set", StringComparison.OrdinalIgnoreCase))
+            {
+                SetValidation("Lossless Scaling shortcut must include a key.");
+                return;
+            }
+
             List<string> losslessKeys = ComposeShortcut(LosslessModifierCombo.SelectedItem as string ?? "None", LosslessKeyCombo.SelectedItem as string ?? "Not Set");
             if (losslessKeys.Count == 0)
             {
@@ -153,27 +159,23 @@ namespace Easy_Shortcut_for_UMPC
             }
 
             _draft.BuiltInLosslessKeys = losslessKeys;
-            if (!TryUpdateCustom("custom1", Custom1ModifierCombo, Custom1KeyCombo))
-            {
-                return;
-            }
+            TryUpdateCustom("custom1", Custom1ModifierCombo, Custom1KeyCombo);
+            TryUpdateCustom("custom2", Custom2ModifierCombo, Custom2KeyCombo);
+            TryUpdateCustom("custom3", Custom3ModifierCombo, Custom3KeyCombo);
 
-            if (!TryUpdateCustom("custom2", Custom2ModifierCombo, Custom2KeyCombo))
+            try
             {
-                return;
+                _draft = WidgetSettingsStore.Normalize(_draft);
+                WidgetSettingsStore.Save(_draft);
+                CloseCurrentWidgetWindow();
             }
-
-            if (!TryUpdateCustom("custom3", Custom3ModifierCombo, Custom3KeyCombo))
+            catch (Exception ex)
             {
-                return;
+                SetValidation($"Failed to save settings: {ex.Message}");
             }
-
-            _draft = WidgetSettingsStore.Normalize(_draft);
-            WidgetSettingsStore.Save(_draft);
-            CloseCurrentWidgetWindow();
         }
 
-        private bool TryUpdateCustom(string slotId, ComboBox modifier, ComboBox key)
+        private void TryUpdateCustom(string slotId, ComboBox modifier, ComboBox key)
         {
             List<string> keys = ComposeShortcut(modifier.SelectedItem as string ?? "None", key.SelectedItem as string ?? "Not Set");
 
@@ -181,8 +183,6 @@ namespace Easy_Shortcut_for_UMPC
             {
                 Keys = keys
             };
-
-            return true;
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -226,10 +226,10 @@ namespace Easy_Shortcut_for_UMPC
             }
         }
 
-        private void SetValidation(string text, bool isError = true)
+        private void SetValidation(string text)
         {
             ValidationTextBlock.Text = text;
-            ValidationTextBlock.Foreground = new SolidColorBrush(isError ? Windows.UI.Color.FromArgb(255, 255, 128, 128) : Windows.UI.Color.FromArgb(255, 160, 255, 160));
+            ValidationTextBlock.Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 255, 128, 128));
             ValidationTextBlock.Visibility = Visibility.Visible;
         }
 
@@ -247,16 +247,18 @@ namespace Easy_Shortcut_for_UMPC
 
         private static List<string> ComposeShortcut(string modifier, string key)
         {
+            if (string.IsNullOrWhiteSpace(key) || string.Equals(key, "Not Set", StringComparison.OrdinalIgnoreCase))
+            {
+                return new List<string>();
+            }
+
             var output = new List<string>();
             if (!string.IsNullOrWhiteSpace(modifier) && !string.Equals(modifier, "None", StringComparison.OrdinalIgnoreCase))
             {
                 output.AddRange(modifier.Split(new[] { '+' }, StringSplitOptions.RemoveEmptyEntries).Select(m => m.Trim()));
             }
 
-            if (!string.IsNullOrWhiteSpace(key) && !string.Equals(key, "Not Set", StringComparison.OrdinalIgnoreCase))
-            {
-                output.Add(key.Trim());
-            }
+            output.Add(key.Trim());
 
             return output;
         }

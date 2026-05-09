@@ -147,6 +147,11 @@ namespace Easy_Shortcut_for_UMPC
                 return false;
             }
 
+            if (keys.Count == 1)
+            {
+                return !IsModifierToken(keys[0]);
+            }
+
             for (int i = 0; i < keys.Count; i++)
             {
                 if (string.IsNullOrWhiteSpace(keys[i]))
@@ -155,7 +160,26 @@ namespace Easy_Shortcut_for_UMPC
                 }
             }
 
+            if (IsModifierToken(keys[keys.Count - 1]))
+            {
+                return false;
+            }
+
             return true;
+        }
+
+        private static bool IsModifierToken(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return false;
+            }
+
+            string normalized = token.Trim();
+            return string.Equals(normalized, "Ctrl", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(normalized, "Control", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(normalized, "Alt", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(normalized, "Shift", StringComparison.OrdinalIgnoreCase);
         }
 
         private static string GetSettingsFilePath()

@@ -19,6 +19,7 @@ namespace Easy_Shortcut_for_UMPC
         private string _resolutionAction3;
         private WidgetSettings _settings;
         private XboxGameBarWidget _gameBarWidget;
+        private bool _eventsHooked;
 
         private const string ActionInsert = "insert";
         private const string ActionAltInsert = "altinsert";
@@ -242,19 +243,32 @@ namespace Easy_Shortcut_for_UMPC
         {
             base.OnNavigatedTo(e);
             _gameBarWidget = e.Parameter as XboxGameBarWidget;
+
+            if (_eventsHooked)
+            {
+                return;
+            }
+
             Window.Current.Activated += CurrentWindow_Activated;
             if (_gameBarWidget != null)
             {
                 _gameBarWidget.SettingsClicked += Widget_SettingsClicked;
             }
+
+            _eventsHooked = true;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            Window.Current.Activated -= CurrentWindow_Activated;
-            if (_gameBarWidget != null)
+            if (_eventsHooked)
             {
-                _gameBarWidget.SettingsClicked -= Widget_SettingsClicked;
+                Window.Current.Activated -= CurrentWindow_Activated;
+                if (_gameBarWidget != null)
+                {
+                    _gameBarWidget.SettingsClicked -= Widget_SettingsClicked;
+                }
+
+                _eventsHooked = false;
             }
 
             base.OnNavigatedFrom(e);

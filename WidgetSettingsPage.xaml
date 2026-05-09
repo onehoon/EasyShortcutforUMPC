@@ -8,13 +8,6 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <Style TargetType="TextBox">
-            <Setter Property="Foreground" Value="#FFF7F8FB" />
-            <Setter Property="Background" Value="#6633363C" />
-            <Setter Property="BorderBrush" Value="#AA545963" />
-            <Setter Property="BorderThickness" Value="1" />
-        </Style>
-
         <Style TargetType="ComboBox">
             <Setter Property="Foreground" Value="#FFF7F8FB" />
             <Setter Property="Background" Value="#6633363C" />
