@@ -190,8 +190,8 @@ WORD MapKeyNameToVirtualKey(const std::wstring& keyName) {
     return 0;
 }
 
-std::vector<keyboard::KeyStroke> BuildComboFromKeys(const std::vector<std::wstring>& keys) {
-    std::vector<keyboard::KeyStroke> combo;
+std::vector<std::pair<WORD, bool>> BuildComboFromKeys(const std::vector<std::wstring>& keys) {
+    std::vector<std::pair<WORD, bool>> combo;
     WORD primaryKey = 0;
     bool ctrl = false;
     bool alt = false;
@@ -239,7 +239,7 @@ std::vector<keyboard::KeyStroke> BuildComboFromKeys(const std::vector<std::wstri
     return combo;
 }
 
-std::vector<keyboard::KeyStroke> GetLosslessComboFromSettings() {
+std::vector<std::pair<WORD, bool>> GetLosslessComboFromSettings() {
     std::wstring json = ReadTextFile(GetSettingsPath());
     if (json.empty()) {
         return {{VK_CONTROL, false}, {VK_MENU, false}, {0x53, false}};
@@ -256,7 +256,7 @@ std::vector<keyboard::KeyStroke> GetLosslessComboFromSettings() {
     return combo;
 }
 
-std::vector<keyboard::KeyStroke> GetCustomComboFromSettings(const std::wstring& slotName) {
+std::vector<std::pair<WORD, bool>> GetCustomComboFromSettings(const std::wstring& slotName) {
     std::wstring json = ReadTextFile(GetSettingsPath());
     if (json.empty()) {
         return {};

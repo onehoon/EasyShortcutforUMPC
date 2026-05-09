@@ -410,7 +410,7 @@ namespace Easy_Shortcut_for_UMPC
             var customCurrent3 = new TextBlock { Text = $"Current shortcut: {GetCustomTextForSettings(draft, "custom3")}", Foreground = new SolidColorBrush(Windows.UI.Colors.White), Opacity = 0.9 };
 
             var orderRowsPanel = new StackPanel { Spacing = 6 };
-            Action refreshOrderRows = () =>
+            void RefreshOrderRows()
             {
                 orderRowsPanel.Children.Clear();
                 for (int i = 0; i < draft.SectionOrder.Count; i++)
@@ -442,7 +442,7 @@ namespace Easy_Shortcut_for_UMPC
                         string temp = draft.SectionOrder[index - 1];
                         draft.SectionOrder[index - 1] = draft.SectionOrder[index];
                         draft.SectionOrder[index] = temp;
-                        refreshOrderRows();
+                        RefreshOrderRows();
                     };
 
                     down.Click += (_, __) =>
@@ -455,7 +455,7 @@ namespace Easy_Shortcut_for_UMPC
                         string temp = draft.SectionOrder[index + 1];
                         draft.SectionOrder[index + 1] = draft.SectionOrder[index];
                         draft.SectionOrder[index] = temp;
-                        refreshOrderRows();
+                        RefreshOrderRows();
                     };
 
                     Grid.SetColumn(name, 0);
@@ -466,9 +466,9 @@ namespace Easy_Shortcut_for_UMPC
                     row.Children.Add(down);
                     orderRowsPanel.Children.Add(row);
                 }
-            };
+            }
 
-            refreshOrderRows();
+            RefreshOrderRows();
 
             var body = new StackPanel { Spacing = 12 };
             body.Children.Add(new TextBlock { Text = "Built-in Shortcuts", FontSize = 16, FontWeight = Windows.UI.Text.FontWeights.SemiBold, Foreground = new SolidColorBrush(Windows.UI.Colors.White) });
@@ -515,7 +515,7 @@ namespace Easy_Shortcut_for_UMPC
             resetLayout.Click += (_, __) =>
             {
                 draft.SectionOrder = new List<string>(WidgetSettingsDefaults.DefaultSectionOrder);
-                refreshOrderRows();
+                RefreshOrderRows();
             };
             layoutButtons.Children.Add(resetLayout);
             body.Children.Add(layoutButtons);
