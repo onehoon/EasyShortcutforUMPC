@@ -6,13 +6,16 @@ $ErrorActionPreference = "Stop"
 
 $ScriptDir = Split-Path -Parent $PSCommandPath
 $LogFile = Join-Path $ScriptDir "Install-Beta.log"
+$TranscriptFile = Join-Path $ScriptDir "Install-Beta-Transcript.log"
+$TranscriptStarted = $false
+$InstallSucceeded = $false
 
 function Write-Log {
     param([string]$Message)
 
-    $line = "{0} {1}" -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss.fff"), $Message
+    $line = "{0} {1}{2}" -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss.fff"), $Message, [Environment]::NewLine
     try {
-        Add-Content -Path $LogFile -Value $line -Encoding UTF8
+        [System.IO.File]::AppendAllText($LogFile, $line, [System.Text.Encoding]::UTF8)
     }
     catch {
         # Ignore file logging failures.
@@ -36,11 +39,19 @@ if (-not (Test-IsAdmin)) {
     try {
         Write-Host "Restarting as Administrator..."
         Write-Log "Attempting elevation relaunch."
-        Start-Process powershell.exe `
+        $elevatedProcess = Start-Process powershell.exe `
             -Verb RunAs `
-            -ArgumentList "-NoProfile -ExecutionPolicy Bypass -NoExit -File `"$PSCommandPath`" -ElevatedRelaunch"
-        Write-Host "An elevated installer window was opened."
-        Write-Log "Elevation relaunch succeeded."
+            -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" -ElevatedRelaunch" `
+            -Wait `
+            -PassThru
+
+        if ($elevatedProcess.ExitCode -eq 0) {
+            Write-Log "Elevation relaunch succeeded and installation completed."
+            exit 0
+        }
+
+        Write-Host "Elevated installer exited with code $($elevatedProcess.ExitCode)." -ForegroundColor Red
+        Write-Log "Elevated installer failed with exit code $($elevatedProcess.ExitCode)."
     }
     catch {
         Write-Host "Failed to relaunch as Administrator:" -ForegroundColor Red
@@ -56,7 +67,8 @@ try {
     Write-Log "Running with admin privileges."
 
     try {
-        Start-Transcript -Path $LogFile -Append | Out-Null
+        Start-Transcript -Path $TranscriptFile -Append -ErrorAction Stop | Out-Null
+        $TranscriptStarted = $true
         Write-Log "Transcript started."
     }
     catch {
@@ -102,6 +114,16 @@ try {
     Write-Host "Installation completed."
     Write-Host "Open Xbox Game Bar with Win + G, then open Easy Shortcut for UMPC from the widget list."
     Write-Log "Installation completed successfully."
+
+    try {
+        Start-Process explorer.exe "shell:appsFolder\Microsoft.XboxGamingOverlay_8wekyb3d8bbwe!App" | Out-Null
+        Write-Log "Xbox Game Bar launch requested."
+    }
+    catch {
+        Write-Log ("Xbox Game Bar launch failed: " + $_.Exception.Message)
+    }
+
+    $InstallSucceeded = $true
 }
 catch {
     Write-Host ""
@@ -116,15 +138,23 @@ catch {
     }
 }
 finally {
-    try {
-        Stop-Transcript | Out-Null
-    }
-    catch {
-        # Ignore transcript stop errors.
+    if ($TranscriptStarted) {
+        try {
+            Stop-Transcript | Out-Null
+        }
+        catch {
+            # Ignore transcript stop errors.
+        }
     }
 
     Write-Host ""
     Write-Host "Log file:"
     Write-Host (Join-Path (Split-Path -Parent $PSCommandPath) "Install-Beta.log")
-    Read-Host "Press Enter to close"
+
+    if (-not $InstallSucceeded) {
+        Read-Host "Press Enter to close"
+        exit 1
+    }
+
+    exit 0
 }
