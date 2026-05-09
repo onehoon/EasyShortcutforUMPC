@@ -159,6 +159,10 @@ Available resolution options depend on the detected internal display resolution:
 
 ## License
 
+This project is licensed under the GNU General Public License v3.0.
+
+## License
+
 Easy Shortcut for UMPC is released under the GNU General Public License v3.0.
 
 You may use, modify, and redistribute this project under the terms of the GPL-3.0 license.  
