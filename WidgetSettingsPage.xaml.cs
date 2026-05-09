@@ -136,7 +136,7 @@ namespace Easy_Shortcut_for_UMPC
             for (int i = 0; i < _draft.SectionOrder.Count; i++)
             {
                 string section = _draft.SectionOrder[i];
-                var row = new Grid { ColumnSpacing = 6, Margin = new Thickness(0, 0, 16, 6) };
+                var row = new Grid { ColumnSpacing = 6, Margin = new Thickness(0, 0, 0, 6) };
                 row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
                 row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });

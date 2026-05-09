@@ -140,7 +140,9 @@
                     </Border>
 
                     <TextBlock Text="Layout Order" FontSize="16" FontWeight="SemiBold" Foreground="#FFF7F8FB" Margin="0,8,0,0" />
-                    <StackPanel x:Name="SectionOrderPanel" Spacing="6" />
+                    <Border Background="#3033363C" CornerRadius="8" Padding="8">
+                        <StackPanel x:Name="SectionOrderPanel" Spacing="6" />
+                    </Border>
                     <Button Content="Reset Layout" Click="ResetLayout_Click" Height="40" MinHeight="40" MinWidth="64" />
 
                     <TextBlock x:Name="ValidationTextBlock" Foreground="#FFFF8080" Visibility="Collapsed" TextWrapping="WrapWholeWords" />
