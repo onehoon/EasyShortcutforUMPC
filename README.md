@@ -163,5 +163,3 @@ Easy Shortcut for UMPC is released under the GNU General Public License v3.0.
 
 You may use, modify, and redistribute this project under the terms of the GPL-3.0 license.  
 If you distribute modified versions or binaries, you must also provide the corresponding source code under the same license.
-
-See the [LICENSE](LICENSE) file for details.
