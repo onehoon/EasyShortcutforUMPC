@@ -75,7 +75,15 @@ namespace Easy_Shortcut_for_UMPC
                     Window.Current.CoreWindow,
                     rootFrame);
 
-                rootFrame.Navigate(typeof(WidgetPage), _gameBarWidget);
+                if (string.Equals(widgetArgs.AppExtensionId, "Widget2Settings", StringComparison.OrdinalIgnoreCase))
+                {
+                    rootFrame.Navigate(typeof(WidgetSettingsPage), _gameBarWidget);
+                }
+                else
+                {
+                    rootFrame.Navigate(typeof(WidgetPage), _gameBarWidget);
+                }
+
                 Window.Current.Closed += GameBarWindow_Closed;
                 Window.Current.Activate();
                 return;

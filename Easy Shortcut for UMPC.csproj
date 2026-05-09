@@ -68,6 +68,9 @@
       <DependentUpon>StandalonePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="WidgetSettings.cs" />
+    <Compile Include="WidgetSettingsPage.xaml.cs">
+      <DependentUpon>WidgetSettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WidgetPage.xaml.cs">
       <DependentUpon>WidgetPage.xaml</DependentUpon>
     </Compile>
@@ -102,6 +105,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="StandalonePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WidgetSettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

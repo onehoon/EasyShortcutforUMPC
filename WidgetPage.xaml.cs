@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Gaming.XboxGameBar;
 using Windows.ApplicationModel;
@@ -235,13 +234,32 @@ namespace Easy_Shortcut_for_UMPC
 
         private async void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            await OpenSettingsDialogAsync();
+            await OpenGameBarSettingsAsync();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             _gameBarWidget = e.Parameter as XboxGameBarWidget;
+            if (_gameBarWidget != null)
+            {
+                _gameBarWidget.SettingsClicked += Widget_SettingsClicked;
+            }
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            if (_gameBarWidget != null)
+            {
+                _gameBarWidget.SettingsClicked -= Widget_SettingsClicked;
+            }
+
+            base.OnNavigatedFrom(e);
+        }
+
+        private async void Widget_SettingsClicked(XboxGameBarWidget sender, object args)
+        {
+            await sender.ActivateSettingsAsync();
         }
 
         private async void CustomButton1_Click(object sender, RoutedEventArgs e)
@@ -263,7 +281,7 @@ namespace Easy_Shortcut_for_UMPC
         {
             if (!_settings.CustomShortcuts.TryGetValue(slotId, out CustomShortcutSlot slot) || !WidgetSettingsStore.IsConfigured(slot))
             {
-                await OpenSettingsDialogAsync(slotId);
+                await OpenGameBarSettingsAsync();
                 return;
             }
 
@@ -368,488 +386,10 @@ namespace Easy_Shortcut_for_UMPC
             }
         }
 
-        private async Task OpenSettingsDialogAsync(string focusCustomSlotId = null)
-        {
-            if (!string.IsNullOrEmpty(focusCustomSlotId))
-            {
-                WidgetSettings focusedDraft = CloneSettings(_settings);
-                bool savedFocused = await ShowCustomShortcutEditorAsync(focusedDraft, focusCustomSlotId);
-                if (savedFocused)
-                {
-                    _settings = WidgetSettingsStore.Normalize(focusedDraft);
-                    WidgetSettingsStore.Save(_settings);
-                    ApplySettingsToUi();
-                }
-
-                return;
-            }
-
-            WidgetSettings draft = CloneSettings(_settings);
-            ContentDialog dialog = BuildSettingsDialog(draft);
-            ContentDialogResult result = await dialog.ShowAsync();
-            if (result == ContentDialogResult.Primary)
-            {
-                _settings = WidgetSettingsStore.Normalize(draft);
-                WidgetSettingsStore.Save(_settings);
-                ApplySettingsToUi();
-            }
-        }
-
-        private ContentDialog BuildSettingsDialog(WidgetSettings draft)
-        {
-            var losslessCurrent = new TextBlock
-            {
-                Text = $"Current: {FormatShortcut(draft.BuiltInLosslessKeys)}",
-                Foreground = new SolidColorBrush(Windows.UI.Colors.White),
-                Opacity = 0.9,
-                Margin = new Thickness(0, 4, 0, 0)
-            };
-
-            var customCurrent1 = new TextBlock { Text = $"Current shortcut: {GetCustomTextForSettings(draft, "custom1")}", Foreground = new SolidColorBrush(Windows.UI.Colors.White), Opacity = 0.9 };
-            var customCurrent2 = new TextBlock { Text = $"Current shortcut: {GetCustomTextForSettings(draft, "custom2")}", Foreground = new SolidColorBrush(Windows.UI.Colors.White), Opacity = 0.9 };
-            var customCurrent3 = new TextBlock { Text = $"Current shortcut: {GetCustomTextForSettings(draft, "custom3")}", Foreground = new SolidColorBrush(Windows.UI.Colors.White), Opacity = 0.9 };
-
-            var orderRowsPanel = new StackPanel { Spacing = 6 };
-            void RefreshOrderRows()
-            {
-                orderRowsPanel.Children.Clear();
-                for (int i = 0; i < draft.SectionOrder.Count; i++)
-                {
-                    string section = draft.SectionOrder[i];
-                    var row = new Grid { ColumnSpacing = 8 };
-                    row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-                    row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-                    row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-
-                    var name = new TextBlock
-                    {
-                        Text = GetSectionDisplayName(section),
-                        VerticalAlignment = VerticalAlignment.Center,
-                        Foreground = new SolidColorBrush(Windows.UI.Colors.White)
-                    };
-
-                    var up = new Button { Content = "▲", MinWidth = 40, IsEnabled = i > 0 };
-                    var down = new Button { Content = "▼", MinWidth = 40, IsEnabled = i < draft.SectionOrder.Count - 1 };
-
-                    int index = i;
-                    up.Click += (_, __) =>
-                    {
-                        if (index <= 0)
-                        {
-                            return;
-                        }
-
-                        string temp = draft.SectionOrder[index - 1];
-                        draft.SectionOrder[index - 1] = draft.SectionOrder[index];
-                        draft.SectionOrder[index] = temp;
-                        RefreshOrderRows();
-                    };
-
-                    down.Click += (_, __) =>
-                    {
-                        if (index >= draft.SectionOrder.Count - 1)
-                        {
-                            return;
-                        }
-
-                        string temp = draft.SectionOrder[index + 1];
-                        draft.SectionOrder[index + 1] = draft.SectionOrder[index];
-                        draft.SectionOrder[index] = temp;
-                        RefreshOrderRows();
-                    };
-
-                    Grid.SetColumn(name, 0);
-                    Grid.SetColumn(up, 1);
-                    Grid.SetColumn(down, 2);
-                    row.Children.Add(name);
-                    row.Children.Add(up);
-                    row.Children.Add(down);
-                    orderRowsPanel.Children.Add(row);
-                }
-            }
-
-            RefreshOrderRows();
-
-            var body = new StackPanel { Spacing = 12 };
-            body.Children.Add(new TextBlock { Text = "Built-in Shortcuts", FontSize = 16, FontWeight = Windows.UI.Text.FontWeights.SemiBold, Foreground = new SolidColorBrush(Windows.UI.Colors.White) });
-            body.Children.Add(new TextBlock { Text = "Lossless Scaling", Foreground = new SolidColorBrush(Windows.UI.Colors.White) });
-            body.Children.Add(losslessCurrent);
-
-            var lsButtons = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
-            var changeLs = new Button { Content = "Change Shortcut" };
-            var resetLs = new Button { Content = "Reset" };
-            changeLs.Click += async (_, __) =>
-            {
-                List<string> updated = await ShowShortcutPickerAsync("Lossless Scaling", draft.BuiltInLosslessKeys, allowEmpty: false);
-                if (updated == null)
-                {
-                    return;
-                }
-
-                draft.BuiltInLosslessKeys = updated;
-                losslessCurrent.Text = $"Current: {FormatShortcut(draft.BuiltInLosslessKeys)}";
-            };
-            resetLs.Click += (_, __) =>
-            {
-                draft.BuiltInLosslessKeys = new List<string>(WidgetSettingsDefaults.DefaultLosslessKeys);
-                losslessCurrent.Text = $"Current: {FormatShortcut(draft.BuiltInLosslessKeys)}";
-            };
-            lsButtons.Children.Add(changeLs);
-            lsButtons.Children.Add(resetLs);
-            body.Children.Add(lsButtons);
-
-            body.Children.Add(new TextBlock { Text = "Custom Shortcuts", FontSize = 16, FontWeight = Windows.UI.Text.FontWeights.SemiBold, Foreground = new SolidColorBrush(Windows.UI.Colors.White), Margin = new Thickness(0, 8, 0, 0) });
-            body.Children.Add(BuildCustomSettingRow("custom1", "Custom 1", draft, customCurrent1));
-            body.Children.Add(customCurrent1);
-            body.Children.Add(BuildCustomSettingRow("custom2", "Custom 2", draft, customCurrent2));
-            body.Children.Add(customCurrent2);
-            body.Children.Add(BuildCustomSettingRow("custom3", "Custom 3", draft, customCurrent3));
-            body.Children.Add(customCurrent3);
-
-            body.Children.Add(new TextBlock { Text = "Layout Order", FontSize = 16, FontWeight = Windows.UI.Text.FontWeights.SemiBold, Foreground = new SolidColorBrush(Windows.UI.Colors.White), Margin = new Thickness(0, 8, 0, 0) });
-            body.Children.Add(new TextBlock { Text = "Fixed: Lossless Scaling + Settings", Foreground = new SolidColorBrush(Windows.UI.Colors.White), Opacity = 0.9 });
-            body.Children.Add(orderRowsPanel);
-
-            var layoutButtons = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
-            var resetLayout = new Button { Content = "Reset Layout" };
-            resetLayout.Click += (_, __) =>
-            {
-                draft.SectionOrder = new List<string>(WidgetSettingsDefaults.DefaultSectionOrder);
-                RefreshOrderRows();
-            };
-            layoutButtons.Children.Add(resetLayout);
-            body.Children.Add(layoutButtons);
-
-            body.Children.Add(new TextBlock { Text = "Reset", FontSize = 16, FontWeight = Windows.UI.Text.FontWeights.SemiBold, Foreground = new SolidColorBrush(Windows.UI.Colors.White), Margin = new Thickness(0, 8, 0, 0) });
-            var resetAll = new Button { Content = "Reset custom shortcuts" };
-            resetAll.Click += (_, __) =>
-            {
-                draft.CustomShortcuts["custom1"] = new CustomShortcutSlot { Enabled = false, Label = "Custom 1", Keys = new List<string>() };
-                draft.CustomShortcuts["custom2"] = new CustomShortcutSlot { Enabled = false, Label = "Custom 2", Keys = new List<string>() };
-                draft.CustomShortcuts["custom3"] = new CustomShortcutSlot { Enabled = false, Label = "Custom 3", Keys = new List<string>() };
-                customCurrent1.Text = $"Current shortcut: {GetCustomTextForSettings(draft, "custom1")}";
-                customCurrent2.Text = $"Current shortcut: {GetCustomTextForSettings(draft, "custom2")}";
-                customCurrent3.Text = $"Current shortcut: {GetCustomTextForSettings(draft, "custom3")}";
-            };
-            body.Children.Add(resetAll);
-
-            return new ContentDialog
-            {
-                Title = "Settings",
-                PrimaryButtonText = "Save",
-                CloseButtonText = "Cancel",
-                DefaultButton = ContentDialogButton.Primary,
-                Content = new ScrollViewer
-                {
-                    Content = body,
-                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                    MaxHeight = 480
-                }
-            };
-        }
-
-        private FrameworkElement BuildCustomSettingRow(string slotId, string title, WidgetSettings draft, TextBlock currentText)
-        {
-            var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
-            row.Children.Add(new TextBlock
-            {
-                Text = title,
-                Width = 80,
-                VerticalAlignment = VerticalAlignment.Center,
-                Foreground = new SolidColorBrush(Windows.UI.Colors.White)
-            });
-
-            var edit = new Button { Content = "Edit" };
-            var reset = new Button { Content = "Reset" };
-
-            edit.Click += async (_, __) =>
-            {
-                bool saved = await ShowCustomShortcutEditorAsync(draft, slotId);
-                if (saved)
-                {
-                    currentText.Text = $"Current shortcut: {GetCustomTextForSettings(draft, slotId)}";
-                }
-            };
-
-            reset.Click += (_, __) =>
-            {
-                draft.CustomShortcuts[slotId] = new CustomShortcutSlot
-                {
-                    Enabled = false,
-                    Label = GetSlotDisplayName(slotId),
-                    Keys = new List<string>()
-                };
-                currentText.Text = $"Current shortcut: {GetCustomTextForSettings(draft, slotId)}";
-            };
-
-            row.Children.Add(edit);
-            row.Children.Add(reset);
-            return row;
-        }
-
-        private async Task<bool> ShowCustomShortcutEditorAsync(WidgetSettings draft, string slotId)
-        {
-            if (!draft.CustomShortcuts.TryGetValue(slotId, out CustomShortcutSlot slot))
-            {
-                return false;
-            }
-
-            List<string> currentKeys = slot.Keys ?? new List<string>();
-            string currentModifier = "None";
-            string currentKey = "Not Set";
-            SplitShortcut(currentKeys, out currentModifier, out currentKey);
-
-            var labelBox = new TextBox { Text = string.IsNullOrWhiteSpace(slot.Label) ? GetSlotDisplayName(slotId) : slot.Label };
-            var enabledToggle = new ToggleSwitch { IsOn = slot.Enabled, Header = "Enabled" };
-
-            var modifierCombo = new ComboBox();
-            foreach (string modifier in GetModifierOptions())
-            {
-                modifierCombo.Items.Add(modifier);
-            }
-
-            modifierCombo.SelectedItem = GetModifierOptions().Contains(currentModifier) ? currentModifier : "None";
-
-            var keyCombo = new ComboBox();
-            foreach (string key in GetKeyOptions())
-            {
-                keyCombo.Items.Add(key);
-            }
-
-            keyCombo.SelectedItem = GetKeyOptions().Contains(currentKey) ? currentKey : "Not Set";
-
-            var content = new StackPanel { Spacing = 8 };
-            content.Children.Add(new TextBlock { Text = "Button label" });
-            content.Children.Add(labelBox);
-            content.Children.Add(enabledToggle);
-            content.Children.Add(new TextBlock { Text = "Modifier" });
-            content.Children.Add(modifierCombo);
-            content.Children.Add(new TextBlock { Text = "Key" });
-            content.Children.Add(keyCombo);
-
-            ContentDialog editor = new()
-            {
-                Title = $"Edit {GetSlotDisplayName(slotId)}",
-                Content = content,
-                PrimaryButtonText = "Save",
-                SecondaryButtonText = "Reset",
-                CloseButtonText = "Cancel",
-                DefaultButton = ContentDialogButton.Primary
-            };
-
-            ContentDialogResult result = await editor.ShowAsync();
-            if (result == ContentDialogResult.None)
-            {
-                return false;
-            }
-
-            if (result == ContentDialogResult.Secondary)
-            {
-                slot.Enabled = false;
-                slot.Label = GetSlotDisplayName(slotId);
-                slot.Keys = new List<string>();
-                return true;
-            }
-
-            string selectedModifier = modifierCombo.SelectedItem as string ?? "None";
-            string selectedKey = keyCombo.SelectedItem as string ?? "Not Set";
-            List<string> newKeys = ComposeShortcut(selectedModifier, selectedKey);
-
-            if (enabledToggle.IsOn && newKeys.Count == 0)
-            {
-                ContentDialog invalid = new()
-                {
-                    Title = "Invalid Shortcut",
-                    Content = "Enabled shortcuts must include a valid key.",
-                    CloseButtonText = "OK"
-                };
-                await invalid.ShowAsync();
-                return false;
-            }
-
-            slot.Enabled = enabledToggle.IsOn;
-            slot.Label = string.IsNullOrWhiteSpace(labelBox.Text) ? GetSlotDisplayName(slotId) : labelBox.Text.Trim();
-            slot.Keys = newKeys;
-            return true;
-        }
-
-        private async Task<List<string>> ShowShortcutPickerAsync(string title, IReadOnlyList<string> currentKeys, bool allowEmpty)
-        {
-            SplitShortcut(currentKeys, out string currentModifier, out string currentKey);
-
-            var modifierCombo = new ComboBox();
-            foreach (string modifier in GetModifierOptions())
-            {
-                modifierCombo.Items.Add(modifier);
-            }
-
-            modifierCombo.SelectedItem = GetModifierOptions().Contains(currentModifier) ? currentModifier : "None";
-
-            var keyCombo = new ComboBox();
-            foreach (string key in GetKeyOptions())
-            {
-                keyCombo.Items.Add(key);
-            }
-
-            keyCombo.SelectedItem = GetKeyOptions().Contains(currentKey) ? currentKey : "Not Set";
-
-            var panel = new StackPanel { Spacing = 8 };
-            panel.Children.Add(new TextBlock { Text = "Modifier" });
-            panel.Children.Add(modifierCombo);
-            panel.Children.Add(new TextBlock { Text = "Key" });
-            panel.Children.Add(keyCombo);
-
-            ContentDialog picker = new()
-            {
-                Title = $"Edit {title}",
-                Content = panel,
-                PrimaryButtonText = "Save",
-                CloseButtonText = "Cancel"
-            };
-
-            ContentDialogResult result = await picker.ShowAsync();
-            if (result != ContentDialogResult.Primary)
-            {
-                return null;
-            }
-
-            List<string> keys = ComposeShortcut(modifierCombo.SelectedItem as string ?? "None", keyCombo.SelectedItem as string ?? "Not Set");
-            if (!allowEmpty && keys.Count == 0)
-            {
-                ContentDialog invalid = new()
-                {
-                    Title = "Invalid Shortcut",
-                    Content = "A valid key is required.",
-                    CloseButtonText = "OK"
-                };
-                await invalid.ShowAsync();
-                return null;
-            }
-
-            return keys;
-        }
-
-        private static List<string> ComposeShortcut(string modifier, string key)
-        {
-            var output = new List<string>();
-            if (!string.IsNullOrWhiteSpace(modifier) && !string.Equals(modifier, "None", StringComparison.OrdinalIgnoreCase))
-            {
-                output.AddRange(modifier.Split(new[] { '+' }, StringSplitOptions.RemoveEmptyEntries).Select(m => m.Trim()));
-            }
-
-            if (!string.IsNullOrWhiteSpace(key) && !string.Equals(key, "Not Set", StringComparison.OrdinalIgnoreCase))
-            {
-                output.Add(key.Trim());
-            }
-
-            return output;
-        }
-
         private static string FormatShortcut(IReadOnlyList<string> keys)
         {
             return WidgetSettingsStore.IsValidKeys(keys) ? string.Join(" + ", keys) : "Not Set";
         }
 
-        private static void SplitShortcut(IReadOnlyList<string> keys, out string modifier, out string key)
-        {
-            modifier = "None";
-            key = "Not Set";
-            if (!WidgetSettingsStore.IsValidKeys(keys))
-            {
-                return;
-            }
-
-            if (keys.Count == 1)
-            {
-                key = keys[0];
-                return;
-            }
-
-            key = keys[keys.Count - 1];
-            modifier = string.Join(" + ", keys.Take(keys.Count - 1));
-        }
-
-        private static IReadOnlyList<string> GetModifierOptions()
-        {
-            return new[] { "None", "Ctrl", "Alt", "Shift", "Ctrl + Alt", "Ctrl + Shift", "Alt + Shift", "Ctrl + Alt + Shift" };
-        }
-
-        private static IReadOnlyList<string> GetKeyOptions()
-        {
-            return new[]
-            {
-                "Not Set",
-                "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
-                "0","1","2","3","4","5","6","7","8","9",
-                "F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12",
-                "Insert","Delete","Home","End","Page Up","Page Down","Space","Tab","Escape",
-                "Arrow Up","Arrow Down","Arrow Left","Arrow Right"
-            };
-        }
-
-        private static string GetSectionDisplayName(string sectionId)
-        {
-            return sectionId switch
-            {
-                "overlay" => "OptiScaler Overlay",
-                "resolution" => "Display Resolution",
-                "custom" => "Custom",
-                _ => sectionId
-            };
-        }
-
-        private static string GetSlotDisplayName(string slotId)
-        {
-            return slotId switch
-            {
-                "custom1" => "Custom 1",
-                "custom2" => "Custom 2",
-                "custom3" => "Custom 3",
-                _ => "Custom"
-            };
-        }
-
-        private static string GetCustomTextForSettings(WidgetSettings settings, string slotId)
-        {
-            return settings.CustomShortcuts.TryGetValue(slotId, out CustomShortcutSlot slot) && WidgetSettingsStore.IsConfigured(slot)
-                ? FormatShortcut(slot.Keys)
-                : "Not Set";
-        }
-
-        private static WidgetSettings CloneSettings(WidgetSettings source)
-        {
-            var clone = new WidgetSettings
-            {
-                Version = source.Version,
-                BuiltInLosslessKeys = new List<string>(source.BuiltInLosslessKeys ?? new List<string>()),
-                SectionOrder = new List<string>(source.SectionOrder ?? new List<string>())
-            };
-
-            clone.CustomShortcuts = new Dictionary<string, CustomShortcutSlot>(StringComparer.OrdinalIgnoreCase);
-            foreach (var pair in source.CustomShortcuts)
-            {
-                clone.CustomShortcuts[pair.Key] = new CustomShortcutSlot
-                {
-                    Enabled = pair.Value.Enabled,
-                    Label = pair.Value.Label,
-                    Keys = new List<string>(pair.Value.Keys ?? new List<string>())
-                };
-            }
-
-            foreach (string slotId in new[] { "custom1", "custom2", "custom3" })
-            {
-                if (!clone.CustomShortcuts.ContainsKey(slotId))
-                {
-                    clone.CustomShortcuts[slotId] = new CustomShortcutSlot { Enabled = false, Label = GetSlotDisplayName(slotId), Keys = new List<string>() };
-                }
-            }
-
-            if (clone.SectionOrder.Count != 3)
-            {
-                clone.SectionOrder = new List<string>(WidgetSettingsDefaults.DefaultSectionOrder);
-            }
-
-            return clone;
-        }
     }
 }

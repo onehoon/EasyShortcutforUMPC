@@ -1,0 +1,81 @@
+<Page
+    x:Class="Easy_Shortcut_for_UMPC.WidgetSettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="#CC1A1C21" Padding="10">
+        <Border
+            Background="#B31A1C21"
+            CornerRadius="12"
+            Padding="10">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Settings" FontSize="22" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
+
+                    <TextBlock Text="Built-in Shortcuts" FontSize="16" FontWeight="SemiBold" Foreground="#FFF7F8FB" Margin="0,4,0,0" />
+                    <TextBlock Text="Lossless Scaling" Foreground="#FFF7F8FB" />
+                    <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
+                    <ComboBox x:Name="LosslessModifierCombo" />
+                    <TextBlock Text="Key" Foreground="#CCF7F8FB" />
+                    <ComboBox x:Name="LosslessKeyCombo" />
+
+                    <TextBlock Text="Custom Shortcuts" FontSize="16" FontWeight="SemiBold" Foreground="#FFF7F8FB" Margin="0,8,0,0" />
+
+                    <Border Background="#3033363C" CornerRadius="8" Padding="8">
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Custom 1" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
+                            <ToggleSwitch x:Name="Custom1EnabledToggle" Header="Enabled" />
+                            <TextBox x:Name="Custom1LabelTextBox" Header="Label" />
+                            <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
+                            <ComboBox x:Name="Custom1ModifierCombo" />
+                            <TextBlock Text="Key" Foreground="#CCF7F8FB" />
+                            <ComboBox x:Name="Custom1KeyCombo" />
+                            <Button Content="Reset" Click="Custom1Reset_Click" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#3033363C" CornerRadius="8" Padding="8">
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Custom 2" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
+                            <ToggleSwitch x:Name="Custom2EnabledToggle" Header="Enabled" />
+                            <TextBox x:Name="Custom2LabelTextBox" Header="Label" />
+                            <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
+                            <ComboBox x:Name="Custom2ModifierCombo" />
+                            <TextBlock Text="Key" Foreground="#CCF7F8FB" />
+                            <ComboBox x:Name="Custom2KeyCombo" />
+                            <Button Content="Reset" Click="Custom2Reset_Click" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#3033363C" CornerRadius="8" Padding="8">
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Custom 3" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
+                            <ToggleSwitch x:Name="Custom3EnabledToggle" Header="Enabled" />
+                            <TextBox x:Name="Custom3LabelTextBox" Header="Label" />
+                            <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
+                            <ComboBox x:Name="Custom3ModifierCombo" />
+                            <TextBlock Text="Key" Foreground="#CCF7F8FB" />
+                            <ComboBox x:Name="Custom3KeyCombo" />
+                            <Button Content="Reset" Click="Custom3Reset_Click" />
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock Text="Layout Order" FontSize="16" FontWeight="SemiBold" Foreground="#FFF7F8FB" Margin="0,8,0,0" />
+                    <TextBlock Text="Fixed: Lossless Scaling + Settings" Foreground="#CCF7F8FB" />
+                    <StackPanel x:Name="SectionOrderPanel" Spacing="6" />
+                    <Button Content="Reset Layout" Click="ResetLayout_Click" />
+
+                    <TextBlock x:Name="ValidationTextBlock" Foreground="#FFFF8080" Visibility="Collapsed" TextWrapping="WrapWholeWords" />
+
+                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
+                        <Button Content="Save" Click="SaveButton_Click" />
+                        <Button Content="Cancel" Click="CancelButton_Click" />
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</Page>

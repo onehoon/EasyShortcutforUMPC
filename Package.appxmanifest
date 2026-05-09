@@ -57,6 +57,7 @@
                 <PinningSupported>true</PinningSupported>
                 <ActivateAfterInstall>true</ActivateAfterInstall>
                 <FavoriteAfterInstall>true</FavoriteAfterInstall>
+                <SettingsSupported AppExtensionId="Widget2Settings" />
                 <Window>
                   <Size>
                     <Height>450</Height>
@@ -64,6 +65,33 @@
                     <MinHeight>413</MinHeight>
                     <MinWidth>464</MinWidth>
                     <MaxHeight>525</MaxHeight>
+                    <MaxWidth>464</MaxWidth>
+                  </Size>
+                  <ResizeSupported>
+                    <Horizontal>false</Horizontal>
+                    <Vertical>true</Vertical>
+                  </ResizeSupported>
+                </Window>
+              </GameBarWidget>
+            </uap3:Properties>
+          </uap3:AppExtension>
+        </uap3:Extension>
+        <uap3:Extension Category="windows.appExtension">
+          <uap3:AppExtension
+            Name="microsoft.gameBarUIExtension"
+            Id="Widget2Settings"
+            DisplayName="Easy Shortcut for UMPC Settings"
+            Description="Settings for Easy Shortcut for UMPC"
+            PublicFolder="GameBar">
+            <uap3:Properties>
+              <GameBarWidget Type="Settings">
+                <Window>
+                  <Size>
+                    <Height>520</Height>
+                    <Width>464</Width>
+                    <MinHeight>420</MinHeight>
+                    <MinWidth>464</MinWidth>
+                    <MaxHeight>700</MaxHeight>
                     <MaxWidth>464</MaxWidth>
                   </Size>
                   <ResizeSupported>
