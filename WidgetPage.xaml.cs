@@ -235,7 +235,7 @@ namespace Easy_Shortcut_for_UMPC
 
         private async void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            await OpenGameBarSettingsAsync();
+            await OpenSettingsDialogAsync();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -263,7 +263,7 @@ namespace Easy_Shortcut_for_UMPC
         {
             if (!_settings.CustomShortcuts.TryGetValue(slotId, out CustomShortcutSlot slot) || !WidgetSettingsStore.IsConfigured(slot))
             {
-                await OpenGameBarSettingsAsync();
+                await OpenSettingsDialogAsync(slotId);
                 return;
             }
 
