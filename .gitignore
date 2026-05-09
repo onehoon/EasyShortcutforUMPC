@@ -56,3 +56,6 @@ Install-Beta-Transcript.log
 # Internal / non-shipping notes
 MANIFEST_BUILD_NOTES.md
 STORE_NOTES_TECH.md
+
+# Store association file - local Visual Studio / Partner Center packaging only
+Package.StoreAssociation.xml
