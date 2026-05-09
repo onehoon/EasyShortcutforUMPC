@@ -79,6 +79,9 @@
           <desktop:FullTrustProcess>
             <desktop:ParameterGroup GroupId="InsertCommand" Parameters="insert" />
             <desktop:ParameterGroup GroupId="AltInsertCommand" Parameters="altinsert" />
+            <desktop:ParameterGroup GroupId="Custom1Command" Parameters="custom1" />
+            <desktop:ParameterGroup GroupId="Custom2Command" Parameters="custom2" />
+            <desktop:ParameterGroup GroupId="Custom3Command" Parameters="custom3" />
             <desktop:ParameterGroup GroupId="HomeCommand" Parameters="home" />
             <desktop:ParameterGroup GroupId="EndCommand" Parameters="end" />
             <desktop:ParameterGroup GroupId="LosslessScalingCommand" Parameters="losslessscaling" />

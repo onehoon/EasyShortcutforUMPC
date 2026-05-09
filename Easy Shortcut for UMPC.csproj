@@ -67,6 +67,7 @@
     <Compile Include="StandalonePage.xaml.cs">
       <DependentUpon>StandalonePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WidgetSettings.cs" />
     <Compile Include="WidgetPage.xaml.cs">
       <DependentUpon>WidgetPage.xaml</DependentUpon>
     </Compile>
