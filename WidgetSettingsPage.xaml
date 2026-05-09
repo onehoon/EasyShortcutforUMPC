@@ -138,7 +138,6 @@
                     </Border>
 
                     <TextBlock Text="Layout Order" FontSize="16" FontWeight="SemiBold" Foreground="#FFF7F8FB" Margin="0,8,0,0" />
-                    <TextBlock Text="Fixed: Lossless Scaling + Settings" Foreground="#CCF7F8FB" />
                     <StackPanel x:Name="SectionOrderPanel" Spacing="6" />
                     <Button Content="Reset Layout" Click="ResetLayout_Click" />
 
