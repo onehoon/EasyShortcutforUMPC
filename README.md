@@ -1,0 +1,33 @@
+# Easy Shortcut for UMPC
+
+<img width="597" height="647" alt="Widget" src="https://github.com/user-attachments/assets/85417e67-5820-4d88-afe4-d2209f23e71e" />
+
+## Designed for UMPCs and handheld Windows PCs
+
+Easy Shortcut for UMPC is designed for UMPCs and handheld Windows gaming PCs.
+
+The widget uses a compact, fixed-width layout with large touch-friendly buttons, making common shortcuts easier to use through Xbox Game Bar on small screens.
+
+## How to use
+
+1. Install the app from the Microsoft Store.
+2. Open Xbox Game Bar with `Win + G`.
+3. Open **Easy Shortcut for UMPC** from the widget list.
+4. Pin the widget if you want it to stay visible while gaming.
+5. Tap the shortcut buttons as needed.
+
+## Shortcut list
+
+| Button | Sent shortcut |
+|---|---|
+| Lossless Scaling | `Ctrl + Alt + S` |
+| OptiScaler Overlay | `Insert` |
+| OptiScaler Overlay | `Alt + Insert` |
+| Home | `Home` |
+| End | `End` |
+| Close App | `Alt + F4` |
+
+> [!NOTE]
+> Some games or applications may block simulated keyboard input.
+> Some system-level apps or elevated/admin apps may not respond to shortcuts from the widget.
+> The Close App button asks for confirmation before sending Alt + F4.
