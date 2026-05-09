@@ -59,11 +59,11 @@
                 <FavoriteAfterInstall>true</FavoriteAfterInstall>
                 <Window>
                   <Size>
-                    <Height>360</Height>
+                    <Height>450</Height>
                     <Width>464</Width>
-                    <MinHeight>330</MinHeight>
+                    <MinHeight>413</MinHeight>
                     <MinWidth>464</MinWidth>
-                    <MaxHeight>420</MaxHeight>
+                    <MaxHeight>525</MaxHeight>
                     <MaxWidth>464</MaxWidth>
                   </Size>
                   <ResizeSupported>

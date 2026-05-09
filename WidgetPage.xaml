@@ -151,8 +151,8 @@
                     x:Name="DisplayResolutionSection"
                     Grid.Row="2"
                     Background="#6633363C"
-                    BorderBrush="#66FFFFFF"
-                    BorderThickness="1"
+                    BorderBrush="Transparent"
+                    BorderThickness="0"
                     CornerRadius="10"
                     Padding="8"
                     Visibility="Collapsed">
