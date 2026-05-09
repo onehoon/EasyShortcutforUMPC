@@ -30,48 +30,108 @@
             CornerRadius="12"
             Padding="10">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <StackPanel Spacing="10">
+                <StackPanel Spacing="8">
                     <TextBlock Text="Settings" FontSize="22" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
 
                     <TextBlock Text="Built-in Shortcuts" FontSize="16" FontWeight="SemiBold" Foreground="#FFF7F8FB" Margin="0,4,0,0" />
-                    <TextBlock Text="Lossless Scaling" Foreground="#FFF7F8FB" />
-                    <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
-                    <ComboBox x:Name="LosslessModifierCombo" />
-                    <TextBlock Text="Key" Foreground="#CCF7F8FB" />
-                    <ComboBox x:Name="LosslessKeyCombo" />
+                    <TextBlock Text="Lossless Scaling" FontSize="16" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
+                    <Grid ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="120" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Spacing="4">
+                            <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
+                            <ComboBox x:Name="LosslessModifierCombo" HorizontalAlignment="Stretch" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Spacing="4">
+                            <TextBlock Text="Key" Foreground="#CCF7F8FB" />
+                            <ComboBox x:Name="LosslessKeyCombo" HorizontalAlignment="Stretch" />
+                        </StackPanel>
+                    </Grid>
 
                     <TextBlock Text="Custom Shortcuts" FontSize="16" FontWeight="SemiBold" Foreground="#FFF7F8FB" Margin="0,8,0,0" />
 
                     <Border Background="#3033363C" CornerRadius="8" Padding="8">
                         <StackPanel Spacing="6">
                             <TextBlock Text="Custom 1" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
-                            <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
-                            <ComboBox x:Name="Custom1ModifierCombo" />
-                            <TextBlock Text="Key" Foreground="#CCF7F8FB" />
-                            <ComboBox x:Name="Custom1KeyCombo" />
-                            <Button Content="Reset" Click="Custom1Reset_Click" />
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="112" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Spacing="4">
+                                    <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
+                                    <ComboBox x:Name="Custom1ModifierCombo" HorizontalAlignment="Stretch" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Spacing="4">
+                                    <TextBlock Text="Key" Foreground="#CCF7F8FB" />
+                                    <ComboBox x:Name="Custom1KeyCombo" HorizontalAlignment="Stretch" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
+                                    <Button Content="Reset" Click="Custom1Reset_Click" MinWidth="64" />
+                                </StackPanel>
+                            </Grid>
                         </StackPanel>
                     </Border>
 
                     <Border Background="#3033363C" CornerRadius="8" Padding="8">
                         <StackPanel Spacing="6">
                             <TextBlock Text="Custom 2" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
-                            <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
-                            <ComboBox x:Name="Custom2ModifierCombo" />
-                            <TextBlock Text="Key" Foreground="#CCF7F8FB" />
-                            <ComboBox x:Name="Custom2KeyCombo" />
-                            <Button Content="Reset" Click="Custom2Reset_Click" />
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="112" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Spacing="4">
+                                    <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
+                                    <ComboBox x:Name="Custom2ModifierCombo" HorizontalAlignment="Stretch" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Spacing="4">
+                                    <TextBlock Text="Key" Foreground="#CCF7F8FB" />
+                                    <ComboBox x:Name="Custom2KeyCombo" HorizontalAlignment="Stretch" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
+                                    <Button Content="Reset" Click="Custom2Reset_Click" MinWidth="64" />
+                                </StackPanel>
+                            </Grid>
                         </StackPanel>
                     </Border>
 
                     <Border Background="#3033363C" CornerRadius="8" Padding="8">
                         <StackPanel Spacing="6">
                             <TextBlock Text="Custom 3" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
-                            <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
-                            <ComboBox x:Name="Custom3ModifierCombo" />
-                            <TextBlock Text="Key" Foreground="#CCF7F8FB" />
-                            <ComboBox x:Name="Custom3KeyCombo" />
-                            <Button Content="Reset" Click="Custom3Reset_Click" />
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="112" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Spacing="4">
+                                    <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
+                                    <ComboBox x:Name="Custom3ModifierCombo" HorizontalAlignment="Stretch" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Spacing="4">
+                                    <TextBlock Text="Key" Foreground="#CCF7F8FB" />
+                                    <ComboBox x:Name="Custom3KeyCombo" HorizontalAlignment="Stretch" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
+                                    <Button Content="Reset" Click="Custom3Reset_Click" MinWidth="64" />
+                                </StackPanel>
+                            </Grid>
                         </StackPanel>
                     </Border>
 
