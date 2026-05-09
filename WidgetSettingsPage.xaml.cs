@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Gaming.XboxGameBar;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -26,6 +28,7 @@ namespace Easy_Shortcut_for_UMPC
         };
 
         private WidgetSettings _draft;
+        private XboxGameBarWidget _gameBarWidget;
 
         public WidgetSettingsPage()
         {
@@ -36,6 +39,7 @@ namespace Easy_Shortcut_for_UMPC
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            _gameBarWidget = e.Parameter as XboxGameBarWidget;
             LoadDraft();
         }
 
@@ -140,7 +144,7 @@ namespace Easy_Shortcut_for_UMPC
             }
         }
 
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             ValidationTextBlock.Visibility = Visibility.Collapsed;
             ValidationTextBlock.Text = string.Empty;
@@ -167,7 +171,7 @@ namespace Easy_Shortcut_for_UMPC
             {
                 _draft = WidgetSettingsStore.Normalize(_draft);
                 WidgetSettingsStore.Save(_draft);
-                CloseCurrentWidgetWindow();
+                await CloseSettingsAndReturnToMainAsync();
             }
             catch (Exception ex)
             {
@@ -185,9 +189,15 @@ namespace Easy_Shortcut_for_UMPC
             };
         }
 
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        private async void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            CloseCurrentWidgetWindow();
+            await CloseSettingsAndReturnToMainAsync();
+        }
+
+        private void LosslessReset_Click(object sender, RoutedEventArgs e)
+        {
+            LosslessModifierCombo.SelectedItem = "Ctrl + Alt";
+            LosslessKeyCombo.SelectedItem = "S";
         }
 
         private void Custom1Reset_Click(object sender, RoutedEventArgs e)
@@ -233,15 +243,23 @@ namespace Easy_Shortcut_for_UMPC
             ValidationTextBlock.Visibility = Visibility.Visible;
         }
 
-        private void CloseCurrentWidgetWindow()
+        private async Task CloseSettingsAndReturnToMainAsync()
         {
+            if (_gameBarWidget == null)
+            {
+                SetValidation("Settings widget context is not available.");
+                return;
+            }
+
             try
             {
-                Window.Current.Close();
+                var control = new XboxGameBarWidgetControl(_gameBarWidget);
+                await control.ActivateAsync("Widget2");
+                await control.CloseAsync("Widget2Settings");
             }
             catch (Exception ex)
             {
-                SetValidation($"Failed to close settings window: {ex.Message}");
+                SetValidation($"Failed to return to main widget: {ex.Message}");
             }
         }
 

@@ -38,6 +38,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Grid.Column="0" Spacing="4">
@@ -48,6 +49,10 @@
                         <StackPanel Grid.Column="1" Spacing="4">
                             <TextBlock Text="Key" Foreground="#CCF7F8FB" />
                             <ComboBox x:Name="LosslessKeyCombo" HorizontalAlignment="Stretch" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
+                            <Button x:Name="LosslessResetButton" Content="Reset" Click="LosslessReset_Click" MinWidth="64" />
                         </StackPanel>
                     </Grid>
 

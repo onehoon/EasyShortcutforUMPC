@@ -276,14 +276,7 @@ namespace Easy_Shortcut_for_UMPC
 
         private async void Widget_SettingsClicked(XboxGameBarWidget sender, object args)
         {
-            try
-            {
-                await sender.ActivateSettingsAsync();
-            }
-            catch (Exception ex)
-            {
-                DiagnosticsLog.Write($"SettingsClicked ActivateSettingsAsync failed msg={ex.Message}");
-            }
+            await OpenGameBarSettingsAsync();
         }
 
         private void CurrentWindow_Activated(object sender, WindowActivatedEventArgs e)
@@ -332,11 +325,21 @@ namespace Easy_Shortcut_for_UMPC
 
             try
             {
-                await _gameBarWidget.ActivateSettingsAsync();
+                var control = new XboxGameBarWidgetControl(_gameBarWidget);
+                await control.ActivateAsync("Widget2Settings");
             }
             catch (Exception ex)
             {
-                DiagnosticsLog.Write($"ActivateSettingsAsync failed msg={ex.Message}");
+                DiagnosticsLog.Write($"Activate settings widget via control failed msg={ex.Message}");
+
+                try
+                {
+                    await _gameBarWidget.ActivateSettingsAsync();
+                }
+                catch (Exception fallbackEx)
+                {
+                    DiagnosticsLog.Write($"ActivateSettingsAsync fallback failed msg={fallbackEx.Message}");
+                }
             }
         }
 
