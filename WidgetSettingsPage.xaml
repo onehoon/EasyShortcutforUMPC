@@ -43,16 +43,16 @@
 
                         <StackPanel Grid.Column="0" Spacing="4">
                             <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
-                            <ComboBox x:Name="LosslessModifierCombo" HorizontalAlignment="Stretch" />
+                            <ComboBox x:Name="LosslessModifierCombo" Height="40" MinHeight="40" HorizontalAlignment="Stretch" />
                         </StackPanel>
 
                         <StackPanel Grid.Column="1" Spacing="4">
                             <TextBlock Text="Key" Foreground="#CCF7F8FB" />
-                            <ComboBox x:Name="LosslessKeyCombo" HorizontalAlignment="Stretch" />
+                            <ComboBox x:Name="LosslessKeyCombo" Height="40" MinHeight="40" HorizontalAlignment="Stretch" />
                         </StackPanel>
 
                         <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
-                            <Button x:Name="LosslessResetButton" Content="Reset" Click="LosslessReset_Click" MinWidth="64" />
+                            <Button x:Name="LosslessResetButton" Content="Reset" Click="LosslessReset_Click" Height="40" MinHeight="40" MinWidth="64" />
                         </StackPanel>
                     </Grid>
 
@@ -70,16 +70,16 @@
 
                                 <StackPanel Grid.Column="0" Spacing="4">
                                     <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
-                                    <ComboBox x:Name="Custom1ModifierCombo" HorizontalAlignment="Stretch" />
+                                    <ComboBox x:Name="Custom1ModifierCombo" Height="40" MinHeight="40" HorizontalAlignment="Stretch" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1" Spacing="4">
                                     <TextBlock Text="Key" Foreground="#CCF7F8FB" />
-                                    <ComboBox x:Name="Custom1KeyCombo" HorizontalAlignment="Stretch" />
+                                    <ComboBox x:Name="Custom1KeyCombo" Height="40" MinHeight="40" HorizontalAlignment="Stretch" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
-                                    <Button Content="Reset" Click="Custom1Reset_Click" MinWidth="64" />
+                                    <Button Content="Reset" Click="Custom1Reset_Click" Height="40" MinHeight="40" MinWidth="64" />
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -97,16 +97,16 @@
 
                                 <StackPanel Grid.Column="0" Spacing="4">
                                     <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
-                                    <ComboBox x:Name="Custom2ModifierCombo" HorizontalAlignment="Stretch" />
+                                    <ComboBox x:Name="Custom2ModifierCombo" Height="40" MinHeight="40" HorizontalAlignment="Stretch" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1" Spacing="4">
                                     <TextBlock Text="Key" Foreground="#CCF7F8FB" />
-                                    <ComboBox x:Name="Custom2KeyCombo" HorizontalAlignment="Stretch" />
+                                    <ComboBox x:Name="Custom2KeyCombo" Height="40" MinHeight="40" HorizontalAlignment="Stretch" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
-                                    <Button Content="Reset" Click="Custom2Reset_Click" MinWidth="64" />
+                                    <Button Content="Reset" Click="Custom2Reset_Click" Height="40" MinHeight="40" MinWidth="64" />
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -124,16 +124,16 @@
 
                                 <StackPanel Grid.Column="0" Spacing="4">
                                     <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
-                                    <ComboBox x:Name="Custom3ModifierCombo" HorizontalAlignment="Stretch" />
+                                    <ComboBox x:Name="Custom3ModifierCombo" Height="40" MinHeight="40" HorizontalAlignment="Stretch" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1" Spacing="4">
                                     <TextBlock Text="Key" Foreground="#CCF7F8FB" />
-                                    <ComboBox x:Name="Custom3KeyCombo" HorizontalAlignment="Stretch" />
+                                    <ComboBox x:Name="Custom3KeyCombo" Height="40" MinHeight="40" HorizontalAlignment="Stretch" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
-                                    <Button Content="Reset" Click="Custom3Reset_Click" MinWidth="64" />
+                                    <Button Content="Reset" Click="Custom3Reset_Click" Height="40" MinHeight="40" MinWidth="64" />
                                 </StackPanel>
                             </Grid>
                         </StackPanel>

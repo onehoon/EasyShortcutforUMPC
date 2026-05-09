@@ -8,6 +8,8 @@
     mc:Ignorable="d">
 
     <Page.Resources>
+        <x:Double x:Key="MainRowSpacing">12</x:Double>
+
         <SolidColorBrush x:Key="DefaultButtonBackground" Color="#8C44484F" />
         <SolidColorBrush x:Key="DefaultButtonBackgroundPointerOver" Color="#8C545963" />
         <SolidColorBrush x:Key="DefaultButtonBackgroundPressed" Color="#8C5B616B" />
@@ -76,7 +78,7 @@
             BorderThickness="0"
             CornerRadius="12"
             VerticalAlignment="Top">
-            <Grid Padding="10" RowSpacing="10">
+            <Grid Padding="10" RowSpacing="{StaticResource MainRowSpacing}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -128,7 +130,7 @@
                         Content="⚙" />
                 </Grid>
 
-                <StackPanel x:Name="ReorderableSectionsPanel" Grid.Row="1" Spacing="10">
+                <StackPanel x:Name="ReorderableSectionsPanel" Grid.Row="1" Spacing="{StaticResource MainRowSpacing}">
                     <Grid x:Name="OverlaySection" ColumnSpacing="10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
