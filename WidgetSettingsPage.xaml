@@ -61,7 +61,7 @@
                             <TextBlock Text="OptiScaler Overlay" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
                             <StackPanel Spacing="4">
                                 <TextBlock Text="Name" Foreground="#CCF7F8FB" />
-                                <TextBox x:Name="OverlayNameTextBox" Height="40" MinHeight="40" MaxLength="24" />
+                                <TextBox x:Name="OverlayNameTextBox" Height="40" MinHeight="40" MaxLength="24" TextChanged="OverlayNameTextBox_TextChanged" />
                             </StackPanel>
 
                             <Grid ColumnSpacing="8" HorizontalAlignment="Left">

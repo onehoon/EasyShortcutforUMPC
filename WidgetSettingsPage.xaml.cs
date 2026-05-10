@@ -39,6 +39,7 @@ namespace Easy_Shortcut_for_UMPC
 
         private WidgetSettings _draft;
         private XboxGameBarWidget _gameBarWidget;
+        private bool _renderingSectionOrder;
 
         public WidgetSettingsPage()
         {
@@ -87,7 +88,7 @@ namespace Easy_Shortcut_for_UMPC
                     OverlayModifierCombo.SelectedItem = ModifierOptions.Contains(overlayModifier) ? overlayModifier : "None";
                     OverlayKeyCombo.SelectedItem = KeyOptions.Contains(overlayKey) ? overlayKey : "Insert";
                     OverlayNameTextBox.Text = WidgetSettingsStore.NormalizeOverlayDisplayName(_draft.OverlayDisplayName);
-                    TopShortcutOrderCombo.SelectedItem = GetTopShortcutOrderLabel(WidgetSettingsDefaults.TopShortcutOrderLosslessFirst);
+                    RefreshTopShortcutOrderComboItems(WidgetSettingsDefaults.TopShortcutOrderLosslessFirst);
 
                     BindCustomSlot("custom1", Custom1ModifierCombo, Custom1KeyCombo, Custom1EnabledButton);
                     BindCustomSlot("custom2", Custom2ModifierCombo, Custom2KeyCombo, Custom2EnabledButton);
@@ -118,7 +119,7 @@ namespace Easy_Shortcut_for_UMPC
             SetComboItems(Custom4KeyCombo, KeyOptions);
             SetComboItems(OverlayModifierCombo, ModifierOptions);
             SetComboItems(OverlayKeyCombo, KeyOptions);
-            SetComboItems(TopShortcutOrderCombo, TopShortcutOrderOptions);
+            RefreshTopShortcutOrderComboItems(WidgetSettingsDefaults.TopShortcutOrderLosslessFirst);
         }
 
         private void LoadDraft()
@@ -132,7 +133,7 @@ namespace Easy_Shortcut_for_UMPC
             OverlayModifierCombo.SelectedItem = ModifierOptions.Contains(overlayModifier) ? overlayModifier : "None";
             OverlayKeyCombo.SelectedItem = KeyOptions.Contains(overlayKey) ? overlayKey : "Insert";
             OverlayNameTextBox.Text = WidgetSettingsStore.NormalizeOverlayDisplayName(_draft.OverlayDisplayName);
-            TopShortcutOrderCombo.SelectedItem = GetTopShortcutOrderLabel(_draft.TopShortcutOrder);
+            RefreshTopShortcutOrderComboItems(_draft.TopShortcutOrder);
 
             BindCustomSlot("custom1", Custom1ModifierCombo, Custom1KeyCombo, Custom1EnabledButton);
             BindCustomSlot("custom2", Custom2ModifierCombo, Custom2KeyCombo, Custom2EnabledButton);
@@ -160,19 +161,22 @@ namespace Easy_Shortcut_for_UMPC
 
         private void RenderSectionOrder()
         {
-            SectionOrderPanel.Children.Clear();
-            for (int i = 0; i < _draft.SectionOrder.Count; i++)
+            _renderingSectionOrder = true;
+            try
             {
-                string section = _draft.SectionOrder[i];
-                var row = new Grid
+                SectionOrderPanel.Children.Clear();
+                for (int i = 0; i < _draft.SectionOrder.Count; i++)
                 {
-                    ColumnSpacing = SettingsColumnSpacing,
-                    Margin = new Thickness(0, 0, 0, 6),
-                    HorizontalAlignment = HorizontalAlignment.Stretch
-                };
-                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(72) });
-                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(84) });
+                    string section = _draft.SectionOrder[i];
+                    var row = new Grid
+                    {
+                        ColumnSpacing = SettingsColumnSpacing,
+                        Margin = new Thickness(0, 0, 0, 6),
+                        HorizontalAlignment = HorizontalAlignment.Stretch
+                    };
+                    row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(72) });
+                    row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                    row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(84) });
 
                 var toggle = new ToggleSwitch
                 {
@@ -239,21 +243,28 @@ namespace Easy_Shortcut_for_UMPC
                     RenderSectionOrder();
                 };
 
-                toggle.Toggled += (_, __) =>
-                {
-                    bool hide = !toggle.IsOn;
-                    if (hide && WouldHideAllSections(section))
+                    toggle.Toggled += (_, __) =>
                     {
-                        toggle.IsOn = true;
-                        SetValidation("At least one section must remain visible.");
-                        return;
-                    }
+                        if (_renderingSectionOrder)
+                        {
+                            return;
+                        }
 
-                    ValidationTextBlock.Visibility = Visibility.Collapsed;
-                    ValidationTextBlock.Text = string.Empty;
-                    SetSectionHidden(section, hide);
-                    RenderSectionOrder();
-                };
+                        bool hide = !toggle.IsOn;
+                        if (hide && WouldHideAllSections(section))
+                        {
+                            _renderingSectionOrder = true;
+                            toggle.IsOn = true;
+                            _renderingSectionOrder = false;
+                            SetValidation("At least one section must remain visible.");
+                            return;
+                        }
+
+                        ValidationTextBlock.Visibility = Visibility.Collapsed;
+                        ValidationTextBlock.Text = string.Empty;
+                        SetSectionHidden(section, hide);
+                        RenderSectionOrder();
+                    };
 
                 Grid.SetColumn(up, 0);
                 Grid.SetColumn(down, 1);
@@ -266,7 +277,12 @@ namespace Easy_Shortcut_for_UMPC
                 row.Children.Add(toggle);
                 row.Children.Add(name);
                 row.Children.Add(actions);
-                SectionOrderPanel.Children.Add(row);
+                    SectionOrderPanel.Children.Add(row);
+                }
+            }
+            finally
+            {
+                _renderingSectionOrder = false;
             }
         }
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -305,11 +321,17 @@ namespace Easy_Shortcut_for_UMPC
             _draft.BuiltInLosslessKeys = losslessKeys;
             _draft.BuiltInOverlayKeys = overlayKeys;
             _draft.OverlayDisplayName = WidgetSettingsStore.NormalizeOverlayDisplayName(OverlayNameTextBox.Text);
-            _draft.TopShortcutOrder = ResolveTopShortcutOrderFromLabel(TopShortcutOrderCombo.SelectedItem as string);
+            _draft.TopShortcutOrder = GetSelectedTopShortcutOrder();
             UpdateCustom("custom1", Custom1ModifierCombo, Custom1KeyCombo, Custom1EnabledButton);
             UpdateCustom("custom2", Custom2ModifierCombo, Custom2KeyCombo, Custom2EnabledButton);
             UpdateCustom("custom3", Custom3ModifierCombo, Custom3KeyCombo, Custom3EnabledButton);
             UpdateCustom("custom4", Custom4ModifierCombo, Custom4KeyCombo, Custom4EnabledButton);
+
+            if (!HasAnyEffectivelyVisibleSection())
+            {
+                SetValidation("At least one section or one enabled Custom button must remain visible.");
+                return;
+            }
 
             try
             {
@@ -397,7 +419,8 @@ namespace Easy_Shortcut_for_UMPC
 
         private void TopShortcutOrderReset_Click(object sender, RoutedEventArgs e)
         {
-            TopShortcutOrderCombo.SelectedItem = GetTopShortcutOrderLabel(WidgetSettingsDefaults.TopShortcutOrderLosslessFirst);
+            RefreshTopShortcutOrderComboItems(WidgetSettingsDefaults.TopShortcutOrderLosslessFirst);
+            _draft.TopShortcutOrder = WidgetSettingsDefaults.TopShortcutOrderLosslessFirst;
         }
 
         private void SetComboItems(ComboBox combo, IReadOnlyList<string> items)
@@ -405,14 +428,56 @@ namespace Easy_Shortcut_for_UMPC
             combo.Items.Clear();
             foreach (string item in items)
             {
-                if (ReferenceEquals(items, TopShortcutOrderOptions))
-                {
-                    combo.Items.Add(GetTopShortcutOrderLabel(item));
-                    continue;
-                }
-
                 combo.Items.Add(item);
             }
+        }
+
+        private void RefreshTopShortcutOrderComboItems(string selectedValue)
+        {
+            string normalizedSelected = NormalizeTopShortcutOrderValue(selectedValue);
+            TopShortcutOrderCombo.SelectionChanged -= TopShortcutOrderCombo_SelectionChanged;
+            TopShortcutOrderCombo.Items.Clear();
+
+            AddTopShortcutOrderItem(WidgetSettingsDefaults.TopShortcutOrderLosslessFirst);
+            AddTopShortcutOrderItem(WidgetSettingsDefaults.TopShortcutOrderOverlayFirst);
+
+            foreach (ComboBoxItem item in TopShortcutOrderCombo.Items)
+            {
+                if (string.Equals(item.Tag as string, normalizedSelected, StringComparison.OrdinalIgnoreCase))
+                {
+                    TopShortcutOrderCombo.SelectedItem = item;
+                    break;
+                }
+            }
+
+            TopShortcutOrderCombo.SelectionChanged += TopShortcutOrderCombo_SelectionChanged;
+        }
+
+        private void AddTopShortcutOrderItem(string value)
+        {
+            TopShortcutOrderCombo.Items.Add(new ComboBoxItem
+            {
+                Tag = value,
+                Content = GetTopShortcutOrderLabel(value)
+            });
+        }
+
+        private static string NormalizeTopShortcutOrderValue(string value)
+        {
+            return string.Equals(value, WidgetSettingsDefaults.TopShortcutOrderOverlayFirst, StringComparison.OrdinalIgnoreCase)
+                ? WidgetSettingsDefaults.TopShortcutOrderOverlayFirst
+                : WidgetSettingsDefaults.TopShortcutOrderLosslessFirst;
+        }
+
+        private string GetSelectedTopShortcutOrder()
+        {
+            if (TopShortcutOrderCombo.SelectedItem is ComboBoxItem item &&
+                item.Tag is string value)
+            {
+                return NormalizeTopShortcutOrderValue(value);
+            }
+
+            return NormalizeTopShortcutOrderValue(_draft?.TopShortcutOrder);
         }
 
         private string GetTopShortcutOrderLabel(string topOrderValue)
@@ -441,21 +506,6 @@ namespace Easy_Shortcut_for_UMPC
             }
 
             return WidgetDisplayNameResolver.GetShortcutDisplayName(id, _draft);
-        }
-
-        private string ResolveTopShortcutOrderFromLabel(string label)
-        {
-            if (string.Equals(label, GetTopShortcutOrderLabel(WidgetSettingsDefaults.TopShortcutOrderOverlayFirst), StringComparison.Ordinal))
-            {
-                return WidgetSettingsDefaults.TopShortcutOrderOverlayFirst;
-            }
-
-            if (string.Equals(label, GetTopShortcutOrderLabel(WidgetSettingsDefaults.TopShortcutOrderLosslessFirst), StringComparison.Ordinal))
-            {
-                return WidgetSettingsDefaults.TopShortcutOrderLosslessFirst;
-            }
-
-            return WidgetSettingsDefaults.TopShortcutOrderLosslessFirst;
         }
 
         private void SetValidation(string text)
@@ -529,8 +579,18 @@ namespace Easy_Shortcut_for_UMPC
                 return;
             }
 
-            string selectedLabel = TopShortcutOrderCombo.SelectedItem as string;
-            _draft.TopShortcutOrder = ResolveTopShortcutOrderFromLabel(selectedLabel);
+            _draft.TopShortcutOrder = GetSelectedTopShortcutOrder();
+        }
+
+        private void OverlayNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (_draft == null)
+            {
+                return;
+            }
+
+            _draft.OverlayDisplayName = WidgetSettingsStore.NormalizeOverlayDisplayName(OverlayNameTextBox.Text);
+            RefreshTopShortcutOrderComboItems(GetSelectedTopShortcutOrder());
         }
 
         private bool IsSectionHidden(string sectionId)
@@ -563,6 +623,23 @@ namespace Easy_Shortcut_for_UMPC
                 !IsSectionHidden(section) &&
                 !string.Equals(section, sectionToHide, StringComparison.OrdinalIgnoreCase));
             return visibleCount <= 0;
+        }
+
+        private bool HasAnyEnabledCustomSlot()
+        {
+            return IsCustomEnabledButtonOn(Custom1EnabledButton) ||
+                   IsCustomEnabledButtonOn(Custom2EnabledButton) ||
+                   IsCustomEnabledButtonOn(Custom3EnabledButton) ||
+                   IsCustomEnabledButtonOn(Custom4EnabledButton);
+        }
+
+        private bool HasAnyEffectivelyVisibleSection()
+        {
+            bool gamingVisible = !_draft.HiddenSections.Contains(WidgetSettingsDefaults.SectionTopShortcuts, StringComparer.OrdinalIgnoreCase);
+            bool displayVisible = !_draft.HiddenSections.Contains(WidgetSettingsDefaults.SectionResolution, StringComparer.OrdinalIgnoreCase);
+            bool customSectionVisible = !_draft.HiddenSections.Contains(WidgetSettingsDefaults.SectionCustom, StringComparer.OrdinalIgnoreCase);
+            bool customVisible = customSectionVisible && HasAnyEnabledCustomSlot();
+            return gamingVisible || displayVisible || customVisible;
         }
     }
 }

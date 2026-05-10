@@ -350,21 +350,21 @@ namespace Easy_Shortcut_for_UMPC
             await OpenGameBarSettingsAsync();
         }
 
-        private void CurrentWindow_Activated(object sender, WindowActivatedEventArgs e)
+        private async void CurrentWindow_Activated(object sender, WindowActivatedEventArgs e)
         {
             if (e.WindowActivationState == CoreWindowActivationState.Deactivated)
             {
                 return;
             }
 
-            ReloadSettings();
+            await ReloadSettingsAsync();
         }
 
         private async void WidgetSettingsStore_SettingsSaved(object sender, EventArgs e)
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                ReloadSettings();
+                _ = ReloadSettingsAsync();
             });
         }
 
@@ -467,17 +467,30 @@ namespace Easy_Shortcut_for_UMPC
             ApplySectionOrder();
         }
 
-        private void ReloadSettings()
+        private async Task ReloadSettingsAsync()
         {
             try
             {
+                bool wasResolutionVisible = IsSectionVisible(WidgetSettingsDefaults.SectionResolution);
                 _settings = WidgetSettingsStore.Load();
+                bool isResolutionVisible = IsSectionVisible(WidgetSettingsDefaults.SectionResolution);
                 ApplySettingsToUi();
+                if (isResolutionVisible && !wasResolutionVisible)
+                {
+                    await InitializeResolutionSectionAsync();
+                }
+                else if (wasResolutionVisible && !isResolutionVisible)
+                {
+                    DisplayResolutionSection.Visibility = Visibility.Collapsed;
+                    CurrentDisplayStatusTextBlock.Text = string.Empty;
+                    CurrentDisplayStatusTextBlock.Visibility = Visibility.Collapsed;
+                }
             }
             catch (Exception ex)
             {
-                DiagnosticsLog.WriteException("ReloadSettings failed", ex);
+                DiagnosticsLog.WriteException("ReloadSettingsAsync failed", ex);
                 _settings = WidgetSettingsDefaults.Create();
+                ApplySettingsToUi();
             }
         }
 

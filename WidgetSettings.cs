@@ -559,7 +559,7 @@ namespace Easy_Shortcut_for_UMPC
 
             if (string.Equals(shortcutId, ShortcutButtonIds.OptiScalerOverlay, StringComparison.OrdinalIgnoreCase))
             {
-                return NormalizeOverlayDisplayName(settings?.OverlayDisplayName);
+                return WidgetSettingsStore.NormalizeOverlayDisplayName(settings?.OverlayDisplayName);
             }
 
             if (string.Equals(shortcutId, ShortcutButtonIds.Custom1, StringComparison.OrdinalIgnoreCase))
