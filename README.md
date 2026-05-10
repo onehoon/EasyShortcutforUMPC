@@ -12,15 +12,21 @@ The widget provides large touch-friendly shortcut buttons in a compact fixed-wid
 
 - Xbox Game Bar widget for quick shortcut access
 - Large touch-friendly buttons
+- Section-based widget layout
+  - Gaming
+  - Display Resolution
+  - Custom Shortcuts
 - Configurable Lossless Scaling shortcut
 - Configurable OptiScaler Overlay shortcut
 - Customizable OptiScaler Overlay button name
-- Three user-configurable Custom shortcut buttons
-- Custom buttons open Settings automatically when they are not set
+- Four user-configurable Custom Shortcut buttons
+- Individual On/Off control for each Custom Shortcut
+- Custom Shortcut buttons automatically resize based on how many are enabled
+- Custom Shortcut buttons open Settings automatically when they are not set
 - Display Resolution buttons for supported internal displays
 - Current display resolution and refresh rate shown next to the Display Resolution title
-- Configurable top shortcut order
-- Configurable vertical layout order
+- Configurable Gaming button order
+- Configurable section order and section visibility
 - Mouse and gamepad-friendly Settings access through the Xbox Game Bar widget options menu
 
 ## Installation
@@ -40,7 +46,7 @@ Easy Shortcut for UMPC is currently distributed through GitHub releases.
 2. Open **Easy Shortcut for UMPC** from the widget list.
 3. Pin the widget if you want it to stay visible while gaming.
 4. Tap the shortcut buttons as needed.
-5. Open Settings from the Xbox Game Bar widget options menu to configure shortcuts, button names, and layout.
+5. Open Settings from the Xbox Game Bar widget options menu to configure shortcuts, button names, Custom Shortcuts, and layout.
 
 ## Opening Settings
 
@@ -54,9 +60,9 @@ Right-click the **Easy Shortcut for UMPC** widget icon at the top of Xbox Game B
 
 Move focus to the widget, press the **Menu button (≡)** on the gamepad, then select **Options**.
 
-### Custom shortcut buttons
+### Custom Shortcut buttons
 
-If a Custom shortcut button is shown as **Not Set**, pressing that button also opens Settings.
+If a Custom Shortcut button is shown as **Not Set**, pressing that button also opens Settings.
 
 This makes it easy to assign a shortcut even when there is no Settings button inside the main widget.
 
@@ -69,31 +75,38 @@ This makes it easy to assign a shortcut even when there is no Settings button in
 | Custom 1 | `Not Set` | Yes |
 | Custom 2 | `Not Set` | Yes |
 | Custom 3 | `Not Set` | Yes |
+| Custom 4 | `Not Set` | Yes |
 
 > [!NOTE]
 > The previous default `OptiScaler Overlay (Alt + Insert)` button has been removed from the main layout.
 >
-> `Alt + Insert` can still be assigned to the OptiScaler Overlay button or to any Custom shortcut in Settings.
+> `Alt + Insert` can still be assigned to the OptiScaler Overlay button or to any Custom Shortcut in Settings.
 
 ## Main widget layout
 
 The main widget uses a compact layout optimized for UMPC screens.
 
-Default top shortcut order:
+The widget is organized into sections:
+
+```text
+Gaming
+Display Resolution
+Custom Shortcuts
+```
+
+Default Gaming button order:
 
 ```text
 [ Lossless Scaling ] [ OptiScaler Overlay ]
 ```
 
-The top shortcut order can be changed in Settings:
+The Gaming button order can be changed in Settings:
 
 ```text
 [ OptiScaler Overlay ] [ Lossless Scaling ]
 ```
 
-Only these two top shortcut buttons support left/right order swapping.
-
-Other rows do not support left/right swapping.
+The visible sections can also be reordered or hidden from Settings.
 
 ## Settings
 
@@ -106,10 +119,11 @@ You can:
 - Change the OptiScaler Overlay shortcut
 - Change the OptiScaler Overlay button name
 - Reset OptiScaler Overlay back to its default name and shortcut
-- Configure Custom 1, Custom 2, and Custom 3
-- Reset Custom buttons back to `Not Set`
-- Swap the top shortcut order
-- Change the vertical layout order of widget sections
+- Configure Custom 1, Custom 2, Custom 3, and Custom 4
+- Turn each Custom Shortcut On or Off
+- Change the Gaming button order
+- Change the vertical order of widget sections
+- Show or hide widget sections
 
 ## Built-in shortcut settings
 
@@ -145,16 +159,16 @@ Changing the OptiScaler Overlay button name only changes the button label inside
 
 The app name remains **Easy Shortcut for UMPC**.
 
-## Top Shortcut Order
+## Gaming Button Order
 
-The top shortcut row contains:
+The Gaming section contains:
 
 ```text
 Lossless Scaling
 OptiScaler Overlay
 ```
 
-Settings provides a separate **Top Shortcut Order** option.
+Settings provides a separate **Gaming Button Order** option.
 
 Available orders:
 
@@ -163,21 +177,21 @@ Lossless Scaling / OptiScaler Overlay
 OptiScaler Overlay / Lossless Scaling
 ```
 
-This setting only changes the left/right order of the top shortcut row.
+This setting only changes the left/right order of the two Gaming buttons.
 
 It does not affect:
 
 - Display Resolution buttons
-- Custom buttons
-- Vertical Layout Order
+- Custom Shortcut buttons
+- Layout Order
 - App name
 - Widget name
 
-## Custom shortcuts
+## Custom Shortcuts
 
-Easy Shortcut for UMPC includes three customizable shortcut buttons.
+Easy Shortcut for UMPC includes four customizable shortcut buttons.
 
-Each Custom button can be assigned a modifier and a key, such as:
+Each Custom Shortcut can be assigned a modifier and a key, such as:
 
 ```text
 Ctrl + Alt + X
@@ -189,21 +203,43 @@ Home
 End
 ```
 
-If a Custom button is not configured, it is shown as:
+If a Custom Shortcut is not configured, it is shown as:
 
 ```text
 Not Set
 ```
 
-When a **Not Set** Custom button is pressed, the Settings page opens so you can assign a shortcut.
+When a **Not Set** Custom Shortcut button is pressed, the Settings page opens so you can assign a shortcut.
 
-### How to configure Custom shortcuts
+### Custom Shortcut On/Off
+
+Each Custom Shortcut can be turned On or Off in Settings.
+
+When a Custom Shortcut is turned Off:
+
+- The button is hidden from the main widget.
+- The shortcut setting is not deleted.
+- Turning it back On restores the previous shortcut setting.
+
+The Custom Shortcut buttons automatically resize based on how many are enabled.
+
+Examples:
+
+```text
+1 enabled  → one button uses the full Custom Shortcuts row
+2 enabled  → two buttons use half width each
+3 enabled  → three buttons use equal width
+4 enabled  → four buttons use equal width
+```
+
+### How to configure Custom Shortcuts
 
 1. Open Xbox Game Bar with `Win + G`.
 2. Open **Easy Shortcut for UMPC**.
 3. Open Settings from the Xbox Game Bar widget options menu.
-4. Choose a modifier and key for Custom 1, Custom 2, or Custom 3.
-5. Press **Save**.
+4. Choose a modifier and key for Custom 1, Custom 2, Custom 3, or Custom 4.
+5. Turn the Custom Shortcut On if you want it shown in the widget.
+6. Press **Save**.
 
 ### Reset behavior
 
@@ -212,10 +248,12 @@ When a **Not Set** Custom button is pressed, the Settings page opens so you can 
 | Lossless Scaling | Restores `Ctrl + Alt + S` |
 | OptiScaler Overlay shortcut | Restores `Insert` |
 | OptiScaler Overlay name | Restores `OptiScaler Overlay` |
-| Custom 1 | Resets to `Not Set` |
-| Custom 2 | Resets to `Not Set` |
-| Custom 3 | Resets to `Not Set` |
-| Top Shortcut Order | Restores `Lossless Scaling / OptiScaler Overlay` |
+| Gaming Button Order | Restores `Lossless Scaling / OptiScaler Overlay` |
+| Layout Order | Restores the default section order and section visibility |
+
+Custom Shortcuts do not use a Reset button.
+
+To clear a Custom Shortcut, set its key to **Not Set**.
 
 ### Supported modifiers
 
@@ -230,7 +268,7 @@ When a **Not Set** Custom button is pressed, the Settings page opens so you can 
 
 ### Supported keys
 
-Custom shortcuts support common keyboard keys, including:
+Custom Shortcuts support common keyboard keys, including:
 
 - A-Z
 - 0-9
@@ -252,15 +290,17 @@ The widget sections can be reordered vertically in Settings.
 
 Available sections:
 
-- Top Shortcuts
+- Gaming
 - Display Resolution
-- Custom
+- Custom Shortcuts
 
-This changes the vertical order of the widget sections.
+Each section can also be turned On or Off.
+
+This changes which sections are shown in the main widget and the vertical order of those sections.
 
 It does not change the left/right order inside each section.
 
-The left/right order of the top row is controlled separately by **Top Shortcut Order**.
+The left/right order of the Gaming buttons is controlled separately by **Gaming Button Order**.
 
 ## Display Resolution
 
