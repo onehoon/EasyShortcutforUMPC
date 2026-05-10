@@ -8,11 +8,6 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <x:Double x:Key="SettingsInputColumnWidth">168</x:Double>
-        <x:Double x:Key="SettingsKeyColumnWidth">140</x:Double>
-        <x:Double x:Key="SettingsActionColumnWidth">80</x:Double>
-        <x:Double x:Key="SettingsColumnSpacing">8</x:Double>
-
         <Style TargetType="ComboBox">
             <Setter Property="Foreground" Value="#FFF7F8FB" />
             <Setter Property="Background" Value="#6633363C" />
@@ -38,11 +33,11 @@
                 <StackPanel Spacing="8">
                     <TextBlock Text="Lossless Scaling" FontSize="16" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
                     <Border Background="#3033363C" CornerRadius="8" Padding="8">
-                        <Grid ColumnSpacing="{StaticResource SettingsColumnSpacing}" HorizontalAlignment="Left">
+                        <Grid ColumnSpacing="8" HorizontalAlignment="Left">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="{StaticResource SettingsInputColumnWidth}" />
-                                <ColumnDefinition Width="{StaticResource SettingsKeyColumnWidth}" />
-                                <ColumnDefinition Width="{StaticResource SettingsActionColumnWidth}" />
+                                <ColumnDefinition Width="168" />
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="80" />
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Grid.Column="0" Spacing="4">
@@ -69,11 +64,11 @@
                                 <TextBox x:Name="OverlayNameTextBox" Height="40" MinHeight="40" MaxLength="24" />
                             </StackPanel>
 
-                            <Grid ColumnSpacing="{StaticResource SettingsColumnSpacing}" HorizontalAlignment="Left">
+                            <Grid ColumnSpacing="8" HorizontalAlignment="Left">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="{StaticResource SettingsInputColumnWidth}" />
-                                    <ColumnDefinition Width="{StaticResource SettingsKeyColumnWidth}" />
-                                    <ColumnDefinition Width="{StaticResource SettingsActionColumnWidth}" />
+                                    <ColumnDefinition Width="168" />
+                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="80" />
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0" Spacing="4">
@@ -107,11 +102,11 @@
                                 Foreground="#CCF7F8FB"
                                 TextWrapping="WrapWholeWords" />
 
-                            <Grid ColumnSpacing="{StaticResource SettingsColumnSpacing}" HorizontalAlignment="Left">
+                            <Grid ColumnSpacing="8" HorizontalAlignment="Left">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="{StaticResource SettingsInputColumnWidth}" />
-                                    <ColumnDefinition Width="{StaticResource SettingsKeyColumnWidth}" />
-                                    <ColumnDefinition Width="{StaticResource SettingsActionColumnWidth}" />
+                                    <ColumnDefinition Width="168" />
+                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="80" />
                                 </Grid.ColumnDefinitions>
 
                                 <ComboBox

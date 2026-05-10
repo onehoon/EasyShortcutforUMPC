@@ -190,7 +190,7 @@ namespace Easy_Shortcut_for_UMPC
 
                 var up = new Button
                 {
-                    Content = "ก่",
+                    Content = "\u25B2",
                     Width = 38,
                     MinWidth = 38,
                     Height = 36,
@@ -198,7 +198,7 @@ namespace Easy_Shortcut_for_UMPC
                 };
                 var down = new Button
                 {
-                    Content = "ก้",
+                    Content = "\u25BC",
                     Width = 38,
                     MinWidth = 38,
                     Height = 36,
