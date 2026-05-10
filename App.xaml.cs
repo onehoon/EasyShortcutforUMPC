@@ -105,13 +105,20 @@ namespace Easy_Shortcut_for_UMPC
                     {
                         _settingsWidget = widget;
                         _widgetWindows[Window.Current.CoreWindow] = "Widget2Settings";
+                        DiagnosticsLog.Write("Settings widget activated: Widget2Settings");
                         rootFrame.Navigate(typeof(WidgetSettingsPage), widget);
+                        DiagnosticsLog.Write("WidgetSettingsPage navigated");
                     }
-                    else
+                    else if (string.Equals(widgetArgs.AppExtensionId, "Widget2", StringComparison.OrdinalIgnoreCase))
                     {
                         _mainWidget = widget;
                         _widgetWindows[Window.Current.CoreWindow] = "Widget2";
                         rootFrame.Navigate(typeof(WidgetPage), widget);
+                    }
+                    else
+                    {
+                        DiagnosticsLog.Write($"Unknown Game Bar widget AppExtensionId={widgetArgs.AppExtensionId}");
+                        return;
                     }
 
                     Window.Current.Closed += GameBarWindow_Closed;

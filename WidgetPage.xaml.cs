@@ -296,6 +296,7 @@ namespace Easy_Shortcut_for_UMPC
         {
             base.OnNavigatedTo(e);
             _gameBarWidget = e.Parameter as XboxGameBarWidget;
+            DiagnosticsLog.Write($"WidgetPage OnNavigatedTo: gameBarWidget is {(_gameBarWidget == null ? "null" : "not null")}");
 
             if (_eventsHooked)
             {
@@ -331,6 +332,7 @@ namespace Easy_Shortcut_for_UMPC
 
         private async void Widget_SettingsClicked(XboxGameBarWidget sender, object args)
         {
+            DiagnosticsLog.Write("SettingsClicked received");
             await OpenGameBarSettingsAsync();
         }
 
@@ -380,6 +382,7 @@ namespace Easy_Shortcut_for_UMPC
 
         private async Task OpenGameBarSettingsAsync()
         {
+            DiagnosticsLog.Write("OpenGameBarSettingsAsync start");
             if (_gameBarWidget == null)
             {
                 DiagnosticsLog.Write("OpenGameBarSettings skipped because widget context is null.");
@@ -388,20 +391,22 @@ namespace Easy_Shortcut_for_UMPC
 
             try
             {
-                var control = new XboxGameBarWidgetControl(_gameBarWidget);
-                await control.ActivateAsync("Widget2Settings");
+                await _gameBarWidget.ActivateSettingsAsync();
+                DiagnosticsLog.Write("ActivateSettingsAsync succeeded.");
             }
             catch (Exception ex)
             {
-                DiagnosticsLog.Write($"Activate settings widget via control failed msg={ex.Message}");
+                DiagnosticsLog.Write($"ActivateSettingsAsync failed msg={ex.Message}");
 
                 try
                 {
-                    await _gameBarWidget.ActivateSettingsAsync();
+                    var control = new XboxGameBarWidgetControl(_gameBarWidget);
+                    await control.ActivateAsync("Widget2Settings");
+                    DiagnosticsLog.Write("Fallback XboxGameBarWidgetControl.ActivateAsync Widget2Settings succeeded.");
                 }
                 catch (Exception fallbackEx)
                 {
-                    DiagnosticsLog.Write($"ActivateSettingsAsync fallback failed msg={fallbackEx.Message}");
+                    DiagnosticsLog.Write($"Fallback settings activation failed msg={fallbackEx.Message}");
                 }
             }
         }
