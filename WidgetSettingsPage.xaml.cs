@@ -31,15 +31,9 @@ namespace Easy_Shortcut_for_UMPC
             "Insert","Delete","Home","End","Page Up","Page Down","Space","Tab","Escape",
             "Arrow Up","Arrow Down","Arrow Left","Arrow Right"
         };
-        private static readonly IReadOnlyList<string> TopShortcutOrderOptions = new[]
-        {
-            WidgetSettingsDefaults.TopShortcutOrderLosslessFirst,
-            WidgetSettingsDefaults.TopShortcutOrderOverlayFirst
-        };
-
         private WidgetSettings _draft;
         private XboxGameBarWidget _gameBarWidget;
-        private bool _renderingSectionOrder;
+        private bool _suppressSectionToggleEvents;
 
         public WidgetSettingsPage()
         {
@@ -161,7 +155,7 @@ namespace Easy_Shortcut_for_UMPC
 
         private void RenderSectionOrder()
         {
-            _renderingSectionOrder = true;
+            _suppressSectionToggleEvents = true;
             try
             {
                 SectionOrderPanel.Children.Clear();
@@ -245,7 +239,7 @@ namespace Easy_Shortcut_for_UMPC
 
                     toggle.Toggled += (_, __) =>
                     {
-                        if (_renderingSectionOrder)
+                        if (_suppressSectionToggleEvents)
                         {
                             return;
                         }
@@ -253,9 +247,15 @@ namespace Easy_Shortcut_for_UMPC
                         bool hide = !toggle.IsOn;
                         if (hide && WouldHideAllSections(section))
                         {
-                            _renderingSectionOrder = true;
-                            toggle.IsOn = true;
-                            _renderingSectionOrder = false;
+                            _suppressSectionToggleEvents = true;
+                            try
+                            {
+                                toggle.IsOn = true;
+                            }
+                            finally
+                            {
+                                _suppressSectionToggleEvents = false;
+                            }
                             SetValidation("At least one section must remain visible.");
                             return;
                         }
@@ -282,7 +282,7 @@ namespace Easy_Shortcut_for_UMPC
             }
             finally
             {
-                _renderingSectionOrder = false;
+                _suppressSectionToggleEvents = false;
             }
         }
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -635,9 +635,9 @@ namespace Easy_Shortcut_for_UMPC
 
         private bool HasAnyEffectivelyVisibleSection()
         {
-            bool gamingVisible = !_draft.HiddenSections.Contains(WidgetSettingsDefaults.SectionTopShortcuts, StringComparer.OrdinalIgnoreCase);
-            bool displayVisible = !_draft.HiddenSections.Contains(WidgetSettingsDefaults.SectionResolution, StringComparer.OrdinalIgnoreCase);
-            bool customSectionVisible = !_draft.HiddenSections.Contains(WidgetSettingsDefaults.SectionCustom, StringComparer.OrdinalIgnoreCase);
+            bool gamingVisible = !IsSectionHidden(WidgetSettingsDefaults.SectionTopShortcuts);
+            bool displayVisible = !IsSectionHidden(WidgetSettingsDefaults.SectionResolution);
+            bool customSectionVisible = !IsSectionHidden(WidgetSettingsDefaults.SectionCustom);
             bool customVisible = customSectionVisible && HasAnyEnabledCustomSlot();
             return gamingVisible || displayVisible || customVisible;
         }

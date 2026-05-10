@@ -22,6 +22,7 @@ namespace Easy_Shortcut_for_UMPC
         private WidgetSettings _settings;
         private XboxGameBarWidget _gameBarWidget;
         private bool _eventsHooked;
+        private bool _isReloadingSettings;
 
         private const string ActionOverlay = "insert";
         private const string ActionCustom1 = "custom1";
@@ -469,6 +470,13 @@ namespace Easy_Shortcut_for_UMPC
 
         private async Task ReloadSettingsAsync()
         {
+            if (_isReloadingSettings)
+            {
+                DiagnosticsLog.Write("ReloadSettingsAsync skipped because reload is already running.");
+                return;
+            }
+
+            _isReloadingSettings = true;
             try
             {
                 bool wasResolutionVisible = IsSectionVisible(WidgetSettingsDefaults.SectionResolution);
@@ -491,6 +499,10 @@ namespace Easy_Shortcut_for_UMPC
                 DiagnosticsLog.WriteException("ReloadSettingsAsync failed", ex);
                 _settings = WidgetSettingsDefaults.Create();
                 ApplySettingsToUi();
+            }
+            finally
+            {
+                _isReloadingSettings = false;
             }
         }
 
