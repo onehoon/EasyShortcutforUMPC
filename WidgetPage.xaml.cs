@@ -176,6 +176,7 @@ namespace Easy_Shortcut_for_UMPC
         private async System.Threading.Tasks.Task InitializeResolutionSectionAsync()
         {
             DisplayResolutionSection.Visibility = Visibility.Collapsed;
+            ApplySectionOrder();
             if (!IsSectionVisible(WidgetSettingsDefaults.SectionResolution))
             {
                 DiagnosticsLog.Write("InitializeResolutionSectionAsync skipped: section disabled.");
@@ -186,6 +187,7 @@ namespace Easy_Shortcut_for_UMPC
             bool launched = await LaunchHelperActionAsync(ActionDetectResolutionPresets);
             if (!launched)
             {
+                ApplySectionOrder();
                 return;
             }
 
@@ -194,6 +196,10 @@ namespace Easy_Shortcut_for_UMPC
             UpdateCurrentDisplayStatusText(state);
             if (!state.Available)
             {
+                DisplayResolutionSection.Visibility = Visibility.Collapsed;
+                CurrentDisplayStatusTextBlock.Text = string.Empty;
+                CurrentDisplayStatusTextBlock.Visibility = Visibility.Collapsed;
+                ApplySectionOrder();
                 return;
             }
 
@@ -535,6 +541,11 @@ namespace Easy_Shortcut_for_UMPC
 
                 if (map.TryGetValue(section, out FrameworkElement element))
                 {
+                    if (element.Visibility == Visibility.Collapsed)
+                    {
+                        continue;
+                    }
+
                     ReorderableSectionsPanel.Children.Add(element);
                 }
             }
@@ -671,6 +682,9 @@ namespace Easy_Shortcut_for_UMPC
             if (!IsSectionVisible(WidgetSettingsDefaults.SectionResolution))
             {
                 DisplayResolutionSection.Visibility = Visibility.Collapsed;
+                CurrentDisplayStatusTextBlock.Text = string.Empty;
+                CurrentDisplayStatusTextBlock.Visibility = Visibility.Collapsed;
+                ApplySectionOrder();
                 DiagnosticsLog.Write("RefreshResolutionSectionAsync skipped: section disabled.");
                 return;
             }
@@ -681,6 +695,8 @@ namespace Easy_Shortcut_for_UMPC
             }
             catch (Exception ex)
             {
+                DisplayResolutionSection.Visibility = Visibility.Collapsed;
+                ApplySectionOrder();
                 DiagnosticsLog.WriteException("RefreshResolutionSectionAsync failed", ex);
             }
         }
