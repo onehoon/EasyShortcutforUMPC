@@ -334,7 +334,6 @@ void CloseGameBarAndWaitFocus() {
 namespace commands {
 bool IsShortcutCommand(const std::wstring& action) {
     return action == L"insert" ||
-           action == L"altinsert" ||
            action == L"custom1" ||
            action == L"custom2" ||
            action == L"custom3" ||
@@ -346,8 +345,6 @@ void ExecuteShortcutCommand(const std::wstring& action) {
 
     if (action == L"insert") {
         keyboard::SendCombo(GetOverlayComboFromSettings());
-    } else if (action == L"altinsert") {
-        keyboard::SendCombo({ {VK_MENU, false}, {VK_INSERT, true} });
     } else if (action == L"custom1") {
         auto combo = GetCustomComboFromSettings(L"custom1");
         if (!combo.empty()) {

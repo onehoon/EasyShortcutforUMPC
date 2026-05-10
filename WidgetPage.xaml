@@ -108,7 +108,7 @@
 
                         <Button
                             Grid.Column="1"
-                            x:Name="InsertButton"
+                            x:Name="OverlayButton"
                             Tag="overlay"
                             Style="{StaticResource OverlayButtonStyle}"
                             Click="OverlayButton_Click"

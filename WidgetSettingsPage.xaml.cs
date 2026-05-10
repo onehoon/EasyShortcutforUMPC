@@ -12,6 +12,11 @@ namespace Easy_Shortcut_for_UMPC
 {
     public sealed partial class WidgetSettingsPage : Page
     {
+        private const double SettingsInputColumnWidth = 168;
+        private const double SettingsKeyColumnWidth = 140;
+        private const double SettingsActionColumnWidth = 80;
+        private const double SettingsColumnSpacing = 8;
+
         private static readonly IReadOnlyList<string> ModifierOptions = new[]
         {
             "None", "Ctrl", "Alt", "Shift", "Ctrl + Alt", "Ctrl + Shift", "Alt + Shift", "Ctrl + Alt + Shift"
@@ -161,33 +166,42 @@ namespace Easy_Shortcut_for_UMPC
             for (int i = 0; i < _draft.SectionOrder.Count; i++)
             {
                 string section = _draft.SectionOrder[i];
-                var row = new Grid { ColumnSpacing = 6, Margin = new Thickness(0, 0, 0, 6) };
-                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-                row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-                row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                var row = new Grid
+                {
+                    ColumnSpacing = SettingsColumnSpacing,
+                    Margin = new Thickness(0, 0, 0, 6),
+                    HorizontalAlignment = HorizontalAlignment.Left
+                };
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(SettingsInputColumnWidth) });
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(SettingsKeyColumnWidth) });
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(SettingsActionColumnWidth) });
 
                 var name = new TextBlock
                 {
                     Text = GetSectionDisplayName(section),
                     VerticalAlignment = VerticalAlignment.Center,
+                    TextTrimming = TextTrimming.CharacterEllipsis,
                     Foreground = new SolidColorBrush(Windows.UI.Colors.White)
                 };
 
+                var actions = new Grid { ColumnSpacing = 4, HorizontalAlignment = HorizontalAlignment.Stretch };
+                actions.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(38) });
+                actions.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(38) });
+
                 var up = new Button
                 {
-                    Content = "โ–ฒ",
-                    MinWidth = 56,
-                    Height = 40,
-                    Padding = new Thickness(12, 0, 12, 0),
-                    Margin = new Thickness(0, 0, 6, 0),
+                    Content = "ก่",
+                    Width = 38,
+                    MinWidth = 38,
+                    Height = 36,
                     IsEnabled = i > 0
                 };
                 var down = new Button
                 {
-                    Content = "โ–ผ",
-                    MinWidth = 56,
-                    Height = 40,
-                    Padding = new Thickness(12, 0, 12, 0),
+                    Content = "ก้",
+                    Width = 38,
+                    MinWidth = 38,
+                    Height = 36,
                     IsEnabled = i < _draft.SectionOrder.Count - 1
                 };
 
@@ -218,16 +232,19 @@ namespace Easy_Shortcut_for_UMPC
                     RenderSectionOrder();
                 };
 
+                Grid.SetColumn(up, 0);
+                Grid.SetColumn(down, 1);
+                actions.Children.Add(up);
+                actions.Children.Add(down);
+
                 Grid.SetColumn(name, 0);
-                Grid.SetColumn(up, 1);
-                Grid.SetColumn(down, 2);
+                Grid.SetColumnSpan(name, 2);
+                Grid.SetColumn(actions, 2);
                 row.Children.Add(name);
-                row.Children.Add(up);
-                row.Children.Add(down);
+                row.Children.Add(actions);
                 SectionOrderPanel.Children.Add(row);
             }
         }
-
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             ValidationTextBlock.Visibility = Visibility.Collapsed;
@@ -246,10 +263,23 @@ namespace Easy_Shortcut_for_UMPC
                 return;
             }
 
-            _draft.BuiltInLosslessKeys = losslessKeys;
-            _draft.BuiltInOverlayKeys = ComposeShortcut(
+            if (string.Equals(OverlayKeyCombo.SelectedItem as string, "Not Set", StringComparison.OrdinalIgnoreCase))
+            {
+                SetValidation("OptiScaler Overlay shortcut must include a key.");
+                return;
+            }
+
+            List<string> overlayKeys = ComposeShortcut(
                 OverlayModifierCombo.SelectedItem as string ?? "None",
                 OverlayKeyCombo.SelectedItem as string ?? "Insert");
+            if (overlayKeys.Count == 0)
+            {
+                SetValidation("OptiScaler Overlay shortcut must include a key.");
+                return;
+            }
+
+            _draft.BuiltInLosslessKeys = losslessKeys;
+            _draft.BuiltInOverlayKeys = overlayKeys;
             _draft.OverlayDisplayName = WidgetSettingsStore.NormalizeOverlayDisplayName(OverlayNameTextBox.Text);
             _draft.TopShortcutOrder =
                 string.Equals(TopShortcutOrderCombo.SelectedItem as string, TopOrderOverlayLosslessLabel, StringComparison.OrdinalIgnoreCase)

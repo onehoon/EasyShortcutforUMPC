@@ -533,7 +533,7 @@ namespace Easy_Shortcut_for_UMPC
 
         private void ApplyTopShortcutOrder()
         {
-            if (CaptureButton == null || InsertButton == null)
+            if (CaptureButton == null || OverlayButton == null)
             {
                 return;
             }
@@ -543,7 +543,7 @@ namespace Easy_Shortcut_for_UMPC
                 WidgetSettingsDefaults.TopShortcutOrderOverlayFirst,
                 StringComparison.OrdinalIgnoreCase);
 
-            Grid.SetColumn(InsertButton, overlayFirst ? 0 : 1);
+            Grid.SetColumn(OverlayButton, overlayFirst ? 0 : 1);
             Grid.SetColumn(CaptureButton, overlayFirst ? 1 : 0);
             DiagnosticsLog.Write($"ApplyTopShortcutOrder order={_settings.TopShortcutOrder}");
         }
