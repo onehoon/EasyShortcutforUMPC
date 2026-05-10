@@ -61,7 +61,7 @@
     </Page.Resources>
 
     <Grid Background="#CC1A1C21" Padding="12">
-        <Grid Padding="10" RowSpacing="{StaticResource MainRowSpacing}" VerticalAlignment="Top">
+        <Grid Padding="0" RowSpacing="{StaticResource MainRowSpacing}" VerticalAlignment="Top">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
@@ -250,4 +250,5 @@
         </Grid>
     </Grid>
 </Page>
+
 
