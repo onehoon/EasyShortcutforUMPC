@@ -1,6 +1,6 @@
 # Quick Buttons for Game Bar
 
-<img width="1449" height="650" alt="widget" src="https://github.com/user-attachments/assets/d4d165c9-912d-48d4-9080-c378ac266095" />
+<img width="1280" alt="output_4_horizontal" src="https://github.com/user-attachments/assets/608539f8-107a-4f5b-9eaf-c799508c29ae" />
 
 ## Designed for UMPCs and handheld Windows PCs
 
