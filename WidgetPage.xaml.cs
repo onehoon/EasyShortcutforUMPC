@@ -557,11 +557,10 @@ namespace Easy_Shortcut_for_UMPC
 
             if (state != null &&
                 state.CurrentWidth > 0 &&
-                state.CurrentHeight > 0 &&
-                state.CurrentRefreshRate > 0)
+                state.CurrentHeight > 0)
             {
                 CurrentDisplayStatusTextBlock.Text =
-                    $"{state.CurrentWidth}x{state.CurrentHeight}p @{state.CurrentRefreshRate}Hz";
+                    $"{state.CurrentWidth}x{state.CurrentHeight}p";
                 CurrentDisplayStatusTextBlock.Visibility = Visibility.Visible;
                 DiagnosticsLog.Write($"Display status: {CurrentDisplayStatusTextBlock.Text}");
                 return;
