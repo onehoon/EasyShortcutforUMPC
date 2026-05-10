@@ -445,8 +445,8 @@ namespace Easy_Shortcut_for_UMPC
                 try
                 {
                     var control = new XboxGameBarWidgetControl(_gameBarWidget);
-                    await control.ActivateAsync("Widget2Settings");
-                    DiagnosticsLog.Write("Fallback XboxGameBarWidgetControl.ActivateAsync Widget2Settings succeeded.");
+                    await control.ActivateAsync("GamingWidgetSettings");
+                    DiagnosticsLog.Write("Fallback XboxGameBarWidgetControl.ActivateAsync GamingWidgetSettings succeeded.");
                 }
                 catch (Exception fallbackEx)
                 {

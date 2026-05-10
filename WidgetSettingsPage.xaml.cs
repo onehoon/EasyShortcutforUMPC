@@ -497,8 +497,8 @@ namespace Easy_Shortcut_for_UMPC
             try
             {
                 var control = new XboxGameBarWidgetControl(_gameBarWidget);
-                await control.ActivateAsync("Widget2");
-                await control.CloseAsync("Widget2Settings");
+                await control.ActivateAsync("GamingWidget");
+                await control.CloseAsync("GamingWidgetSettings");
             }
             catch (Exception ex)
             {

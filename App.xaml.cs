@@ -101,18 +101,18 @@ namespace Easy_Shortcut_for_UMPC
                         Window.Current.CoreWindow,
                         rootFrame);
 
-                    if (string.Equals(widgetArgs.AppExtensionId, "Widget2Settings", StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(widgetArgs.AppExtensionId, "GamingWidgetSettings", StringComparison.OrdinalIgnoreCase))
                     {
                         _settingsWidget = widget;
-                        _widgetWindows[Window.Current.CoreWindow] = "Widget2Settings";
-                        DiagnosticsLog.Write("Settings widget activated: Widget2Settings");
+                        _widgetWindows[Window.Current.CoreWindow] = "GamingWidgetSettings";
+                        DiagnosticsLog.Write("Settings widget activated: GamingWidgetSettings");
                         rootFrame.Navigate(typeof(WidgetSettingsPage), widget);
                         DiagnosticsLog.Write("WidgetSettingsPage navigated");
                     }
-                    else if (string.Equals(widgetArgs.AppExtensionId, "Widget2", StringComparison.OrdinalIgnoreCase))
+                    else if (string.Equals(widgetArgs.AppExtensionId, "GamingWidget", StringComparison.OrdinalIgnoreCase))
                     {
                         _mainWidget = widget;
-                        _widgetWindows[Window.Current.CoreWindow] = "Widget2";
+                        _widgetWindows[Window.Current.CoreWindow] = "GamingWidget";
                         rootFrame.Navigate(typeof(WidgetPage), widget);
                     }
                     else
@@ -148,7 +148,7 @@ namespace Easy_Shortcut_for_UMPC
             DiagnosticsLog.Write("GameBarWindow_Closed");
             if (sender is CoreWindow coreWindow && _widgetWindows.TryGetValue(coreWindow, out string appExtensionId))
             {
-                if (string.Equals(appExtensionId, "Widget2Settings", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(appExtensionId, "GamingWidgetSettings", StringComparison.OrdinalIgnoreCase))
                 {
                     _settingsWidget = null;
                 }
@@ -227,7 +227,7 @@ namespace Easy_Shortcut_for_UMPC
 
                 var message = new TextBlock
                 {
-                    Text = "Easy Shortcut for UMPC is intended to be used from Xbox Game Bar.\n\nOpen Xbox Game Bar with Win+G, then launch Easy Shortcut for UMPC from the Widget menu.",
+                    Text = "Quick Buttons for Game Bar is intended to be used from Xbox Game Bar.\n\nOpen Xbox Game Bar with Win+G, then launch Quick Buttons for Game Bar from the Widget menu.",
                     Foreground = new SolidColorBrush(Colors.White),
                     FontSize = 16,
                     TextWrapping = TextWrapping.Wrap

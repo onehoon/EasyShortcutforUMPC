@@ -47,9 +47,9 @@
         <uap3:Extension Category="windows.appExtension">
           <uap3:AppExtension
             Name="microsoft.gameBarUIExtension"
-            Id="Widget2"
-            DisplayName="Easy Shortcut for UMPC"
-            Description="Quick shortcut panel for UMPC"
+            Id="GamingWidget"
+            DisplayName="Quick Buttons for Game Bar"
+            Description="Touch-friendly shortcut buttons for UMPCs and handheld Windows PCs."
             PublicFolder="GameBar">
             <uap3:Properties>
               <GameBarWidget Type="Standard">
@@ -57,7 +57,7 @@
                 <PinningSupported>true</PinningSupported>
                 <ActivateAfterInstall>true</ActivateAfterInstall>
                 <FavoriteAfterInstall>true</FavoriteAfterInstall>
-                <SettingsSupported AppExtensionId="Widget2Settings" />
+                <SettingsSupported AppExtensionId="GamingWidgetSettings" />
                 <Window>
                   <Size>
                     <Height>450</Height>
@@ -79,9 +79,9 @@
         <uap3:Extension Category="windows.appExtension">
           <uap3:AppExtension
             Name="microsoft.gameBarUIExtension"
-            Id="Widget2Settings"
-            DisplayName="Settings"
-            Description="Settings for Easy Shortcut for UMPC"
+            Id="GamingWidgetSettings"
+            DisplayName="Quick Buttons Settings"
+            Description="Settings for Quick Buttons for Game Bar."
             PublicFolder="GameBar">
             <uap3:Properties>
               <GameBarWidget Type="Settings">

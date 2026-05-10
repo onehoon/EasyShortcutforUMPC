@@ -14,13 +14,13 @@
             VerticalAlignment="Top">
             <StackPanel Spacing="10">
                 <TextBlock
-                    Text="Easy Shortcut for UMPC"
+                    Text="Quick Buttons for Game Bar"
                     FontSize="28"
                     FontWeight="SemiBold"
                     Foreground="#FFF7F8FB"
                     TextWrapping="WrapWholeWords" />
                 <TextBlock
-                    Text="Easy Shortcut for UMPC is designed to run as an Xbox Game Bar widget. Press Win + G and open it from the widget list."
+                    Text="Quick Buttons for Game Bar is designed to run as an Xbox Game Bar widget. Press Win + G and open it from the widget list."
                     FontSize="15"
                     Foreground="#FFF7F8FB"
                     Opacity="0.88"

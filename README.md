@@ -1,10 +1,10 @@
-# Easy Shortcut for UMPC
+# Quick Buttons for Game Bar
 
 <img width="1449" height="650" alt="widget" src="https://github.com/user-attachments/assets/d4d165c9-912d-48d4-9080-c378ac266095" />
 
 ## Designed for UMPCs and handheld Windows PCs
 
-Easy Shortcut for UMPC is an Xbox Game Bar widget designed for UMPCs and handheld Windows gaming PCs.
+Quick Buttons for Game Bar is an Xbox Game Bar widget designed for UMPCs and handheld Windows gaming PCs.
 
 The widget provides large touch-friendly shortcut buttons in a compact fixed-width layout, making common keyboard shortcuts easier to use on small Windows handheld screens.
 
@@ -31,19 +31,19 @@ The widget provides large touch-friendly shortcut buttons in a compact fixed-wid
 
 ## Installation
 
-Easy Shortcut for UMPC is currently distributed through GitHub releases.
+Quick Buttons for Game Bar is currently distributed through GitHub releases.
 
 1. Go to the latest GitHub release.
 2. Download the attached ZIP file.
 3. Extract the ZIP file.
 4. Run `install-Beta.cmd` by double-clicking it.
 5. Open Xbox Game Bar with `Win + G`.
-6. Open **Easy Shortcut for UMPC** from the widget list.
+6. Open **Quick Buttons for Game Bar** from the widget list.
 
 ## How to use
 
 1. Open Xbox Game Bar with `Win + G`.
-2. Open **Easy Shortcut for UMPC** from the widget list.
+2. Open **Quick Buttons for Game Bar** from the widget list.
 3. Pin the widget if you want it to stay visible while gaming.
 4. Tap the shortcut buttons as needed.
 5. Open Settings from the Xbox Game Bar widget options menu to configure shortcuts, button names, Custom Shortcuts, and layout.
@@ -54,11 +54,11 @@ Settings are opened from the Xbox Game Bar widget options menu.
 
 ### Mouse
 
-Right-click the **Easy Shortcut for UMPC** widget icon at the top of Xbox Game Bar, then select **Options**.
+Right-click the **Quick Buttons for Game Bar** widget icon at the top of Xbox Game Bar, then select **Options**.
 
 ### Gamepad
 
-Move focus to the widget, press the **Menu button (≡)** on the gamepad, then select **Options**.
+Move focus to the widget, press the **Menu button** on the gamepad, then select **Options**.
 
 ### Custom Shortcut buttons
 
@@ -157,7 +157,7 @@ Frame Gen Overlay
 
 Changing the OptiScaler Overlay button name only changes the button label inside the widget.
 
-The app name remains **Easy Shortcut for UMPC**.
+The app name remains **Quick Buttons for Game Bar**.
 
 ## Gaming Button Order
 
@@ -189,7 +189,7 @@ It does not affect:
 
 ## Custom Shortcuts
 
-Easy Shortcut for UMPC includes four customizable shortcut buttons.
+Quick Buttons for Game Bar includes four customizable shortcut buttons.
 
 Each Custom Shortcut can be assigned a modifier and a key, such as:
 
@@ -226,16 +226,16 @@ The Custom Shortcut buttons automatically resize based on how many are enabled.
 Examples:
 
 ```text
-1 enabled  → one button uses the full Custom Shortcuts row
-2 enabled  → two buttons use half width each
-3 enabled  → three buttons use equal width
-4 enabled  → four buttons use equal width
+1 enabled  -> one button uses the full Custom Shortcuts row
+2 enabled  -> two buttons use half width each
+3 enabled  -> three buttons use equal width
+4 enabled  -> four buttons use equal width
 ```
 
 ### How to configure Custom Shortcuts
 
 1. Open Xbox Game Bar with `Win + G`.
-2. Open **Easy Shortcut for UMPC**.
+2. Open **Quick Buttons for Game Bar**.
 3. Open Settings from the Xbox Game Bar widget options menu.
 4. Choose a modifier and key for Custom 1, Custom 2, Custom 3, or Custom 4.
 5. Turn the Custom Shortcut On if you want it shown in the widget.
@@ -353,7 +353,7 @@ Available resolution options depend on the detected internal display resolution 
 
 ## License
 
-Easy Shortcut for UMPC is released under the GNU General Public License v3.0.
+Quick Buttons for Game Bar is released under the GNU General Public License v3.0.
 
 You may use, modify, and redistribute this project under the terms of the GPL-3.0 license.
 
