@@ -298,6 +298,13 @@ namespace Easy_Shortcut_for_UMPC
             _gameBarWidget = e.Parameter as XboxGameBarWidget;
             DiagnosticsLog.Write($"WidgetPage OnNavigatedTo: gameBarWidget is {(_gameBarWidget == null ? "null" : "not null")}");
 
+            if (_gameBarWidget != null)
+            {
+                DiagnosticsLog.Write($"SettingsSupported before set: {_gameBarWidget.SettingsSupported}");
+                _gameBarWidget.SettingsSupported = true;
+                DiagnosticsLog.Write($"SettingsSupported after set: {_gameBarWidget.SettingsSupported}");
+            }
+
             if (_eventsHooked)
             {
                 return;
