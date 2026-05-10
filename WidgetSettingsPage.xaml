@@ -56,6 +56,13 @@
                         </Grid>
                     </Border>
 
+                    <TextBlock
+                        Text="OptiScaler Overlay"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="#FFF7F8FB"
+                        Margin="0,8,0,0" />
+
                     <Border Background="#3033363C" CornerRadius="8" Padding="8">
                         <StackPanel Spacing="6">
                             <StackPanel Spacing="4">
