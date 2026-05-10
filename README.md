@@ -25,15 +25,14 @@ Download the attached ZIP file from the GitHub release, extract the ZIP, and run
 6. Open **Easy Shortcut for UMPC** from the widget list.
 7. Pin the widget if you want it to stay visible while gaming.
 8. Tap the shortcut buttons as needed.
-9. Press the Settings button to configure custom shortcuts or change the layout order.
+9. Open Settings from the Xbox Game Bar widget options menu to configure shortcuts or layout.
 
 ## Shortcut list
 
 | Button | Sent shortcut |
 |---|---|
-| Lossless Scaling | `Ctrl + Alt + S` by default, customizable in Settings |
-| OptiScaler Overlay | `Insert` |
-| OptiScaler Overlay | `Alt + Insert` |
+| Lossless Scaling | `Ctrl + Alt + S` by default, configurable in Settings |
+| OptiScaler Overlay | `Insert` by default, configurable in Settings |
 | Custom 1 | User-configurable |
 | Custom 2 | User-configurable |
 | Custom 3 | User-configurable |
@@ -45,15 +44,17 @@ The Settings page lets you customize the widget behavior.
 You can:
 
 - Change the Lossless Scaling shortcut
+- Change the OptiScaler Overlay shortcut
+- Change the OptiScaler Overlay button name
 - Reset Lossless Scaling back to `Ctrl + Alt + S`
 - Configure Custom 1, Custom 2, and Custom 3
 - Reset custom buttons back to `Not Set`
 - Change the layout order of widget sections
+- Swap the top shortcut order between `Lossless Scaling / OptiScaler Overlay` and `OptiScaler Overlay / Lossless Scaling`
 
 The layout order can be customized for the following sections:
 
-- Lossless Scaling
-- OptiScaler Overlay
+- Top Shortcuts
 - Display Resolution
 - Custom
 
@@ -72,12 +73,13 @@ Each custom button can be assigned a modifier and a key, such as:
 If a custom button is not configured, it is shown as `Not Set`.
 
 When a `Not Set` custom button is pressed, the Settings page opens so you can assign a shortcut.
+`Alt + Insert` can still be assigned through Custom shortcuts.
 
 ### How to configure custom shortcuts
 
 1. Open Xbox Game Bar with `Win + G`.
 2. Open **Easy Shortcut for UMPC**.
-3. Press the Settings button.
+3. Open the widget options menu and open Settings.
 4. Choose a modifier and key for Custom 1, Custom 2, or Custom 3.
 5. Press Save.
 

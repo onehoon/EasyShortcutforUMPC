@@ -272,6 +272,23 @@ std::vector<std::pair<WORD, bool>> GetLosslessComboFromSettings() {
     return combo;
 }
 
+std::vector<std::pair<WORD, bool>> GetOverlayComboFromSettings() {
+    std::wstring json = ReadTextFile(GetSettingsPath());
+    if (json.empty()) {
+        return {{VK_INSERT, true}};
+    }
+
+    std::wstring builtIn = ExtractObjectByName(json, L"builtInShortcuts");
+    std::wstring overlay = builtIn.empty() ? L"" : ExtractObjectByName(builtIn, L"overlay");
+    std::vector<std::wstring> keys = overlay.empty() ? std::vector<std::wstring>() : ExtractStringArray(overlay, L"keys");
+    auto combo = BuildComboFromKeys(keys);
+    if (combo.empty()) {
+        return {{VK_INSERT, true}};
+    }
+
+    return combo;
+}
+
 std::vector<std::pair<WORD, bool>> GetCustomComboFromSettings(const std::wstring& slotName) {
     std::wstring json = ReadTextFile(GetSettingsPath());
     if (json.empty()) {
@@ -328,7 +345,7 @@ void ExecuteShortcutCommand(const std::wstring& action) {
     CloseGameBarAndWaitFocus();
 
     if (action == L"insert") {
-        keyboard::SendCombo({ {VK_INSERT, true} });
+        keyboard::SendCombo(GetOverlayComboFromSettings());
     } else if (action == L"altinsert") {
         keyboard::SendCombo({ {VK_MENU, false}, {VK_INSERT, true} });
     } else if (action == L"custom1") {

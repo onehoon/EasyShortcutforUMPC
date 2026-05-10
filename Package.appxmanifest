@@ -106,7 +106,6 @@
         <desktop:Extension Category="windows.fullTrustProcess" Executable="ShortcutHelper\ShortcutHelper.exe">
           <desktop:FullTrustProcess>
             <desktop:ParameterGroup GroupId="InsertCommand" Parameters="insert" />
-            <desktop:ParameterGroup GroupId="AltInsertCommand" Parameters="altinsert" />
             <desktop:ParameterGroup GroupId="Custom1Command" Parameters="custom1" />
             <desktop:ParameterGroup GroupId="Custom2Command" Parameters="custom2" />
             <desktop:ParameterGroup GroupId="Custom3Command" Parameters="custom3" />

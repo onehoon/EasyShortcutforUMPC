@@ -22,8 +22,7 @@ namespace Easy_Shortcut_for_UMPC
         private XboxGameBarWidget _gameBarWidget;
         private bool _eventsHooked;
 
-        private const string ActionInsert = "insert";
-        private const string ActionAltInsert = "altinsert";
+        private const string ActionOverlay = "insert";
         private const string ActionCustom1 = "custom1";
         private const string ActionCustom2 = "custom2";
         private const string ActionCustom3 = "custom3";
@@ -37,8 +36,7 @@ namespace Easy_Shortcut_for_UMPC
         private const string ActionSetResolution720 = "set-resolution-1280-720";
 
         // Must stay in sync with desktop:ParameterGroup GroupId values in Package.appxmanifest.
-        private const string GroupInsert = "InsertCommand";
-        private const string GroupAltInsert = "AltInsertCommand";
+        private const string GroupOverlay = "InsertCommand";
         private const string GroupCustom1 = "Custom1Command";
         private const string GroupCustom2 = "Custom2Command";
         private const string GroupCustom3 = "Custom3Command";
@@ -127,8 +125,7 @@ namespace Easy_Shortcut_for_UMPC
 
             string groupId = action switch
             {
-                ActionInsert => GroupInsert,
-                ActionAltInsert => GroupAltInsert,
+                ActionOverlay => GroupOverlay,
                 ActionCustom1 => GroupCustom1,
                 ActionCustom2 => GroupCustom2,
                 ActionCustom3 => GroupCustom3,
@@ -175,6 +172,8 @@ namespace Easy_Shortcut_for_UMPC
             }
 
             ResolutionFeatureState state = await ResolutionFeatureStateStore.WaitForStateRefreshAsync(launchStamp, 2200);
+            DiagnosticsLog.Write($"Resolution state current={state.CurrentWidth}x{state.CurrentHeight}@{state.CurrentRefreshRate}");
+            UpdateCurrentDisplayStatusText(state);
             if (!state.Available)
             {
                 return;
@@ -272,24 +271,14 @@ namespace Easy_Shortcut_for_UMPC
             ApplySectionOrder();
         }
 
-        private async void InsertButton_Click(object sender, RoutedEventArgs e)
+        private async void OverlayButton_Click(object sender, RoutedEventArgs e)
         {
-            await LaunchHelperActionAsync(ActionInsert);
-        }
-
-        private async void AltInsertButton_Click(object sender, RoutedEventArgs e)
-        {
-            await LaunchHelperActionAsync(ActionAltInsert);
+            await ExecuteBuiltInShortcutAsync(_settings.BuiltInOverlayKeys, ActionOverlay);
         }
 
         private async void CaptureButton_Click(object sender, RoutedEventArgs e)
         {
             await LaunchHelperActionAsync(ActionLosslessScaling);
-        }
-
-        private async void SettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            await OpenGameBarSettingsAsync();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -387,6 +376,17 @@ namespace Easy_Shortcut_for_UMPC
             await LaunchHelperActionAsync(action);
         }
 
+        private async Task ExecuteBuiltInShortcutAsync(IReadOnlyList<string> keys, string action)
+        {
+            if (!WidgetSettingsStore.IsValidKeys(keys))
+            {
+                await OpenGameBarSettingsAsync();
+                return;
+            }
+
+            await LaunchHelperActionAsync(action);
+        }
+
         private async Task OpenGameBarSettingsAsync()
         {
             DiagnosticsLog.Write("OpenGameBarSettingsAsync start");
@@ -422,11 +422,14 @@ namespace Easy_Shortcut_for_UMPC
         {
             _settings = WidgetSettingsStore.Normalize(_settings);
             LosslessShortcutTextBlock.Text = $"({FormatShortcut(_settings.BuiltInLosslessKeys)})";
+            OverlayTitleTextBlock.Text = WidgetSettingsStore.NormalizeOverlayDisplayName(_settings.OverlayDisplayName);
+            OverlayShortcutTextBlock.Text = $"({FormatShortcut(_settings.BuiltInOverlayKeys)})";
 
             CustomButton1.Content = GetCustomButtonText("custom1");
             CustomButton2.Content = GetCustomButtonText("custom2");
             CustomButton3.Content = GetCustomButtonText("custom3");
 
+            ApplyTopShortcutOrder();
             ApplySectionOrder();
         }
 
@@ -458,8 +461,7 @@ namespace Easy_Shortcut_for_UMPC
         {
             var map = new Dictionary<string, FrameworkElement>(StringComparer.OrdinalIgnoreCase)
             {
-                [WidgetSettingsDefaults.SectionLosslessScaling] = LosslessScalingSection,
-                [WidgetSettingsDefaults.SectionOverlay] = OverlaySection,
+                [WidgetSettingsDefaults.SectionTopShortcuts] = TopShortcutsSection,
                 [WidgetSettingsDefaults.SectionResolution] = DisplayResolutionSection,
                 [WidgetSettingsDefaults.SectionCustom] = CustomSection
             };
@@ -473,14 +475,9 @@ namespace Easy_Shortcut_for_UMPC
                 }
             }
 
-            if (!ReorderableSectionsPanel.Children.Contains(LosslessScalingSection))
+            if (!ReorderableSectionsPanel.Children.Contains(TopShortcutsSection))
             {
-                ReorderableSectionsPanel.Children.Add(LosslessScalingSection);
-            }
-
-            if (!ReorderableSectionsPanel.Children.Contains(OverlaySection))
-            {
-                ReorderableSectionsPanel.Children.Add(OverlaySection);
+                ReorderableSectionsPanel.Children.Add(TopShortcutsSection);
             }
 
             if (!ReorderableSectionsPanel.Children.Contains(DisplayResolutionSection))
@@ -499,6 +496,8 @@ namespace Easy_Shortcut_for_UMPC
             if (!string.IsNullOrEmpty(_resolutionAction1))
             {
                 await LaunchHelperActionAsync(_resolutionAction1);
+                await Task.Delay(500);
+                await RefreshResolutionSectionAsync();
             }
         }
 
@@ -507,6 +506,8 @@ namespace Easy_Shortcut_for_UMPC
             if (!string.IsNullOrEmpty(_resolutionAction2))
             {
                 await LaunchHelperActionAsync(_resolutionAction2);
+                await Task.Delay(500);
+                await RefreshResolutionSectionAsync();
             }
         }
 
@@ -515,6 +516,8 @@ namespace Easy_Shortcut_for_UMPC
             if (!string.IsNullOrEmpty(_resolutionAction3))
             {
                 await LaunchHelperActionAsync(_resolutionAction3);
+                await Task.Delay(500);
+                await RefreshResolutionSectionAsync();
             }
         }
 
@@ -523,6 +526,61 @@ namespace Easy_Shortcut_for_UMPC
             if (!string.IsNullOrEmpty(_resolutionAction4))
             {
                 await LaunchHelperActionAsync(_resolutionAction4);
+                await Task.Delay(500);
+                await RefreshResolutionSectionAsync();
+            }
+        }
+
+        private void ApplyTopShortcutOrder()
+        {
+            if (CaptureButton == null || InsertButton == null)
+            {
+                return;
+            }
+
+            bool overlayFirst = string.Equals(
+                _settings.TopShortcutOrder,
+                WidgetSettingsDefaults.TopShortcutOrderOverlayFirst,
+                StringComparison.OrdinalIgnoreCase);
+
+            Grid.SetColumn(InsertButton, overlayFirst ? 0 : 1);
+            Grid.SetColumn(CaptureButton, overlayFirst ? 1 : 0);
+            DiagnosticsLog.Write($"ApplyTopShortcutOrder order={_settings.TopShortcutOrder}");
+        }
+
+        private void UpdateCurrentDisplayStatusText(ResolutionFeatureState state)
+        {
+            if (CurrentDisplayStatusTextBlock == null)
+            {
+                return;
+            }
+
+            if (state != null &&
+                state.CurrentWidth > 0 &&
+                state.CurrentHeight > 0 &&
+                state.CurrentRefreshRate > 0)
+            {
+                CurrentDisplayStatusTextBlock.Text =
+                    $"{state.CurrentWidth}x{state.CurrentHeight}p @{state.CurrentRefreshRate}Hz";
+                CurrentDisplayStatusTextBlock.Visibility = Visibility.Visible;
+                DiagnosticsLog.Write($"Display status: {CurrentDisplayStatusTextBlock.Text}");
+                return;
+            }
+
+            CurrentDisplayStatusTextBlock.Text = string.Empty;
+            CurrentDisplayStatusTextBlock.Visibility = Visibility.Collapsed;
+            DiagnosticsLog.Write("Display status: unavailable");
+        }
+
+        private async Task RefreshResolutionSectionAsync()
+        {
+            try
+            {
+                await InitializeResolutionSectionAsync();
+            }
+            catch (Exception ex)
+            {
+                DiagnosticsLog.WriteException("RefreshResolutionSectionAsync failed", ex);
             }
         }
 

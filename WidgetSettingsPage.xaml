@@ -56,6 +56,76 @@
                         </Grid>
                     </Border>
 
+                    <Border Background="#3033363C" CornerRadius="8" Padding="8">
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="OptiScaler Overlay" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Name" Foreground="#CCF7F8FB" />
+                                <TextBox x:Name="OverlayNameTextBox" Height="40" MinHeight="40" MaxLength="24" />
+                            </StackPanel>
+
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="168" />
+                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Spacing="4">
+                                    <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
+                                    <ComboBox x:Name="OverlayModifierCombo" Height="40" MinHeight="40" HorizontalAlignment="Stretch" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Spacing="4">
+                                    <TextBlock Text="Key" Foreground="#CCF7F8FB" />
+                                    <ComboBox x:Name="OverlayKeyCombo" Height="40" MinHeight="40" HorizontalAlignment="Stretch" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
+                                    <Button Content="Reset" Click="OverlayReset_Click" Height="40" MinHeight="40" MinWidth="64" />
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock
+                        Text="Top Shortcut Order"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="#FFF7F8FB"
+                        Margin="0,8,0,0" />
+
+                    <Border Background="#3033363C" CornerRadius="8" Padding="8">
+                        <StackPanel Spacing="6">
+                            <TextBlock
+                                Text="Only changes the left/right order of Lossless Scaling and OptiScaler Overlay."
+                                Foreground="#CCF7F8FB"
+                                TextWrapping="WrapWholeWords" />
+
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <ComboBox
+                                    Grid.Column="0"
+                                    x:Name="TopShortcutOrderCombo"
+                                    Height="40"
+                                    MinHeight="40"
+                                    HorizontalAlignment="Stretch" />
+
+                                <Button
+                                    Grid.Column="1"
+                                    Content="Reset"
+                                    Click="TopShortcutOrderReset_Click"
+                                    Height="40"
+                                    MinHeight="40"
+                                    MinWidth="64" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
                     <TextBlock Text="Custom Shortcuts" FontSize="16" FontWeight="SemiBold" Foreground="#FFF7F8FB" Margin="0,8,0,0" />
 
                     <Border Background="#3033363C" CornerRadius="8" Padding="8">

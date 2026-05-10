@@ -4,7 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:automation="using:Windows.UI.Xaml.Automation"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -49,15 +48,6 @@
             <Setter Property="MinHeight" Value="72" />
         </Style>
 
-        <Style x:Key="SettingsButtonStyle" TargetType="Button" BasedOn="{StaticResource ShortcutButtonStyle}">
-            <Setter Property="MinHeight" Value="72" />
-            <Setter Property="Width" Value="72" />
-            <Setter Property="MinWidth" Value="72" />
-            <Setter Property="MaxWidth" Value="72" />
-            <Setter Property="FontSize" Value="24" />
-            <Setter Property="FontWeight" Value="Bold" />
-        </Style>
-
         <Style x:Key="OverlayButtonStyle" TargetType="Button" BasedOn="{StaticResource ShortcutButtonStyle}">
             <Setter Property="Background" Value="{StaticResource OverlayButtonBackground}" />
         </Style>
@@ -84,10 +74,10 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel x:Name="ReorderableSectionsPanel" Grid.Row="0" Spacing="{StaticResource MainRowSpacing}">
-                    <Grid x:Name="LosslessScalingSection" ColumnSpacing="10">
+                    <Grid x:Name="TopShortcutsSection" ColumnSpacing="10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
                         <Button
@@ -118,54 +108,30 @@
 
                         <Button
                             Grid.Column="1"
-                            x:Name="SettingsButton"
-                            Tag="default"
-                            Style="{StaticResource SettingsButtonStyle}"
-                            ToolTipService.ToolTip="Settings"
-                            automation:AutomationProperties.Name="Settings"
-                            Click="SettingsButton_Click"
-                            PointerEntered="Button_PointerEntered"
-                            PointerExited="Button_PointerExited"
-                            PointerPressed="Button_PointerPressed"
-                            PointerReleased="Button_PointerReleased"
-                            Content="⚙" />
-                    </Grid>
-
-                    <Grid x:Name="OverlaySection" ColumnSpacing="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <Button
-                            Grid.Column="0"
                             x:Name="InsertButton"
                             Tag="overlay"
                             Style="{StaticResource OverlayButtonStyle}"
-                            Click="InsertButton_Click"
+                            Click="OverlayButton_Click"
                             PointerEntered="Button_PointerEntered"
                             PointerExited="Button_PointerExited"
                             PointerPressed="Button_PointerPressed"
                             PointerReleased="Button_PointerReleased">
                             <StackPanel Spacing="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock Text="OptiScaler Overlay" HorizontalAlignment="Center" TextAlignment="Center" />
-                                <TextBlock Text="(Insert)" FontSize="13" Opacity="0.82" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="NoWrap" />
-                            </StackPanel>
-                        </Button>
-
-                        <Button
-                            Grid.Column="1"
-                            x:Name="AltInsertButton"
-                            Tag="overlay"
-                            Style="{StaticResource OverlayButtonStyle}"
-                            Click="AltInsertButton_Click"
-                            PointerEntered="Button_PointerEntered"
-                            PointerExited="Button_PointerExited"
-                            PointerPressed="Button_PointerPressed"
-                            PointerReleased="Button_PointerReleased">
-                            <StackPanel Spacing="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock Text="OptiScaler Overlay" HorizontalAlignment="Center" TextAlignment="Center" />
-                                <TextBlock Text="(Alt+Insert)" FontSize="13" Opacity="0.82" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="NoWrap" />
+                                <TextBlock
+                                    x:Name="OverlayTitleTextBlock"
+                                    Text="OptiScaler Overlay"
+                                    HorizontalAlignment="Center"
+                                    TextAlignment="Center"
+                                    TextTrimming="CharacterEllipsis"
+                                    TextWrapping="NoWrap" />
+                                <TextBlock
+                                    x:Name="OverlayShortcutTextBlock"
+                                    Text="(Insert)"
+                                    FontSize="13"
+                                    Opacity="0.82"
+                                    HorizontalAlignment="Center"
+                                    TextAlignment="Center"
+                                    TextWrapping="NoWrap" />
                             </StackPanel>
                         </Button>
                     </Grid>
@@ -179,11 +145,31 @@
                         Padding="8"
                         Visibility="Collapsed">
                         <StackPanel Spacing="8">
-                            <TextBlock
-                                Text="Display Resolution"
-                                FontSize="15"
-                                FontWeight="SemiBold"
-                                Foreground="#FFF7F8FB" />
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock
+                                    Grid.Column="0"
+                                    Text="Display Resolution"
+                                    FontSize="15"
+                                    FontWeight="SemiBold"
+                                    Foreground="#FFF7F8FB" />
+
+                                <TextBlock
+                                    Grid.Column="1"
+                                    x:Name="CurrentDisplayStatusTextBlock"
+                                    Text=""
+                                    FontSize="13"
+                                    Opacity="0.82"
+                                    VerticalAlignment="Center"
+                                    Foreground="#CCF7F8FB"
+                                    TextAlignment="Right"
+                                    TextWrapping="NoWrap"
+                                    Visibility="Collapsed" />
+                            </Grid>
                             <Grid x:Name="ResolutionButtonsGrid" ColumnSpacing="6">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />

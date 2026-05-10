@@ -64,4 +64,18 @@ bool ContainsModeAtCurrentTiming(const std::wstring& gdiDeviceName, int width, i
 
     return false;
 }
+
+bool TryGetCurrentMode(const std::wstring& gdiDeviceName, DisplayModeInfo& modeOut) {
+    DEVMODEW current{};
+    current.dmSize = sizeof(current);
+    if (!EnumDisplaySettingsExW(gdiDeviceName.c_str(), ENUM_CURRENT_SETTINGS, &current, 0)) {
+        return false;
+    }
+
+    modeOut.width = static_cast<int>(current.dmPelsWidth);
+    modeOut.height = static_cast<int>(current.dmPelsHeight);
+    modeOut.frequency = static_cast<int>(current.dmDisplayFrequency);
+    modeOut.bitsPerPel = static_cast<int>(current.dmBitsPerPel);
+    return modeOut.width > 0 && modeOut.height > 0;
+}
 }

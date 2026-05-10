@@ -26,6 +26,13 @@ namespace Easy_Shortcut_for_UMPC
             "Insert","Delete","Home","End","Page Up","Page Down","Space","Tab","Escape",
             "Arrow Up","Arrow Down","Arrow Left","Arrow Right"
         };
+        private const string TopOrderLosslessOverlayLabel = "Lossless Scaling / OptiScaler Overlay";
+        private const string TopOrderOverlayLosslessLabel = "OptiScaler Overlay / Lossless Scaling";
+        private static readonly IReadOnlyList<string> TopShortcutOrderOptions = new[]
+        {
+            TopOrderLosslessOverlayLabel,
+            TopOrderOverlayLosslessLabel
+        };
 
         private WidgetSettings _draft;
         private XboxGameBarWidget _gameBarWidget;
@@ -73,6 +80,11 @@ namespace Easy_Shortcut_for_UMPC
                     SplitShortcut(_draft.BuiltInLosslessKeys, out string losslessModifier, out string losslessKey);
                     LosslessModifierCombo.SelectedItem = ModifierOptions.Contains(losslessModifier) ? losslessModifier : "Ctrl + Alt";
                     LosslessKeyCombo.SelectedItem = KeyOptions.Contains(losslessKey) ? losslessKey : "S";
+                    SplitShortcut(_draft.BuiltInOverlayKeys, out string overlayModifier, out string overlayKey);
+                    OverlayModifierCombo.SelectedItem = ModifierOptions.Contains(overlayModifier) ? overlayModifier : "None";
+                    OverlayKeyCombo.SelectedItem = KeyOptions.Contains(overlayKey) ? overlayKey : "Insert";
+                    OverlayNameTextBox.Text = WidgetSettingsStore.NormalizeOverlayDisplayName(_draft.OverlayDisplayName);
+                    TopShortcutOrderCombo.SelectedItem = TopOrderLosslessOverlayLabel;
 
                     BindCustomSlot("custom1", Custom1ModifierCombo, Custom1KeyCombo);
                     BindCustomSlot("custom2", Custom2ModifierCombo, Custom2KeyCombo);
@@ -98,6 +110,9 @@ namespace Easy_Shortcut_for_UMPC
             SetComboItems(Custom2KeyCombo, KeyOptions);
             SetComboItems(Custom3ModifierCombo, ModifierOptions);
             SetComboItems(Custom3KeyCombo, KeyOptions);
+            SetComboItems(OverlayModifierCombo, ModifierOptions);
+            SetComboItems(OverlayKeyCombo, KeyOptions);
+            SetComboItems(TopShortcutOrderCombo, TopShortcutOrderOptions);
         }
 
         private void LoadDraft()
@@ -107,6 +122,16 @@ namespace Easy_Shortcut_for_UMPC
             SplitShortcut(_draft.BuiltInLosslessKeys, out string losslessModifier, out string losslessKey);
             LosslessModifierCombo.SelectedItem = ModifierOptions.Contains(losslessModifier) ? losslessModifier : "Ctrl + Alt";
             LosslessKeyCombo.SelectedItem = KeyOptions.Contains(losslessKey) ? losslessKey : "S";
+            SplitShortcut(_draft.BuiltInOverlayKeys, out string overlayModifier, out string overlayKey);
+            OverlayModifierCombo.SelectedItem = ModifierOptions.Contains(overlayModifier) ? overlayModifier : "None";
+            OverlayKeyCombo.SelectedItem = KeyOptions.Contains(overlayKey) ? overlayKey : "Insert";
+            OverlayNameTextBox.Text = WidgetSettingsStore.NormalizeOverlayDisplayName(_draft.OverlayDisplayName);
+            TopShortcutOrderCombo.SelectedItem = string.Equals(
+                _draft.TopShortcutOrder,
+                WidgetSettingsDefaults.TopShortcutOrderOverlayFirst,
+                StringComparison.OrdinalIgnoreCase)
+                    ? TopOrderOverlayLosslessLabel
+                    : TopOrderLosslessOverlayLabel;
 
             BindCustomSlot("custom1", Custom1ModifierCombo, Custom1KeyCombo);
             BindCustomSlot("custom2", Custom2ModifierCombo, Custom2KeyCombo);
@@ -222,6 +247,14 @@ namespace Easy_Shortcut_for_UMPC
             }
 
             _draft.BuiltInLosslessKeys = losslessKeys;
+            _draft.BuiltInOverlayKeys = ComposeShortcut(
+                OverlayModifierCombo.SelectedItem as string ?? "None",
+                OverlayKeyCombo.SelectedItem as string ?? "Insert");
+            _draft.OverlayDisplayName = WidgetSettingsStore.NormalizeOverlayDisplayName(OverlayNameTextBox.Text);
+            _draft.TopShortcutOrder =
+                string.Equals(TopShortcutOrderCombo.SelectedItem as string, TopOrderOverlayLosslessLabel, StringComparison.OrdinalIgnoreCase)
+                    ? WidgetSettingsDefaults.TopShortcutOrderOverlayFirst
+                    : WidgetSettingsDefaults.TopShortcutOrderLosslessFirst;
             UpdateCustom("custom1", Custom1ModifierCombo, Custom1KeyCombo);
             UpdateCustom("custom2", Custom2ModifierCombo, Custom2KeyCombo);
             UpdateCustom("custom3", Custom3ModifierCombo, Custom3KeyCombo);
@@ -264,6 +297,13 @@ namespace Easy_Shortcut_for_UMPC
             ResetSlot(Custom1ModifierCombo, Custom1KeyCombo);
         }
 
+        private void OverlayReset_Click(object sender, RoutedEventArgs e)
+        {
+            OverlayNameTextBox.Text = WidgetSettingsDefaults.DefaultOverlayDisplayName;
+            OverlayModifierCombo.SelectedItem = "None";
+            OverlayKeyCombo.SelectedItem = "Insert";
+        }
+
         private void Custom2Reset_Click(object sender, RoutedEventArgs e)
         {
             ResetSlot(Custom2ModifierCombo, Custom2KeyCombo);
@@ -284,6 +324,11 @@ namespace Easy_Shortcut_for_UMPC
         {
             _draft.SectionOrder = new List<string>(WidgetSettingsDefaults.DefaultSectionOrder);
             RenderSectionOrder();
+        }
+
+        private void TopShortcutOrderReset_Click(object sender, RoutedEventArgs e)
+        {
+            TopShortcutOrderCombo.SelectedItem = TopOrderLosslessOverlayLabel;
         }
 
         private static void SetComboItems(ComboBox combo, IReadOnlyList<string> items)
@@ -363,10 +408,9 @@ namespace Easy_Shortcut_for_UMPC
         {
             return sectionId switch
             {
-                WidgetSettingsDefaults.SectionLosslessScaling => "Lossless Scaling",
-                "overlay" => "OptiScaler Overlay",
-                "resolution" => "Display Resolution",
-                "custom" => "Custom",
+                WidgetSettingsDefaults.SectionTopShortcuts => "Top Shortcuts",
+                WidgetSettingsDefaults.SectionResolution => "Display Resolution",
+                WidgetSettingsDefaults.SectionCustom => "Custom",
                 _ => sectionId
             };
         }

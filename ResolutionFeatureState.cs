@@ -24,6 +24,9 @@ namespace Easy_Shortcut_for_UMPC
         internal bool Support1440x900 { get; set; }
         internal bool Support900p { get; set; }
         internal bool Support720p { get; set; }
+        internal int CurrentWidth { get; set; }
+        internal int CurrentHeight { get; set; }
+        internal int CurrentRefreshRate { get; set; }
 
         internal static readonly ResolutionFeatureState Unavailable = new ResolutionFeatureState
         {
@@ -34,7 +37,10 @@ namespace Easy_Shortcut_for_UMPC
             Support1050p = false,
             Support1440x900 = false,
             Support900p = false,
-            Support720p = false
+            Support720p = false,
+            CurrentWidth = 0,
+            CurrentHeight = 0,
+            CurrentRefreshRate = 0
         };
     }
 
@@ -141,13 +147,28 @@ namespace Easy_Shortcut_for_UMPC
                 Support1050p = IsEnabled(values, "support_1050p"),
                 Support1440x900 = IsEnabled(values, "support_1440x900"),
                 Support900p = IsEnabled(values, "support_900p"),
-                Support720p = IsEnabled(values, "support_720p")
+                Support720p = IsEnabled(values, "support_720p"),
+                CurrentWidth = ReadInt(values, "current_width"),
+                CurrentHeight = ReadInt(values, "current_height"),
+                CurrentRefreshRate = ReadInt(values, "current_refresh_rate")
             };
         }
 
         private static bool IsEnabled(Dictionary<string, string> values, string key)
         {
             return values.TryGetValue(key, out string value) && value == "1";
+        }
+
+        private static int ReadInt(Dictionary<string, string> values, string key)
+        {
+            if (values.TryGetValue(key, out string value) &&
+                int.TryParse(value, out int parsed) &&
+                parsed > 0)
+            {
+                return parsed;
+            }
+
+            return 0;
         }
     }
 }
