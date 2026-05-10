@@ -58,7 +58,6 @@
 
                     <Border Background="#3033363C" CornerRadius="8" Padding="8">
                         <StackPanel Spacing="6">
-                            <TextBlock Text="OptiScaler Overlay" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
                             <StackPanel Spacing="4">
                                 <TextBlock Text="Name" Foreground="#CCF7F8FB" />
                                 <TextBox x:Name="OverlayNameTextBox" Height="40" MinHeight="40" MaxLength="24" TextChanged="OverlayNameTextBox_TextChanged" />
@@ -89,7 +88,7 @@
                     </Border>
 
                     <TextBlock
-                        Text="Top Shortcut Order"
+                        Text="Gaming Button Order"
                         FontSize="16"
                         FontWeight="SemiBold"
                         Foreground="#FFF7F8FB"
@@ -98,7 +97,7 @@
                     <Border Background="#3033363C" CornerRadius="8" Padding="8">
                         <StackPanel Spacing="6">
                             <TextBlock
-                                Text="Only changes the left/right order of Lossless Scaling and OptiScaler Overlay."
+                                Text="Only changes the left/right order of the two Gaming buttons."
                                 Foreground="#CCF7F8FB"
                                 TextWrapping="WrapWholeWords" />
 
@@ -257,4 +256,5 @@
         </Border>
     </Grid>
 </Page>
+
 

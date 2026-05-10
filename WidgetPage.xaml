@@ -1,4 +1,4 @@
-﻿<Page
+<Page
     x:Class="Easy_Shortcut_for_UMPC.WidgetPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -60,20 +60,13 @@
 
     </Page.Resources>
 
-    <Grid Background="Transparent" Padding="12">
-        <Border
-            x:Name="WidgetPanel"
-            Background="#CC1A1C21"
-            BorderBrush="Transparent"
-            BorderThickness="0"
-            CornerRadius="12"
-            VerticalAlignment="Top">
-            <Grid Padding="10" RowSpacing="{StaticResource MainRowSpacing}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+    <Grid Background="#CC1A1C21" Padding="12">
+        <Grid Padding="10" RowSpacing="{StaticResource MainRowSpacing}" VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-                <StackPanel x:Name="ReorderableSectionsPanel" Grid.Row="0" Spacing="{StaticResource MainRowSpacing}">
+            <StackPanel x:Name="ReorderableSectionsPanel" Grid.Row="0" Spacing="{StaticResource MainRowSpacing}">
                     <Border
                         x:Name="GamingSection"
                         Background="#6633363C"
@@ -234,7 +227,7 @@
                         Padding="8">
                         <StackPanel Spacing="8">
                             <TextBlock
-                                Text="Custom"
+                                Text="Custom Shortcuts"
                                 FontSize="15"
                                 FontWeight="SemiBold"
                                 Foreground="#FFF7F8FB" />
@@ -253,8 +246,8 @@
                             </Grid>
                         </StackPanel>
                     </Border>
-                </StackPanel>
-            </Grid>
-        </Border>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Page>
+

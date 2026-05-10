@@ -545,7 +545,7 @@ namespace Easy_Shortcut_for_UMPC
             {
                 WidgetSettingsDefaults.SectionTopShortcuts => "Gaming",
                 WidgetSettingsDefaults.SectionResolution => "Display Resolution",
-                WidgetSettingsDefaults.SectionCustom => "Custom",
+                WidgetSettingsDefaults.SectionCustom => "Custom Shortcuts",
                 _ => sectionId
             };
         }
@@ -585,3 +585,4 @@ namespace Easy_Shortcut_for_UMPC
         }
     }
 }
+

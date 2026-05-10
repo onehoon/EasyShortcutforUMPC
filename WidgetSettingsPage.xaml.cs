@@ -33,7 +33,6 @@ namespace Easy_Shortcut_for_UMPC
         };
         private WidgetSettings _draft;
         private XboxGameBarWidget _gameBarWidget;
-        private bool _suppressSectionToggleEvents;
 
         public WidgetSettingsPage()
         {
@@ -155,31 +154,20 @@ namespace Easy_Shortcut_for_UMPC
 
         private void RenderSectionOrder()
         {
-            _suppressSectionToggleEvents = true;
-            try
+            SectionOrderPanel.Children.Clear();
+            for (int i = 0; i < _draft.SectionOrder.Count; i++)
             {
-                SectionOrderPanel.Children.Clear();
-                for (int i = 0; i < _draft.SectionOrder.Count; i++)
+                string section = _draft.SectionOrder[i];
+                var row = new Grid
                 {
-                    string section = _draft.SectionOrder[i];
-                    var row = new Grid
-                    {
-                        ColumnSpacing = SettingsColumnSpacing,
-                        Margin = new Thickness(0, 0, 0, 6),
-                        HorizontalAlignment = HorizontalAlignment.Stretch
-                    };
-                    row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(72) });
-                    row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-                    row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(84) });
-
-                var toggle = new ToggleSwitch
-                {
-                    IsOn = !IsSectionHidden(section),
-                    OnContent = "On",
-                    OffContent = "Off",
-                    MinWidth = 72,
-                    VerticalAlignment = VerticalAlignment.Center
+                    ColumnSpacing = SettingsColumnSpacing,
+                    Margin = new Thickness(0, 0, 0, 6),
+                    HorizontalAlignment = HorizontalAlignment.Stretch
                 };
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(38) });
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(38) });
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(72) });
 
                 var name = new TextBlock
                 {
@@ -188,10 +176,6 @@ namespace Easy_Shortcut_for_UMPC
                     TextTrimming = TextTrimming.CharacterEllipsis,
                     Foreground = new SolidColorBrush(Windows.UI.Colors.White)
                 };
-
-                var actions = new Grid { ColumnSpacing = 4, HorizontalAlignment = HorizontalAlignment.Stretch };
-                actions.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(38) });
-                actions.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(38) });
 
                 var up = new Button
                 {
@@ -208,6 +192,14 @@ namespace Easy_Shortcut_for_UMPC
                     MinWidth = 38,
                     Height = 36,
                     IsEnabled = i < _draft.SectionOrder.Count - 1
+                };
+                var sectionEnabledButton = new Button
+                {
+                    Content = IsSectionHidden(section) ? "Off" : "On",
+                    Width = 72,
+                    MinWidth = 72,
+                    Height = 36,
+                    HorizontalAlignment = HorizontalAlignment.Stretch
                 };
 
                 int index = i;
@@ -237,52 +229,31 @@ namespace Easy_Shortcut_for_UMPC
                     RenderSectionOrder();
                 };
 
-                    toggle.Toggled += (_, __) =>
+                sectionEnabledButton.Click += (_, __) =>
+                {
+                    bool currentlyVisible = !IsSectionHidden(section);
+                    bool hide = currentlyVisible;
+                    if (hide && WouldHideAllSections(section))
                     {
-                        if (_suppressSectionToggleEvents)
-                        {
-                            return;
-                        }
+                        SetValidation("At least one section must remain visible.");
+                        return;
+                    }
 
-                        bool hide = !toggle.IsOn;
-                        if (hide && WouldHideAllSections(section))
-                        {
-                            _suppressSectionToggleEvents = true;
-                            try
-                            {
-                                toggle.IsOn = true;
-                            }
-                            finally
-                            {
-                                _suppressSectionToggleEvents = false;
-                            }
-                            SetValidation("At least one section must remain visible.");
-                            return;
-                        }
+                    ValidationTextBlock.Visibility = Visibility.Collapsed;
+                    ValidationTextBlock.Text = string.Empty;
+                    SetSectionHidden(section, hide);
+                    RenderSectionOrder();
+                };
 
-                        ValidationTextBlock.Visibility = Visibility.Collapsed;
-                        ValidationTextBlock.Text = string.Empty;
-                        SetSectionHidden(section, hide);
-                        RenderSectionOrder();
-                    };
-
-                Grid.SetColumn(up, 0);
-                Grid.SetColumn(down, 1);
-                actions.Children.Add(up);
-                actions.Children.Add(down);
-
-                Grid.SetColumn(toggle, 0);
-                Grid.SetColumn(name, 1);
-                Grid.SetColumn(actions, 2);
-                row.Children.Add(toggle);
+                Grid.SetColumn(name, 0);
+                Grid.SetColumn(up, 1);
+                Grid.SetColumn(down, 2);
+                Grid.SetColumn(sectionEnabledButton, 3);
                 row.Children.Add(name);
-                row.Children.Add(actions);
-                    SectionOrderPanel.Children.Add(row);
-                }
-            }
-            finally
-            {
-                _suppressSectionToggleEvents = false;
+                row.Children.Add(up);
+                row.Children.Add(down);
+                row.Children.Add(sectionEnabledButton);
+                SectionOrderPanel.Children.Add(row);
             }
         }
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
