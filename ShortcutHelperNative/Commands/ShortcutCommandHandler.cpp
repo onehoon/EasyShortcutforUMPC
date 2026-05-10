@@ -337,6 +337,7 @@ bool IsShortcutCommand(const std::wstring& action) {
            action == L"custom1" ||
            action == L"custom2" ||
            action == L"custom3" ||
+           action == L"custom4" ||
            action == L"losslessscaling";
 }
 
@@ -357,6 +358,11 @@ void ExecuteShortcutCommand(const std::wstring& action) {
         }
     } else if (action == L"custom3") {
         auto combo = GetCustomComboFromSettings(L"custom3");
+        if (!combo.empty()) {
+            keyboard::SendCombo(combo);
+        }
+    } else if (action == L"custom4") {
+        auto combo = GetCustomComboFromSettings(L"custom4");
         if (!combo.empty()) {
             keyboard::SendCombo(combo);
         }

@@ -113,6 +113,7 @@
                                     Grid.Column="0"
                                     Grid.ColumnSpan="2"
                                     x:Name="TopShortcutOrderCombo"
+                                    SelectionChanged="TopShortcutOrderCombo_SelectionChanged"
                                     Height="40"
                                     MinHeight="40"
                                     HorizontalAlignment="Stretch" />
@@ -138,7 +139,7 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="168" />
                                     <ColumnDefinition Width="140" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="80" />
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0" Spacing="4">
@@ -152,7 +153,7 @@
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
-                                    <Button Content="Reset" Click="Custom1Reset_Click" Height="40" MinHeight="40" MinWidth="64" />
+                                    <Button x:Name="Custom1EnabledButton" Content="On" Click="Custom1EnabledButton_Click" Height="40" MinHeight="40" Width="80" HorizontalAlignment="Stretch" />
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -165,7 +166,7 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="168" />
                                     <ColumnDefinition Width="140" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="80" />
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0" Spacing="4">
@@ -179,7 +180,7 @@
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
-                                    <Button Content="Reset" Click="Custom2Reset_Click" Height="40" MinHeight="40" MinWidth="64" />
+                                    <Button x:Name="Custom2EnabledButton" Content="On" Click="Custom2EnabledButton_Click" Height="40" MinHeight="40" Width="80" HorizontalAlignment="Stretch" />
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -192,7 +193,7 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="168" />
                                     <ColumnDefinition Width="140" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="80" />
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0" Spacing="4">
@@ -206,7 +207,34 @@
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
-                                    <Button Content="Reset" Click="Custom3Reset_Click" Height="40" MinHeight="40" MinWidth="64" />
+                                    <Button x:Name="Custom3EnabledButton" Content="On" Click="Custom3EnabledButton_Click" Height="40" MinHeight="40" Width="80" HorizontalAlignment="Stretch" />
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#3033363C" CornerRadius="8" Padding="8">
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Custom 4" FontWeight="SemiBold" Foreground="#FFF7F8FB" />
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="168" />
+                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="80" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Spacing="4">
+                                    <TextBlock Text="Modifier" Foreground="#CCF7F8FB" />
+                                    <ComboBox x:Name="Custom4ModifierCombo" Height="40" MinHeight="40" HorizontalAlignment="Stretch" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Spacing="4">
+                                    <TextBlock Text="Key" Foreground="#CCF7F8FB" />
+                                    <ComboBox x:Name="Custom4KeyCombo" Height="40" MinHeight="40" HorizontalAlignment="Stretch" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
+                                    <Button x:Name="Custom4EnabledButton" Content="On" Click="Custom4EnabledButton_Click" Height="40" MinHeight="40" Width="80" HorizontalAlignment="Stretch" />
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -229,3 +257,4 @@
         </Border>
     </Grid>
 </Page>
+

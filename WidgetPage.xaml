@@ -74,67 +74,82 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel x:Name="ReorderableSectionsPanel" Grid.Row="0" Spacing="{StaticResource MainRowSpacing}">
-                    <Grid x:Name="TopShortcutsSection" ColumnSpacing="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                    <Border
+                        x:Name="GamingSection"
+                        Background="#6633363C"
+                        BorderBrush="Transparent"
+                        BorderThickness="0"
+                        CornerRadius="10"
+                        Padding="8">
+                        <StackPanel Spacing="8">
+                            <TextBlock
+                                Text="Gaming"
+                                FontSize="15"
+                                FontWeight="SemiBold"
+                                Foreground="#FFF7F8FB" />
+                            <Grid x:Name="TopShortcutsButtonsGrid" ColumnSpacing="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                        <Button
-                            Grid.Column="0"
-                            x:Name="CaptureButton"
-                            Tag="capture"
-                            Style="{StaticResource TopCaptureButtonStyle}"
-                            Click="CaptureButton_Click"
-                            PointerEntered="Button_PointerEntered"
-                            PointerExited="Button_PointerExited"
-                            PointerPressed="Button_PointerPressed"
-                            PointerReleased="Button_PointerReleased">
-                            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Image Source="GameBar/assets/LSFG.png" Width="30" Height="30" Stretch="Uniform" />
-                                <StackPanel Spacing="2" VerticalAlignment="Center">
-                                    <TextBlock Text="Lossless Scaling" HorizontalAlignment="Center" TextAlignment="Center" />
-                                    <TextBlock
-                                        x:Name="LosslessShortcutTextBlock"
-                                        Text="(Ctrl+Alt+S)"
-                                        FontSize="13"
-                                        Opacity="0.82"
-                                        HorizontalAlignment="Center"
-                                        TextAlignment="Center"
-                                        TextWrapping="NoWrap" />
-                                </StackPanel>
-                            </StackPanel>
-                        </Button>
+                                <Button
+                                    Grid.Column="0"
+                                    x:Name="CaptureButton"
+                                    Tag="capture"
+                                    Style="{StaticResource TopCaptureButtonStyle}"
+                                    Click="CaptureButton_Click"
+                                    PointerEntered="Button_PointerEntered"
+                                    PointerExited="Button_PointerExited"
+                                    PointerPressed="Button_PointerPressed"
+                                    PointerReleased="Button_PointerReleased">
+                                    <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Image Source="GameBar/assets/LSFG.png" Width="30" Height="30" Stretch="Uniform" />
+                                        <StackPanel Spacing="2" VerticalAlignment="Center">
+                                            <TextBlock Text="Lossless Scaling" HorizontalAlignment="Center" TextAlignment="Center" />
+                                            <TextBlock
+                                                x:Name="LosslessShortcutTextBlock"
+                                                Text="(Ctrl+Alt+S)"
+                                                FontSize="13"
+                                                Opacity="0.82"
+                                                HorizontalAlignment="Center"
+                                                TextAlignment="Center"
+                                                TextWrapping="NoWrap" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Button>
 
-                        <Button
-                            Grid.Column="1"
-                            x:Name="OverlayButton"
-                            Tag="overlay"
-                            Style="{StaticResource OverlayButtonStyle}"
-                            Click="OverlayButton_Click"
-                            PointerEntered="Button_PointerEntered"
-                            PointerExited="Button_PointerExited"
-                            PointerPressed="Button_PointerPressed"
-                            PointerReleased="Button_PointerReleased">
-                            <StackPanel Spacing="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock
-                                    x:Name="OverlayTitleTextBlock"
-                                    Text="OptiScaler Overlay"
-                                    HorizontalAlignment="Center"
-                                    TextAlignment="Center"
-                                    TextTrimming="CharacterEllipsis"
-                                    TextWrapping="NoWrap" />
-                                <TextBlock
-                                    x:Name="OverlayShortcutTextBlock"
-                                    Text="(Insert)"
-                                    FontSize="13"
-                                    Opacity="0.82"
-                                    HorizontalAlignment="Center"
-                                    TextAlignment="Center"
-                                    TextWrapping="NoWrap" />
-                            </StackPanel>
-                        </Button>
-                    </Grid>
+                                <Button
+                                    Grid.Column="1"
+                                    x:Name="OverlayButton"
+                                    Tag="overlay"
+                                    Style="{StaticResource OverlayButtonStyle}"
+                                    Click="OverlayButton_Click"
+                                    PointerEntered="Button_PointerEntered"
+                                    PointerExited="Button_PointerExited"
+                                    PointerPressed="Button_PointerPressed"
+                                    PointerReleased="Button_PointerReleased">
+                                    <StackPanel Spacing="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock
+                                            x:Name="OverlayTitleTextBlock"
+                                            Text="OptiScaler Overlay"
+                                            HorizontalAlignment="Center"
+                                            TextAlignment="Center"
+                                            TextTrimming="CharacterEllipsis"
+                                            TextWrapping="NoWrap" />
+                                        <TextBlock
+                                            x:Name="OverlayShortcutTextBlock"
+                                            Text="(Insert)"
+                                            FontSize="13"
+                                            Opacity="0.82"
+                                            HorizontalAlignment="Center"
+                                            TextAlignment="Center"
+                                            TextWrapping="NoWrap" />
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
 
                     <Border
                         x:Name="DisplayResolutionSection"
@@ -223,8 +238,9 @@
                                 FontSize="15"
                                 FontWeight="SemiBold"
                                 Foreground="#FFF7F8FB" />
-                            <Grid ColumnSpacing="6">
+                            <Grid x:Name="CustomButtonsGrid" ColumnSpacing="6">
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
@@ -233,6 +249,7 @@
                                 <Button Grid.Column="0" x:Name="CustomButton1" Style="{StaticResource ResolutionButtonStyle}" Click="CustomButton1_Click" Content="Not Set" />
                                 <Button Grid.Column="1" x:Name="CustomButton2" Style="{StaticResource ResolutionButtonStyle}" Click="CustomButton2_Click" Content="Not Set" />
                                 <Button Grid.Column="2" x:Name="CustomButton3" Style="{StaticResource ResolutionButtonStyle}" Click="CustomButton3_Click" Content="Not Set" />
+                                <Button Grid.Column="3" x:Name="CustomButton4" Style="{StaticResource ResolutionButtonStyle}" Click="CustomButton4_Click" Content="Not Set" />
                             </Grid>
                         </StackPanel>
                     </Border>

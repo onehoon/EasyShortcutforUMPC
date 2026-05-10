@@ -7,8 +7,20 @@ using Windows.Storage;
 
 namespace Easy_Shortcut_for_UMPC
 {
+    internal static class ShortcutButtonIds
+    {
+        internal const string LosslessScaling = "losslessScaling";
+        internal const string OptiScalerOverlay = "overlay";
+        internal const string Custom1 = "custom1";
+        internal const string Custom2 = "custom2";
+        internal const string Custom3 = "custom3";
+        internal const string Custom4 = "custom4";
+    }
+
     internal static class WidgetSettingsDefaults
     {
+        // Persisted section id. Kept as "topShortcuts" for backward compatibility.
+        // User-facing display name should be resolved as "Gaming".
         internal const string SectionTopShortcuts = "topShortcuts";
         internal const string SectionLosslessScaling = "LosslessScaling";
         internal const string SectionOverlay = "overlay";
@@ -27,22 +39,31 @@ namespace Easy_Shortcut_for_UMPC
             SectionResolution,
             SectionCustom
         };
+        internal static readonly IReadOnlyList<string> CustomSlotIds = new[]
+        {
+            ShortcutButtonIds.Custom1,
+            ShortcutButtonIds.Custom2,
+            ShortcutButtonIds.Custom3,
+            ShortcutButtonIds.Custom4
+        };
 
         internal static WidgetSettings Create()
         {
             return new WidgetSettings
             {
-                Version = 2,
+                Version = 3,
                 TopShortcutOrder = TopShortcutOrderLosslessFirst,
                 BuiltInLosslessKeys = new List<string>(DefaultLosslessKeys),
                 BuiltInOverlayKeys = new List<string>(DefaultOverlayKeys),
                 OverlayDisplayName = DefaultOverlayDisplayName,
                 SectionOrder = new List<string>(DefaultSectionOrder),
+                HiddenSections = new List<string>(),
                 CustomShortcuts = new Dictionary<string, CustomShortcutSlot>(StringComparer.OrdinalIgnoreCase)
                 {
-                    ["custom1"] = new CustomShortcutSlot { Keys = new List<string>() },
-                    ["custom2"] = new CustomShortcutSlot { Keys = new List<string>() },
-                    ["custom3"] = new CustomShortcutSlot { Keys = new List<string>() }
+                    ["custom1"] = new CustomShortcutSlot { Keys = new List<string>(), IsEnabled = true },
+                    ["custom2"] = new CustomShortcutSlot { Keys = new List<string>(), IsEnabled = true },
+                    ["custom3"] = new CustomShortcutSlot { Keys = new List<string>(), IsEnabled = true },
+                    ["custom4"] = new CustomShortcutSlot { Keys = new List<string>(), IsEnabled = true }
                 }
             };
         }
@@ -56,12 +77,14 @@ namespace Easy_Shortcut_for_UMPC
         internal string OverlayDisplayName { get; set; } = WidgetSettingsDefaults.DefaultOverlayDisplayName;
         internal Dictionary<string, CustomShortcutSlot> CustomShortcuts { get; set; } = new Dictionary<string, CustomShortcutSlot>(StringComparer.OrdinalIgnoreCase);
         internal List<string> SectionOrder { get; set; } = new List<string>();
+        internal List<string> HiddenSections { get; set; } = new List<string>();
         internal string TopShortcutOrder { get; set; } = WidgetSettingsDefaults.TopShortcutOrderLosslessFirst;
     }
 
     internal sealed class CustomShortcutSlot
     {
         internal List<string> Keys { get; set; } = new List<string>();
+        internal bool IsEnabled { get; set; } = true;
     }
 
     internal static class WidgetSettingsStore
@@ -117,7 +140,7 @@ namespace Easy_Shortcut_for_UMPC
 
             var result = WidgetSettingsDefaults.Create();
             result.Version = input.Version > 0 ? input.Version : defaults.Version;
-            result.Version = Math.Max(result.Version, 2);
+            result.Version = Math.Max(result.Version, 3);
             result.TopShortcutOrder = NormalizeTopShortcutOrder(input.TopShortcutOrder);
             result.OverlayDisplayName = NormalizeOverlayDisplayName(input.OverlayDisplayName);
 
@@ -131,13 +154,14 @@ namespace Easy_Shortcut_for_UMPC
                 result.BuiltInOverlayKeys = input.BuiltInOverlayKeys.Select(k => k.Trim()).ToList();
             }
 
-            foreach (string slotId in new[] { "custom1", "custom2", "custom3" })
+            foreach (string slotId in WidgetSettingsDefaults.CustomSlotIds)
             {
                 if (input.CustomShortcuts != null && input.CustomShortcuts.TryGetValue(slotId, out CustomShortcutSlot slot) && slot != null)
                 {
                     result.CustomShortcuts[slotId] = new CustomShortcutSlot
                     {
-                        Keys = IsValidKeys(slot.Keys) ? slot.Keys.Select(k => k.Trim()).ToList() : new List<string>()
+                        Keys = IsValidKeys(slot.Keys) ? slot.Keys.Select(k => k.Trim()).ToList() : new List<string>(),
+                        IsEnabled = slot.IsEnabled
                     };
                 }
             }
@@ -170,6 +194,7 @@ namespace Easy_Shortcut_for_UMPC
                 result.SectionOrder = cleaned;
             }
 
+            result.HiddenSections = NormalizeHiddenSections(input.HiddenSections);
             return result;
         }
 
@@ -238,6 +263,8 @@ namespace Easy_Shortcut_for_UMPC
 
             string normalized = section.Trim();
             if (string.Equals(normalized, WidgetSettingsDefaults.SectionTopShortcuts, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(normalized, "Top Shortcuts", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(normalized, "Gaming", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(normalized, WidgetSettingsDefaults.SectionLosslessScaling, StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(normalized, "losslessscaling", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(normalized, WidgetSettingsDefaults.SectionOverlay, StringComparison.OrdinalIgnoreCase) ||
@@ -246,12 +273,14 @@ namespace Easy_Shortcut_for_UMPC
                 return WidgetSettingsDefaults.SectionTopShortcuts;
             }
 
-            if (string.Equals(normalized, WidgetSettingsDefaults.SectionResolution, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(normalized, WidgetSettingsDefaults.SectionResolution, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(normalized, "Display Resolution", StringComparison.OrdinalIgnoreCase))
             {
                 return WidgetSettingsDefaults.SectionResolution;
             }
 
-            if (string.Equals(normalized, WidgetSettingsDefaults.SectionCustom, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(normalized, WidgetSettingsDefaults.SectionCustom, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(normalized, "Custom", StringComparison.OrdinalIgnoreCase))
             {
                 return WidgetSettingsDefaults.SectionCustom;
             }
@@ -294,9 +323,9 @@ namespace Easy_Shortcut_for_UMPC
             root["builtInShortcuts"] = builtIn;
 
             var customRoot = new JsonObject();
-            foreach (var slotId in new[] { "custom1", "custom2", "custom3" })
+            foreach (var slotId in WidgetSettingsDefaults.CustomSlotIds)
             {
-                var slot = settings.CustomShortcuts[slotId];
+                var slot = settings.CustomShortcuts[slotId] ?? new CustomShortcutSlot();
                 var slotObj = new JsonObject();
 
                 var keys = new JsonArray();
@@ -305,6 +334,7 @@ namespace Easy_Shortcut_for_UMPC
                     keys.Add(JsonValue.CreateStringValue(key));
                 }
 
+                slotObj["isEnabled"] = JsonValue.CreateBooleanValue(slot.IsEnabled);
                 slotObj["keys"] = keys;
                 customRoot[slotId] = slotObj;
             }
@@ -318,6 +348,14 @@ namespace Easy_Shortcut_for_UMPC
             }
 
             root["sectionOrder"] = order;
+
+            var hiddenSections = new JsonArray();
+            foreach (string section in settings.HiddenSections)
+            {
+                hiddenSections.Add(JsonValue.CreateStringValue(section));
+            }
+
+            root["hiddenSections"] = hiddenSections;
             return root.Stringify();
         }
 
@@ -371,7 +409,7 @@ namespace Easy_Shortcut_for_UMPC
             if (root.TryGetValue("customShortcuts", out IJsonValue customValue) && customValue.ValueType == JsonValueType.Object)
             {
                 var customObj = customValue.GetObject();
-                foreach (string slotId in new[] { "custom1", "custom2", "custom3" })
+                foreach (string slotId in WidgetSettingsDefaults.CustomSlotIds)
                 {
                     if (customObj.TryGetValue(slotId, out IJsonValue slotValue) && slotValue.ValueType == JsonValueType.Object)
                     {
@@ -379,6 +417,15 @@ namespace Easy_Shortcut_for_UMPC
                         var slot = parsed.CustomShortcuts[slotId];
 
                         slot.Keys = ReadStringArray(slotObj, "keys");
+                        if (slotObj.TryGetValue("isEnabled", out IJsonValue enabledValue) &&
+                            enabledValue.ValueType == JsonValueType.Boolean)
+                        {
+                            slot.IsEnabled = enabledValue.GetBoolean();
+                        }
+                        else
+                        {
+                            slot.IsEnabled = true;
+                        }
                     }
                 }
             }
@@ -391,6 +438,18 @@ namespace Easy_Shortcut_for_UMPC
                     if (value.ValueType == JsonValueType.String)
                     {
                         parsed.SectionOrder.Add(value.GetString());
+                    }
+                }
+            }
+
+            if (root.TryGetValue("hiddenSections", out IJsonValue hiddenValue) && hiddenValue.ValueType == JsonValueType.Array)
+            {
+                parsed.HiddenSections = new List<string>();
+                foreach (IJsonValue value in hiddenValue.GetArray())
+                {
+                    if (value.ValueType == JsonValueType.String)
+                    {
+                        parsed.HiddenSections.Add(value.GetString());
                     }
                 }
             }
@@ -449,6 +508,80 @@ namespace Easy_Shortcut_for_UMPC
             }
 
             return normalized;
+        }
+
+        private static List<string> NormalizeHiddenSections(IEnumerable<string> sections)
+        {
+            var result = new List<string>();
+            if (sections == null)
+            {
+                return result;
+            }
+
+            foreach (string section in sections)
+            {
+                string normalized = NormalizeSectionId(section);
+                if (!string.IsNullOrEmpty(normalized) &&
+                    !result.Contains(normalized, StringComparer.OrdinalIgnoreCase))
+                {
+                    result.Add(normalized);
+                }
+            }
+
+            if (result.Count >= WidgetSettingsDefaults.DefaultSectionOrder.Count)
+            {
+                return new List<string>();
+            }
+
+            return result;
+        }
+    }
+
+    internal static class WidgetDisplayNameResolver
+    {
+        internal static string GetSectionDisplayName(string sectionId)
+        {
+            return sectionId switch
+            {
+                WidgetSettingsDefaults.SectionTopShortcuts => "Gaming",
+                WidgetSettingsDefaults.SectionResolution => "Display Resolution",
+                WidgetSettingsDefaults.SectionCustom => "Custom",
+                _ => sectionId
+            };
+        }
+
+        internal static string GetShortcutDisplayName(string shortcutId, WidgetSettings settings)
+        {
+            if (string.Equals(shortcutId, ShortcutButtonIds.LosslessScaling, StringComparison.OrdinalIgnoreCase))
+            {
+                return "Lossless Scaling";
+            }
+
+            if (string.Equals(shortcutId, ShortcutButtonIds.OptiScalerOverlay, StringComparison.OrdinalIgnoreCase))
+            {
+                return NormalizeOverlayDisplayName(settings?.OverlayDisplayName);
+            }
+
+            if (string.Equals(shortcutId, ShortcutButtonIds.Custom1, StringComparison.OrdinalIgnoreCase))
+            {
+                return "Custom 1";
+            }
+
+            if (string.Equals(shortcutId, ShortcutButtonIds.Custom2, StringComparison.OrdinalIgnoreCase))
+            {
+                return "Custom 2";
+            }
+
+            if (string.Equals(shortcutId, ShortcutButtonIds.Custom3, StringComparison.OrdinalIgnoreCase))
+            {
+                return "Custom 3";
+            }
+            if (string.Equals(shortcutId, ShortcutButtonIds.Custom4, StringComparison.OrdinalIgnoreCase))
+            {
+                return "Custom 4";
+            }
+
+            return shortcutId;
         }
     }
 }

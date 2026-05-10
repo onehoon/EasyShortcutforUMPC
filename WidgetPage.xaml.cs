@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Gaming.XboxGameBar;
 using Windows.UI.Core;
@@ -26,6 +27,7 @@ namespace Easy_Shortcut_for_UMPC
         private const string ActionCustom1 = "custom1";
         private const string ActionCustom2 = "custom2";
         private const string ActionCustom3 = "custom3";
+        private const string ActionCustom4 = "custom4";
         private const string ActionLosslessScaling = "losslessscaling";
         private const string ActionDetectResolutionPresets = "detect-resolution-presets";
         private const string ActionSetResolution1200 = "set-resolution-1920-1200";
@@ -40,6 +42,7 @@ namespace Easy_Shortcut_for_UMPC
         private const string GroupCustom1 = "Custom1Command";
         private const string GroupCustom2 = "Custom2Command";
         private const string GroupCustom3 = "Custom3Command";
+        private const string GroupCustom4 = "Custom4Command";
         private const string GroupLosslessScaling = "LosslessScalingCommand";
         private const string GroupDetectResolutionPresets = "DetectResolutionPresetsCommand";
         private const string GroupSetResolution1200 = "SetResolution1920x1200Command";
@@ -62,7 +65,15 @@ namespace Easy_Shortcut_for_UMPC
             try
             {
                 ApplySettingsToUi();
-                await InitializeResolutionSectionAsync();
+                if (IsSectionVisible(WidgetSettingsDefaults.SectionResolution))
+                {
+                    await InitializeResolutionSectionAsync();
+                }
+                else
+                {
+                    DisplayResolutionSection.Visibility = Visibility.Collapsed;
+                    DiagnosticsLog.Write("Display Resolution initialization skipped because section is disabled.");
+                }
             }
             catch (Exception ex)
             {
@@ -129,6 +140,7 @@ namespace Easy_Shortcut_for_UMPC
                 ActionCustom1 => GroupCustom1,
                 ActionCustom2 => GroupCustom2,
                 ActionCustom3 => GroupCustom3,
+                ActionCustom4 => GroupCustom4,
                 ActionLosslessScaling => GroupLosslessScaling,
                 ActionDetectResolutionPresets => GroupDetectResolutionPresets,
                 ActionSetResolution1200 => GroupSetResolution1200,
@@ -163,6 +175,11 @@ namespace Easy_Shortcut_for_UMPC
         private async System.Threading.Tasks.Task InitializeResolutionSectionAsync()
         {
             DisplayResolutionSection.Visibility = Visibility.Collapsed;
+            if (!IsSectionVisible(WidgetSettingsDefaults.SectionResolution))
+            {
+                DiagnosticsLog.Write("InitializeResolutionSectionAsync skipped: section disabled.");
+                return;
+            }
 
             DateTimeOffset launchStamp = DateTimeOffset.UtcNow;
             bool launched = await LaunchHelperActionAsync(ActionDetectResolutionPresets);
@@ -267,7 +284,8 @@ namespace Easy_Shortcut_for_UMPC
             }
 
             bool anyVisible = visibleButtons.Count > 0;
-            DisplayResolutionSection.Visibility = anyVisible ? Visibility.Visible : Visibility.Collapsed;
+            bool userAllowsDisplay = IsSectionVisible(WidgetSettingsDefaults.SectionResolution);
+            DisplayResolutionSection.Visibility = anyVisible && userAllowsDisplay ? Visibility.Visible : Visibility.Collapsed;
             ApplySectionOrder();
         }
 
@@ -365,9 +383,21 @@ namespace Easy_Shortcut_for_UMPC
             await ExecuteCustomSlotAsync("custom3", ActionCustom3);
         }
 
+        private async void CustomButton4_Click(object sender, RoutedEventArgs e)
+        {
+            await ExecuteCustomSlotAsync("custom4", ActionCustom4);
+        }
+
         private async Task ExecuteCustomSlotAsync(string slotId, string action)
         {
-            if (!_settings.CustomShortcuts.TryGetValue(slotId, out CustomShortcutSlot slot) || !WidgetSettingsStore.IsConfigured(slot))
+            if (!_settings.CustomShortcuts.TryGetValue(slotId, out CustomShortcutSlot slot) ||
+                slot == null ||
+                !slot.IsEnabled)
+            {
+                return;
+            }
+
+            if (!WidgetSettingsStore.IsConfigured(slot))
             {
                 await OpenGameBarSettingsAsync();
                 return;
@@ -424,10 +454,14 @@ namespace Easy_Shortcut_for_UMPC
             LosslessShortcutTextBlock.Text = $"({FormatShortcut(_settings.BuiltInLosslessKeys)})";
             OverlayTitleTextBlock.Text = WidgetSettingsStore.NormalizeOverlayDisplayName(_settings.OverlayDisplayName);
             OverlayShortcutTextBlock.Text = $"({FormatShortcut(_settings.BuiltInOverlayKeys)})";
+            if (!IsSectionVisible(WidgetSettingsDefaults.SectionResolution))
+            {
+                DisplayResolutionSection.Visibility = Visibility.Collapsed;
+                CurrentDisplayStatusTextBlock.Text = string.Empty;
+                CurrentDisplayStatusTextBlock.Visibility = Visibility.Collapsed;
+            }
 
-            CustomButton1.Content = GetCustomButtonText("custom1");
-            CustomButton2.Content = GetCustomButtonText("custom2");
-            CustomButton3.Content = GetCustomButtonText("custom3");
+            ApplyCustomButtonsLayout();
 
             ApplyTopShortcutOrder();
             ApplySectionOrder();
@@ -461,7 +495,7 @@ namespace Easy_Shortcut_for_UMPC
         {
             var map = new Dictionary<string, FrameworkElement>(StringComparer.OrdinalIgnoreCase)
             {
-                [WidgetSettingsDefaults.SectionTopShortcuts] = TopShortcutsSection,
+                [WidgetSettingsDefaults.SectionTopShortcuts] = GamingSection,
                 [WidgetSettingsDefaults.SectionResolution] = DisplayResolutionSection,
                 [WidgetSettingsDefaults.SectionCustom] = CustomSection
             };
@@ -469,26 +503,62 @@ namespace Easy_Shortcut_for_UMPC
             ReorderableSectionsPanel.Children.Clear();
             foreach (string section in _settings.SectionOrder)
             {
+                if (!IsSectionVisible(section))
+                {
+                    continue;
+                }
+
                 if (map.TryGetValue(section, out FrameworkElement element))
                 {
                     ReorderableSectionsPanel.Children.Add(element);
                 }
             }
+        }
 
-            if (!ReorderableSectionsPanel.Children.Contains(TopShortcutsSection))
+        private bool IsCustomSlotEnabled(string slotId)
+        {
+            return _settings.CustomShortcuts.TryGetValue(slotId, out CustomShortcutSlot slot) &&
+                   slot != null &&
+                   slot.IsEnabled;
+        }
+
+        private void ApplyCustomButtonsLayout()
+        {
+            var allButtons = new List<(Button Button, string SlotId)>
             {
-                ReorderableSectionsPanel.Children.Add(TopShortcutsSection);
+                (CustomButton1, "custom1"),
+                (CustomButton2, "custom2"),
+                (CustomButton3, "custom3"),
+                (CustomButton4, "custom4")
+            };
+
+            var visibleButtons = allButtons.Where(item => IsCustomSlotEnabled(item.SlotId)).ToList();
+            CustomButtonsGrid.ColumnDefinitions.Clear();
+
+            foreach (var item in allButtons)
+            {
+                item.Button.Visibility = Visibility.Collapsed;
+                item.Button.Content = GetCustomButtonText(item.SlotId);
+                Grid.SetColumn(item.Button, 0);
             }
 
-            if (!ReorderableSectionsPanel.Children.Contains(DisplayResolutionSection))
+            for (int i = 0; i < visibleButtons.Count; i++)
             {
-                ReorderableSectionsPanel.Children.Add(DisplayResolutionSection);
+                CustomButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                visibleButtons[i].Button.Visibility = Visibility.Visible;
+                visibleButtons[i].Button.Content = GetCustomButtonText(visibleButtons[i].SlotId);
+                Grid.SetColumn(visibleButtons[i].Button, i);
             }
 
-            if (!ReorderableSectionsPanel.Children.Contains(CustomSection))
-            {
-                ReorderableSectionsPanel.Children.Add(CustomSection);
-            }
+            bool anyCustomEnabled = visibleButtons.Count > 0;
+            bool customSectionAllowed = IsSectionVisible(WidgetSettingsDefaults.SectionCustom);
+            CustomSection.Visibility = anyCustomEnabled && customSectionAllowed ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private bool IsSectionVisible(string sectionId)
+        {
+            return _settings.HiddenSections == null ||
+                   !_settings.HiddenSections.Contains(sectionId, StringComparer.OrdinalIgnoreCase);
         }
 
         private async void ResolutionButton1_Click(object sender, RoutedEventArgs e)
@@ -573,6 +643,13 @@ namespace Easy_Shortcut_for_UMPC
 
         private async Task RefreshResolutionSectionAsync()
         {
+            if (!IsSectionVisible(WidgetSettingsDefaults.SectionResolution))
+            {
+                DisplayResolutionSection.Visibility = Visibility.Collapsed;
+                DiagnosticsLog.Write("RefreshResolutionSectionAsync skipped: section disabled.");
+                return;
+            }
+
             try
             {
                 await InitializeResolutionSectionAsync();

@@ -109,6 +109,7 @@
             <desktop:ParameterGroup GroupId="Custom1Command" Parameters="custom1" />
             <desktop:ParameterGroup GroupId="Custom2Command" Parameters="custom2" />
             <desktop:ParameterGroup GroupId="Custom3Command" Parameters="custom3" />
+            <desktop:ParameterGroup GroupId="Custom4Command" Parameters="custom4" />
             <desktop:ParameterGroup GroupId="LosslessScalingCommand" Parameters="losslessscaling" />
             <desktop:ParameterGroup GroupId="DetectResolutionPresetsCommand" Parameters="detect-resolution-presets" />
             <desktop:ParameterGroup GroupId="SetResolution1920x1200Command" Parameters="set-resolution-1920-1200" />
