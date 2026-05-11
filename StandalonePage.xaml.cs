@@ -1,6 +1,6 @@
 using Windows.UI.Xaml.Controls;
 
-namespace Easy_Shortcut_for_UMPC
+namespace Quick_Buttons_for_Game_Bar
 {
     public sealed partial class StandalonePage : Page
     {

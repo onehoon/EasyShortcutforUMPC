@@ -3,7 +3,7 @@ Build notes
 Active shipping path
 
 - This repository ships from the root UWP project only:
-  - `Easy Shortcut for UMPC.csproj`
+  - `Quick Buttons for Game Bar.csproj`
 - The effective manifest for build/package/output is:
   - `Package.appxmanifest`
 - `EasyShortcut.Package` (WAP/Desktop Bridge) is not used in the active shipping flow.
@@ -24,7 +24,7 @@ Helper packaging behavior
 Release x64 build
 
 ```powershell
-msbuild "Easy Shortcut for UMPC.csproj" /t:Build /p:Configuration=Release /p:Platform=x64 /p:PackageCertificatePassword=<password>
+msbuild "Quick Buttons for Game Bar.csproj" /t:Build /p:Configuration=Release /p:Platform=x64 /p:PackageCertificatePassword=<password>
 ```
 
 Output package

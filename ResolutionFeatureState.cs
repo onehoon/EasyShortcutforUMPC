@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 
-namespace Easy_Shortcut_for_UMPC
+namespace Quick_Buttons_for_Game_Bar
 {
     internal enum ResolutionPresetGroup
     {

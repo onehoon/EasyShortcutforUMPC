@@ -11,7 +11,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-namespace Easy_Shortcut_for_UMPC
+namespace Quick_Buttons_for_Game_Bar
 {
     public sealed partial class WidgetPage : Page
     {

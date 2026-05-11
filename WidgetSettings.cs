@@ -5,7 +5,7 @@ using System.Linq;
 using Windows.Data.Json;
 using Windows.Storage;
 
-namespace Easy_Shortcut_for_UMPC
+namespace Quick_Buttons_for_Game_Bar
 {
     internal static class ShortcutButtonIds
     {

@@ -1,8 +1,8 @@
-﻿<Application
-    x:Class="Easy_Shortcut_for_UMPC.App"
+<Application
+    x:Class="Quick_Buttons_for_Game_Bar.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Easy_Shortcut_for_UMPC"
+    xmlns:local="using:Quick_Buttons_for_Game_Bar"
     RequestedTheme="Dark">
 
 </Application>

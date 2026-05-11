@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using Windows.Storage;
 
-namespace Easy_Shortcut_for_UMPC
+namespace Quick_Buttons_for_Game_Bar
 {
     internal static class DiagnosticsLog
     {
@@ -30,7 +30,7 @@ namespace Easy_Shortcut_for_UMPC
 
                 if (string.IsNullOrWhiteSpace(dir))
                 {
-                    dir = Path.Combine(Path.GetTempPath(), "EasyShortcutForUMPC");
+                    dir = Path.Combine(Path.GetTempPath(), "QuickButtonsForGameBar");
                 }
 
                 Directory.CreateDirectory(dir);

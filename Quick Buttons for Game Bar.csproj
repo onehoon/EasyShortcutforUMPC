@@ -7,8 +7,8 @@
     <ProjectGuid>{64E9DE2A-F4CD-41F2-BDB4-CD14BB558EFB}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Easy_Shortcut_for_UMPC</RootNamespace>
-    <AssemblyName>Easy Shortcut for UMPC</AssemblyName>
+    <RootNamespace>Quick_Buttons_for_Game_Bar</RootNamespace>
+    <AssemblyName>Quick Buttons for Game Bar</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.26100.0</TargetPlatformVersion>
