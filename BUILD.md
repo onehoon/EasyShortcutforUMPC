@@ -29,7 +29,7 @@ msbuild "Quick Buttons for Game Bar.csproj" /t:Build /p:Configuration=Release /p
 
 Output package
 
-- `AppPackages/Easy Shortcut for UMPC_<version>_x64_Test/`
+- `AppPackages/Quick Buttons for Game Bar_<version>_x64_Test/`
 - Install via `Add-AppDevPackage.ps1` in that folder.
 
 Certificate and signing notes

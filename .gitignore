@@ -1,6 +1,6 @@
 # Visual Studio / .NET
 .vs/
-EasyShortcutforUMPC.code-workspace
+QuickButtonsforGameBar.code-workspace
 **/bin/
 **/obj/
 *.user

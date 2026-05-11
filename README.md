@@ -359,6 +359,6 @@ You may use, modify, and redistribute this project under the terms of the GPL-3.
 
 If you distribute modified versions or binaries, you must also provide the corresponding source code under the same license.
 
-[![Latest release downloads](https://img.shields.io/github/downloads/onehoon/EasyShortcutforUMPC/latest/total?label=latest%20downloads)](https://github.com/onehoon/EasyShortcutforUMPC/releases/latest)
-[![Total downloads](https://img.shields.io/github/downloads/onehoon/EasyShortcutforUMPC/total?label=total%20downloads)](https://github.com/onehoon/EasyShortcutforUMPC/releases)
-[![GitHub release](https://img.shields.io/github/v/release/onehoon/EasyShortcutforUMPC?label=latest%20release)](https://github.com/onehoon/EasyShortcutforUMPC/releases/latest)
+[![Latest release downloads](https://img.shields.io/github/downloads/onehoon/QuickButtonsforGameBar/latest/total?label=latest%20downloads)](https://github.com/onehoon/QuickButtonsforGameBar/releases/latest)
+[![Total downloads](https://img.shields.io/github/downloads/onehoon/QuickButtonsforGameBar/total?label=total%20downloads)](https://github.com/onehoon/QuickButtonsforGameBar/releases)
+[![GitHub release](https://img.shields.io/github/v/release/onehoon/QuickButtonsforGameBar?label=latest%20release)](https://github.com/onehoon/QuickButtonsforGameBar/releases/latest)
