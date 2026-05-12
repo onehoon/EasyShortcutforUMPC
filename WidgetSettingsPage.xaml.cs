@@ -45,7 +45,7 @@ namespace Quick_Buttons_for_Game_Bar
             {
                 DiagnosticsLog.WriteException("WidgetSettingsPage InitializeComponent failed", ex);
                 _draft = WidgetSettingsDefaults.Create();
-                Content = BuildPageFallback("Quick Buttons settings are not available right now.");
+                Content = BuildPageFallback("Quick Buttons settings could not be opened. Please close and reopen the widget from Xbox Game Bar.");
                 return;
             }
         }
