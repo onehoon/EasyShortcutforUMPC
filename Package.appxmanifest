@@ -158,8 +158,6 @@
         <Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetPrivate4" InterfaceId="5638D65A-3733-48CC-90E5-984688D62786" />
         <Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetPrivate5" InterfaceId="73B9289B-812C-4FA4-979B-180770DC92B3" />
         <Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetPrivate6" InterfaceId="687766A8-6A24-4691-ADDC-88AA57582B47" />
-        <Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetRecordingHost" InterfaceId="E85FD1C6-2867-44C3-B00A-AEEBBA76E438" />
-        <Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetRecordingResultSummaryPrivate" InterfaceId="7D701751-288D-4C6C-A466-97FBA0D21111" />
       </ProxyStub>
     </Extension>
   </Extensions>

@@ -86,9 +86,15 @@ namespace Quick_Buttons_for_Game_Bar
             {
                 DiagnosticsLog.Write($"OnActivated kind={args?.Kind}");
 
-                if (args is XboxGameBarWidgetActivatedEventArgs widgetArgs && widgetArgs.IsLaunchActivation)
+                if (args is XboxGameBarWidgetActivatedEventArgs widgetArgs)
                 {
-                    ActivateGameBarWidget(widgetArgs);
+                    if (widgetArgs.IsLaunchActivation)
+                    {
+                        ActivateGameBarWidget(widgetArgs);
+                        return;
+                    }
+
+                    DiagnosticsLog.Write($"Widget reactivation ignored appExtension={widgetArgs.AppExtensionId}");
                     return;
                 }
 
@@ -162,15 +168,21 @@ namespace Quick_Buttons_for_Game_Bar
                 _settingsWidget = widget;
                 _widgetWindows[Window.Current.CoreWindow] = "GamingWidgetSettings";
                 DiagnosticsLog.Write("Settings widget activated: GamingWidgetSettings");
-                rootFrame.Navigate(typeof(WidgetSettingsPage), widget);
-                DiagnosticsLog.Write("WidgetSettingsPage navigated");
+                if (!SafeNavigate(rootFrame, typeof(WidgetSettingsPage), widget, "WidgetSettingsPage"))
+                {
+                    ShowEmergencyFallback();
+                    return;
+                }
             }
             else if (string.Equals(widgetArgs.AppExtensionId, "GamingWidget", StringComparison.OrdinalIgnoreCase))
             {
                 _mainWidget = widget;
                 _widgetWindows[Window.Current.CoreWindow] = "GamingWidget";
-                rootFrame.Navigate(typeof(WidgetPage), widget);
-                DiagnosticsLog.Write("WidgetPage navigated");
+                if (!SafeNavigate(rootFrame, typeof(WidgetPage), widget, "WidgetPage"))
+                {
+                    ShowEmergencyFallback();
+                    return;
+                }
             }
             else
             {
@@ -179,8 +191,31 @@ namespace Quick_Buttons_for_Game_Bar
                 return;
             }
 
-            Window.Current.Closed += GameBarWindow_Closed;
+            try
+            {
+                Window.Current.Closed += GameBarWindow_Closed;
+            }
+            catch (Exception ex)
+            {
+                DiagnosticsLog.WriteException("Window.Closed hook failed", ex);
+            }
+
             Window.Current.Activate();
+        }
+
+        private bool SafeNavigate(Frame frame, Type pageType, object parameter, string pageName)
+        {
+            try
+            {
+                bool navigated = frame.Navigate(pageType, parameter);
+                DiagnosticsLog.Write($"{pageName} navigated={navigated}");
+                return navigated;
+            }
+            catch (Exception ex)
+            {
+                DiagnosticsLog.WriteException($"{pageName} navigate failed", ex);
+                return false;
+            }
         }
 
         private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)

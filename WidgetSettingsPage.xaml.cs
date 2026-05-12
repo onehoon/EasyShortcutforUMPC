@@ -43,19 +43,10 @@ namespace Quick_Buttons_for_Game_Bar
             }
             catch (Exception ex)
             {
-                // Keep settings page usable even if combo initialization fails.
+                DiagnosticsLog.WriteException("WidgetSettingsPage InitializeComponent failed", ex);
                 _draft = WidgetSettingsDefaults.Create();
-                try
-                {
-                    if (ValidationTextBlock != null)
-                    {
-                        SetValidation($"Settings UI initialization failed: {ex.Message}");
-                    }
-                }
-                catch
-                {
-                    // Never allow initialization-time UI errors to crash startup.
-                }
+                Content = BuildPageFallback("Quick Buttons settings are not available right now.");
+                return;
             }
         }
 
@@ -617,6 +608,25 @@ namespace Quick_Buttons_for_Game_Bar
             bool customSectionVisible = !IsSectionHidden(WidgetSettingsDefaults.SectionCustom);
             bool customVisible = customSectionVisible && HasAnyEnabledCustomSlot();
             return gamingVisible || displayVisible || customVisible;
+        }
+
+        private static FrameworkElement BuildPageFallback(string message)
+        {
+            var panel = new Grid
+            {
+                Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 26, 28, 33)),
+                Padding = new Thickness(16)
+            };
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = message,
+                Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+                TextWrapping = TextWrapping.Wrap,
+                FontSize = 14
+            });
+
+            return panel;
         }
     }
 }
