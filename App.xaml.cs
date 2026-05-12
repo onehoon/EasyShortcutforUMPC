@@ -22,7 +22,35 @@ namespace Quick_Buttons_for_Game_Bar
 
         public App()
         {
-            InitializeComponent();
+            try
+            {
+                UnhandledException += OnUnhandledException;
+                AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+                TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+            }
+            catch
+            {
+                // Never throw from App constructor.
+            }
+
+            try
+            {
+                InitializeComponent();
+            }
+            catch (Exception ex)
+            {
+                DiagnosticsLog.WriteException("App InitializeComponent failed", ex);
+            }
+
+            try
+            {
+                Suspending += OnSuspending;
+            }
+            catch (Exception ex)
+            {
+                DiagnosticsLog.WriteException("App Suspending hook failed", ex);
+            }
+
             try
             {
                 PackageVersion version = Package.Current.Id.Version;
@@ -33,10 +61,6 @@ namespace Quick_Buttons_for_Game_Bar
                 DiagnosticsLog.WriteException("App ctor version read failed", ex);
                 DiagnosticsLog.Write("App ctor version=unknown");
             }
-            Suspending += OnSuspending;
-            UnhandledException += OnUnhandledException;
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         }
 
         protected override void OnLaunched(LaunchActivatedEventArgs e)
@@ -44,18 +68,9 @@ namespace Quick_Buttons_for_Game_Bar
             try
             {
                 DiagnosticsLog.Write($"OnLaunched prelaunch={e.PrelaunchActivated} args='{e.Arguments}'");
-                var rootFrame = EnsureRootFrame();
-
                 if (!e.PrelaunchActivated)
                 {
-                    if (rootFrame.Content == null)
-                    {
-                        DiagnosticsLog.Write("OnLaunched navigate StandalonePage");
-                        rootFrame.Navigate(typeof(StandalonePage), null);
-                    }
-
-                    DiagnosticsLog.Write("OnLaunched activate window");
-                    Window.Current.Activate();
+                    ShowEmergencyFallback();
                 }
             }
             catch (Exception ex)
@@ -70,71 +85,15 @@ namespace Quick_Buttons_for_Game_Bar
             try
             {
                 DiagnosticsLog.Write($"OnActivated kind={args?.Kind}");
-                if (args == null)
+
+                if (args is XboxGameBarWidgetActivatedEventArgs widgetArgs && widgetArgs.IsLaunchActivation)
                 {
-                    DiagnosticsLog.Write("OnActivated args is null");
-                    ShowEmergencyFallback();
+                    ActivateGameBarWidget(widgetArgs);
                     return;
                 }
 
-                XboxGameBarWidgetActivatedEventArgs widgetArgs = null;
-
-                if (args.Kind == ActivationKind.Protocol)
-                {
-                    var protocolArgs = args as IProtocolActivatedEventArgs;
-                    if (protocolArgs?.Uri?.Scheme == "ms-gamebarwidget")
-                    {
-                        widgetArgs = args as XboxGameBarWidgetActivatedEventArgs;
-                        DiagnosticsLog.Write($"OnActivated protocol={protocolArgs.Uri}");
-                    }
-                }
-
-                if (widgetArgs != null && widgetArgs.IsLaunchActivation)
-                {
-                    DiagnosticsLog.Write($"Widget activation appExtension={widgetArgs.AppExtensionId}");
-                    var rootFrame = new Frame();
-                    rootFrame.NavigationFailed += OnNavigationFailed;
-                    Window.Current.Content = rootFrame;
-
-                    XboxGameBarWidget widget = new XboxGameBarWidget(
-                        widgetArgs,
-                        Window.Current.CoreWindow,
-                        rootFrame);
-
-                    if (string.Equals(widgetArgs.AppExtensionId, "GamingWidgetSettings", StringComparison.OrdinalIgnoreCase))
-                    {
-                        _settingsWidget = widget;
-                        _widgetWindows[Window.Current.CoreWindow] = "GamingWidgetSettings";
-                        DiagnosticsLog.Write("Settings widget activated: GamingWidgetSettings");
-                        rootFrame.Navigate(typeof(WidgetSettingsPage), widget);
-                        DiagnosticsLog.Write("WidgetSettingsPage navigated");
-                    }
-                    else if (string.Equals(widgetArgs.AppExtensionId, "GamingWidget", StringComparison.OrdinalIgnoreCase))
-                    {
-                        _mainWidget = widget;
-                        _widgetWindows[Window.Current.CoreWindow] = "GamingWidget";
-                        rootFrame.Navigate(typeof(WidgetPage), widget);
-                    }
-                    else
-                    {
-                        DiagnosticsLog.Write($"Unknown Game Bar widget AppExtensionId={widgetArgs.AppExtensionId}");
-                        return;
-                    }
-
-                    Window.Current.Closed += GameBarWindow_Closed;
-                    Window.Current.Activate();
-                    return;
-                }
-
-                var fallbackFrame = EnsureRootFrame();
-                if (fallbackFrame.Content == null)
-                {
-                    DiagnosticsLog.Write("OnActivated fallback navigate StandalonePage");
-                    fallbackFrame.Navigate(typeof(StandalonePage), null);
-                }
-
-                DiagnosticsLog.Write("OnActivated fallback activate window");
-                Window.Current.Activate();
+                DiagnosticsLog.Write("OnActivated non-widget fallback");
+                ShowEmergencyFallback();
             }
             catch (Exception ex)
             {
@@ -176,6 +135,52 @@ namespace Quick_Buttons_for_Game_Bar
             Window.Current.Content = rootFrame;
             DiagnosticsLog.Write("EnsureRootFrame created new frame");
             return rootFrame;
+        }
+
+        private void ActivateGameBarWidget(XboxGameBarWidgetActivatedEventArgs widgetArgs)
+        {
+            DiagnosticsLog.Write($"Widget activation appExtension={widgetArgs?.AppExtensionId}");
+
+            var rootFrame = new Frame();
+            rootFrame.NavigationFailed += OnNavigationFailed;
+            Window.Current.Content = rootFrame;
+
+            XboxGameBarWidget widget;
+            try
+            {
+                widget = new XboxGameBarWidget(widgetArgs, Window.Current.CoreWindow, rootFrame);
+            }
+            catch (Exception ex)
+            {
+                DiagnosticsLog.WriteException("XboxGameBarWidget creation failed", ex);
+                ShowEmergencyFallback();
+                return;
+            }
+
+            if (string.Equals(widgetArgs.AppExtensionId, "GamingWidgetSettings", StringComparison.OrdinalIgnoreCase))
+            {
+                _settingsWidget = widget;
+                _widgetWindows[Window.Current.CoreWindow] = "GamingWidgetSettings";
+                DiagnosticsLog.Write("Settings widget activated: GamingWidgetSettings");
+                rootFrame.Navigate(typeof(WidgetSettingsPage), widget);
+                DiagnosticsLog.Write("WidgetSettingsPage navigated");
+            }
+            else if (string.Equals(widgetArgs.AppExtensionId, "GamingWidget", StringComparison.OrdinalIgnoreCase))
+            {
+                _mainWidget = widget;
+                _widgetWindows[Window.Current.CoreWindow] = "GamingWidget";
+                rootFrame.Navigate(typeof(WidgetPage), widget);
+                DiagnosticsLog.Write("WidgetPage navigated");
+            }
+            else
+            {
+                DiagnosticsLog.Write($"Unknown Game Bar widget AppExtensionId={widgetArgs.AppExtensionId}");
+                ShowEmergencyFallback();
+                return;
+            }
+
+            Window.Current.Closed += GameBarWindow_Closed;
+            Window.Current.Activate();
         }
 
         private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
@@ -227,7 +232,7 @@ namespace Quick_Buttons_for_Game_Bar
 
                 var message = new TextBlock
                 {
-                    Text = "Quick Buttons for Game Bar is intended to be used from Xbox Game Bar.\n\nOpen Xbox Game Bar with Win+G, then launch Quick Buttons for Game Bar from the Widget menu.",
+                    Text = "Quick Buttons for Game Bar is an Xbox Game Bar widget.\n\nTo use it:\n1. Press Win + G.\n2. Open the Widget menu.\n3. Select Quick Buttons for Game Bar.\n4. Pin the widget if desired.",
                     Foreground = new SolidColorBrush(Colors.White),
                     FontSize = 16,
                     TextWrapping = TextWrapping.Wrap
@@ -239,7 +244,14 @@ namespace Quick_Buttons_for_Game_Bar
             }
             catch (Exception ex)
             {
-                DiagnosticsLog.Write($"EmergencyFallback fail msg={ex.Message}");
+                try
+                {
+                    DiagnosticsLog.Write($"EmergencyFallback failed: {ex.Message}");
+                }
+                catch
+                {
+                    // Final safety net. Never throw.
+                }
             }
         }
     }

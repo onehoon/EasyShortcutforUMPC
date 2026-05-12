@@ -23,6 +23,7 @@ namespace Quick_Buttons_for_Game_Bar
         private XboxGameBarWidget _gameBarWidget;
         private bool _eventsHooked;
         private bool _isReloadingSettings;
+        private bool _uiReady;
 
         private const string ActionOverlay = "insert";
         private const string ActionCustom1 = "custom1";
@@ -55,10 +56,38 @@ namespace Quick_Buttons_for_Game_Bar
 
         public WidgetPage()
         {
-            InitializeComponent();
-            _settings = WidgetSettingsStore.Load();
-            DiagnosticsLog.Write("WidgetPage ctor");
-            Loaded += WidgetPage_Loaded;
+            try
+            {
+                InitializeComponent();
+                _uiReady = true;
+            }
+            catch (Exception ex)
+            {
+                DiagnosticsLog.WriteException("WidgetPage InitializeComponent failed", ex);
+                _uiReady = false;
+                Content = BuildPageFallback("Quick Buttons for Game Bar is an Xbox Game Bar widget.");
+                return;
+            }
+
+            try
+            {
+                _settings = WidgetSettingsStore.Load();
+            }
+            catch (Exception ex)
+            {
+                DiagnosticsLog.WriteException("WidgetPage settings load failed", ex);
+                _settings = WidgetSettingsDefaults.Create();
+            }
+
+            try
+            {
+                DiagnosticsLog.Write("WidgetPage ctor");
+                Loaded += WidgetPage_Loaded;
+            }
+            catch (Exception ex)
+            {
+                DiagnosticsLog.WriteException("WidgetPage Loaded hook failed", ex);
+            }
         }
 
         private async void WidgetPage_Loaded(object sender, RoutedEventArgs e)
@@ -309,14 +338,27 @@ namespace Quick_Buttons_for_Game_Bar
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            if (!_uiReady)
+            {
+                return;
+            }
+
             _gameBarWidget = e.Parameter as XboxGameBarWidget;
             DiagnosticsLog.Write($"WidgetPage OnNavigatedTo: gameBarWidget is {(_gameBarWidget == null ? "null" : "not null")}");
 
             if (_gameBarWidget != null)
             {
-                DiagnosticsLog.Write($"SettingsSupported before set: {_gameBarWidget.SettingsSupported}");
-                _gameBarWidget.SettingsSupported = true;
-                DiagnosticsLog.Write($"SettingsSupported after set: {_gameBarWidget.SettingsSupported}");
+                try
+                {
+                    DiagnosticsLog.Write($"SettingsSupported before set: {_gameBarWidget.SettingsSupported}");
+                    _gameBarWidget.SettingsSupported = true;
+                    DiagnosticsLog.Write($"SettingsSupported after set: {_gameBarWidget.SettingsSupported}");
+                }
+                catch (Exception ex)
+                {
+                    DiagnosticsLog.WriteException("SettingsSupported access failed", ex);
+                }
             }
 
             if (_eventsHooked)
@@ -328,7 +370,14 @@ namespace Quick_Buttons_for_Game_Bar
             WidgetSettingsStore.SettingsSaved += WidgetSettingsStore_SettingsSaved;
             if (_gameBarWidget != null)
             {
-                _gameBarWidget.SettingsClicked += Widget_SettingsClicked;
+                try
+                {
+                    _gameBarWidget.SettingsClicked += Widget_SettingsClicked;
+                }
+                catch (Exception ex)
+                {
+                    DiagnosticsLog.WriteException("SettingsClicked subscribe failed", ex);
+                }
             }
 
             _eventsHooked = true;
@@ -342,7 +391,14 @@ namespace Quick_Buttons_for_Game_Bar
                 WidgetSettingsStore.SettingsSaved -= WidgetSettingsStore_SettingsSaved;
                 if (_gameBarWidget != null)
                 {
-                    _gameBarWidget.SettingsClicked -= Widget_SettingsClicked;
+                    try
+                    {
+                        _gameBarWidget.SettingsClicked -= Widget_SettingsClicked;
+                    }
+                    catch (Exception ex)
+                    {
+                        DiagnosticsLog.WriteException("SettingsClicked unsubscribe failed", ex);
+                    }
                 }
 
                 _eventsHooked = false;
@@ -704,6 +760,25 @@ namespace Quick_Buttons_for_Game_Bar
         private static string FormatShortcut(IReadOnlyList<string> keys)
         {
             return WidgetSettingsStore.IsValidKeys(keys) ? string.Join("+", keys) : "Not Set";
+        }
+
+        private static FrameworkElement BuildPageFallback(string message)
+        {
+            var panel = new Grid
+            {
+                Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 26, 28, 33)),
+                Padding = new Thickness(16)
+            };
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = message,
+                Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+                TextWrapping = TextWrapping.Wrap,
+                FontSize = 14
+            });
+
+            return panel;
         }
 
     }

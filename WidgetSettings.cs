@@ -99,35 +99,72 @@ namespace Quick_Buttons_for_Game_Bar
                 string filePath = GetSettingsFilePath();
                 if (!File.Exists(filePath))
                 {
-                    var defaults = WidgetSettingsDefaults.Create();
-                    Save(defaults);
-                    return defaults;
+                    return WidgetSettingsDefaults.Create();
                 }
 
                 string raw = File.ReadAllText(filePath);
                 var parsed = Parse(raw);
                 if (parsed == null)
                 {
-                    var defaults = WidgetSettingsDefaults.Create();
-                    Save(defaults);
-                    return defaults;
+                    return WidgetSettingsDefaults.Create();
                 }
 
                 return parsed;
             }
-            catch
+            catch (Exception ex)
             {
+                DiagnosticsLog.WriteException("WidgetSettingsStore.Load failed", ex);
                 return WidgetSettingsDefaults.Create();
             }
         }
 
         internal static void Save(WidgetSettings settings)
         {
-            var normalized = Normalize(settings);
-            string filePath = GetSettingsFilePath();
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-            File.WriteAllText(filePath, Serialize(normalized));
-            SettingsSaved?.Invoke(null, EventArgs.Empty);
+            TrySave(settings);
+        }
+
+        internal static bool TrySave(WidgetSettings settings)
+        {
+            try
+            {
+                var normalized = Normalize(settings);
+                string filePath = GetSettingsFilePath();
+                string directory = Path.GetDirectoryName(filePath);
+                if (!string.IsNullOrEmpty(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                File.WriteAllText(filePath, Serialize(normalized));
+                RaiseSettingsSavedSafe();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                DiagnosticsLog.WriteException("WidgetSettingsStore.Save failed", ex);
+                return false;
+            }
+        }
+
+        private static void RaiseSettingsSavedSafe()
+        {
+            EventHandler handlers = SettingsSaved;
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (EventHandler handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(null, EventArgs.Empty);
+                }
+                catch (Exception ex)
+                {
+                    DiagnosticsLog.WriteException("SettingsSaved handler failed", ex);
+                }
+            }
         }
 
         internal static WidgetSettings Normalize(WidgetSettings input)

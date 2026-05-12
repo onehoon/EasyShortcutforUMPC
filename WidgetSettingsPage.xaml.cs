@@ -307,12 +307,18 @@ namespace Quick_Buttons_for_Game_Bar
             try
             {
                 _draft = WidgetSettingsStore.Normalize(_draft);
-                WidgetSettingsStore.Save(_draft);
+                bool saved = WidgetSettingsStore.TrySave(_draft);
+                if (!saved)
+                {
+                    SetValidation("Settings could not be saved right now. Please try again.");
+                    return;
+                }
+
                 await CloseSettingsAndReturnToMainAsync();
             }
             catch (Exception ex)
             {
-                SetValidation($"Failed to save settings: {ex.Message}");
+                SetValidation($"Failed to apply settings: {ex.Message}");
             }
         }
 
