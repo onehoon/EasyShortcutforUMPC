@@ -55,7 +55,7 @@
             <uap3:Properties>
               <GameBarWidget Type="Standard">
                 <HomeMenuVisible>true</HomeMenuVisible>
-                <PinningSupported>true</PinningSupported>
+                <SupportsPinning>true</SupportsPinning>
                 <ActivateAfterInstall>false</ActivateAfterInstall>
                 <FavoriteAfterInstall>false</FavoriteAfterInstall>
                 <SettingsSupported AppExtensionId="GamingWidgetSettings" />

@@ -62,3 +62,9 @@ Package.StoreAssociation.xml
 
 *.binlog
 msbuild-*.binlog
+
+# Local build artifacts (explicit)
+tmp_obj/
+bin/
+obj/
+AppPackages/
